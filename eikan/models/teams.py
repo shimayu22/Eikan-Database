@@ -68,7 +68,7 @@ class Teams(models.Model):
     )
 
     updated_at = models.DateTimeField(
-        verbose_name = "登録日",
+        verbose_name = "更新日",
         auto_now_add = True,
     )
 

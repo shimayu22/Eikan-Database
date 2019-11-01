@@ -13,6 +13,7 @@ class Fielder_results(models.Model):
     player_id = models.ForeignKey(
         Players,
         on_delete=models.CASCADE,
+        # TODO: 試合がある年度に在籍している選手だけ表示したい
     )
 
     at_bat = models.IntegerField(

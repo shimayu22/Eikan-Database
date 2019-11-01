@@ -1,5 +1,5 @@
 from django.db import models
-from django.core.validators import MinValueValidator,MaxValueValidator,MaxLengthValidator
+from django.core.validators import MinValueValidator,MaxValueValidator
 
 # Create your models here.
 class Teams(models.Model):

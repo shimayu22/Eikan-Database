@@ -37,8 +37,8 @@ https://qiita.com/genzouw/items/35022fa96c120e67c637
 - id
 - team_id
 - competition_type(大会種類)
-- round(n回戦)
-- is_victory(勝ったか)
+- competition_round(n回戦)
+- result(勝負分)
 - score(得点)
 - run(失点)
 - lank(ランク)

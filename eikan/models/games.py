@@ -4,7 +4,7 @@ from django.core.validators import MinValueValidator,MaxValueValidator
 from eikan.models.teams import Teams
 
 # Create your models here.
-class Gmase(models.Model):
+class Games(models.Model):
 
     # TODO:大会種別を作成する
     COMPETITON_CHOICES = (

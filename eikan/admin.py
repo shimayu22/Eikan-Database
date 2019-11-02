@@ -19,7 +19,7 @@ class PlayersAdmin(admin.ModelAdmin):
 
 class GamesAdmin(admin.ModelAdmin):
     list_display = ('team_id', 'competition_type', 'competiton_round')
-    inlines = [Pitcher_resultsInline]
+    inlines = [Fielder_resultsInline, Pitcher_resultsInline]
 
 admin.site.register(Teams, TeamsAdmin)
 admin.site.register(Players, PlayersAdmin)

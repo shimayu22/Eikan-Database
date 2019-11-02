@@ -72,5 +72,9 @@ class Teams(models.Model):
         auto_now_add = True,
     )
 
+    def __str__(self):
+        return str(self.year) + ":" + ["","夏","秋"][self.period] + ":" + ["","北北海道","南北海道"][self.prefecture]
+        # TODO: 可能であれば、もっと楽な方法で実装する
+
     class Meta:
         verbose_name_plural = "チーム情報"

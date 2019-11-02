@@ -89,4 +89,5 @@ class Games(models.Model):
     
 
     class Meta:
+        verbose_name = "試合情報"
         verbose_name_plural = "試合情報"

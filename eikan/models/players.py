@@ -49,4 +49,5 @@ class Players(models.Model):
         return str(self.admission_year) + " : " + self.name
 
     class Meta:
+        verbose_name = "選手情報"
         verbose_name_plural = "選手情報"

@@ -77,4 +77,5 @@ class Teams(models.Model):
         # TODO: スマートな表示方法に変更したい
 
     class Meta:
+        verbose_name = "チーム情報"
         verbose_name_plural = "チーム情報"

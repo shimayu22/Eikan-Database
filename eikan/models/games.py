@@ -84,5 +84,9 @@ class Games(models.Model):
         auto_now_add = True,
     )
 
+    def __str__(self):
+        return str(self.team_id)
+    
+
     class Meta:
         verbose_name_plural = "試合情報"

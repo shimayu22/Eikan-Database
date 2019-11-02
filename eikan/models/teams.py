@@ -72,5 +72,9 @@ class Teams(models.Model):
         auto_now_add = True,
     )
 
+    def __str__(self):
+        return str(self.year) + " : " + str(self.period) + " : " + str(self.prefecture)
+        # TODO: スマートな表示方法に変更したい
+
     class Meta:
         verbose_name_plural = "チーム情報"

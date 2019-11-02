@@ -84,5 +84,9 @@ class Games(models.Model):
         auto_now_add = True,
     )
 
+    def __str__(self):
+        return ["","甲子園"][self.competition_type] + " : " + ["","1回戦"][self.competiton_round]
+    
+
     class Meta:
         verbose_name_plural = "試合情報"

@@ -28,6 +28,12 @@ class Fielder_results(models.Model):
         default = 0,
     )
 
+    hit = models.IntegerField(
+        verbose_name = "安打",
+        validators = [MinValueValidator(0)],
+        default = 0,
+    )
+
     two_base = models.IntegerField(
         verbose_name = "二塁打",
         validators = [MinValueValidator(0)],
@@ -109,6 +115,10 @@ class Fielder_results(models.Model):
         verbose_name = "更新日",
         auto_now_add = True,
     )
+
+    def __str__(self):
+        return str(self.player_id) + " : " + str(self.game_id)
+    
 
     class Meta:
         verbose_name_plural = "打者成績"

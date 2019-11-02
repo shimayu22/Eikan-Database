@@ -119,9 +119,5 @@ class Pitcher_results(models.Model):
         auto_now_add = True,
     )
 
-    def __str__(self):
-        return str(self.player_id) + " : " + str(self.game_id)
-    
-
     class Meta:
         verbose_name_plural = "投手成績"

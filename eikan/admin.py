@@ -5,10 +5,12 @@ from .models import Teams, Players, Games, Fielder_results, Pitcher_results
 
 class Fielder_resultsInline(admin.TabularInline):
     model = Fielder_results
+    verbose_name = "野手"
     extra = 9
 
 class Pitcher_resultsInline(admin.TabularInline):
     model = Pitcher_results
+    verbose_name = "投手"
     extra = 1
 
 class TeamsAdmin(admin.ModelAdmin):

@@ -6,9 +6,14 @@ class Players(models.Model):
 
     # TODO: ポジションを作成する
     POSITION_CHOICES = (
-        (0, "選択"),
-        (1, "投"),
-        (2, "捕"),
+        (0,'選択'),
+        (1,'投'),
+        (2,'捕'),
+        (3,'一'),
+        (4,'二'),
+        (5,'三'),
+        (6,'遊'),
+        (7,'外'),
     )
 
     admission_year = models.IntegerField(
@@ -23,7 +28,7 @@ class Players(models.Model):
     )
 
     position = models.IntegerField(
-        verbose_name = "守備位置",
+        verbose_name = "メインポジション",
         choices = POSITION_CHOICES,
         default = 0,
     )
@@ -46,7 +51,7 @@ class Players(models.Model):
     )
 
     def __str__(self):
-        return self.name + "(" + str(self.admission_year) + ")"
+        return str(self.admission_year) + ":" + self.name + "(" + self.POSITION_CHOICES[self.position][1] + ")"
 
     class Meta:
         verbose_name = "選手情報"

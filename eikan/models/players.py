@@ -46,7 +46,7 @@ class Players(models.Model):
     )
 
     def __str__(self):
-        return str(self.admission_year) + " : " + self.name
+        return self.name + "(" + str(self.admission_year) + ")"
 
     class Meta:
         verbose_name = "選手情報"

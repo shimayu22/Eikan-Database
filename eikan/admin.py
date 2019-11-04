@@ -14,7 +14,7 @@ class Pitcher_resultsInline(admin.TabularInline):
     extra = 1
 
 class TeamsAdmin(admin.ModelAdmin):
-    list_display = ('year', 'period', 'prefecture')
+    list_display = ('year', 'period', 'prefecture', 'training_policy', 'draft_nomination', 'remark')
 
 class PlayersAdmin(admin.ModelAdmin):
     list_display = ('admission_year', 'name' , 'position' , 'remark')

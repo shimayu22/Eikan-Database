@@ -22,9 +22,15 @@ class Pitcher_results(models.Model):
         default = False,
     )
 
-    innings_pitched = models.FloatField(
+    innings_pitched = models.PositiveSmallIntegerField(
         verbose_name = "イニング",
-        validators = [MinValueValidator(0)],
+        validators = [MinValueValidator(0),MaxValueValidator(15)],
+        default = 0,
+    )
+
+    innings_pitched_fraction = models.PositiveSmallIntegerField(
+        verbose_name = "/3",
+        validators = [MinValueValidator(0),MaxValueValidator(2)],
         default = 0,
     )
 

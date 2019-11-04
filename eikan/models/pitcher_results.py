@@ -17,11 +17,9 @@ class Pitcher_results(models.Model):
         # TODO: 投手だけ表示したい
     )
 
-    # TODO: boolの方がよい？
-    games_started = models.IntegerField(
+    games_started = models.BooleanField(
         verbose_name = "先発登板",
-        validators = [MinValueValidator(0)],
-        default = 0,
+        default = False,
     )
 
     innings_pitched = models.FloatField(

@@ -33,7 +33,7 @@ class Players(models.Model):
         validators = [MinValueValidator(1)],
     )
 
-    remark = models.PositiveSmallIntegerField(
+    remark = models.CharField(
         verbose_name = "備考",
         max_length = 100,
         blank = True,

@@ -80,18 +80,21 @@ class Teams(models.Model):
     period = models.IntegerField(
         verbose_name = "期間",
         choices = PERIOD_CHOICES,
+        validators = [MinValueValidator(1)],
         default = 0,
     )
 
     prefecture = models.IntegerField(
         verbose_name = "都道府県",
         choices = PREFECTURE_CHOICES,
+        validators = [MinValueValidator(1)],
         default = 0,
     )
 
     training_policy = models.IntegerField(
         verbose_name = "育成方針",
         choices = POLICY_CHOICES,
+        validators = [MinValueValidator(1)],
         default = 0,
     )
 

@@ -51,18 +51,21 @@ class Games(models.Model):
     competition_type = models.IntegerField(
         verbose_name = "大会",
         choices = COMPETITON_CHOICES,
+        validators = [MinValueValidator(1)],
         default = 0,
     )
 
     competiton_round = models.IntegerField(
         verbose_name = "回戦",
         choices = ROUND_CHOICES,
+        validators = [MinValueValidator(1)],
         default = 0
     )
 
     result = models.IntegerField(
         verbose_name = "勝敗",
         choices = RESULT_CHOICES,
+        validators = [MinValueValidator(1)],
         default = 0,
     )
 
@@ -81,6 +84,7 @@ class Games(models.Model):
     lank = models.IntegerField(
         verbose_name = "ランク",
         choices = LANK_CHOICES,
+        validators = [MinValueValidator(1)],
         default = 0,
     )
 

@@ -30,6 +30,7 @@ class Players(models.Model):
         verbose_name = "メインポジション",
         choices = POSITION_CHOICES,
         default = 0,
+        validators = [MinValueValidator(1)],
     )
 
     remark = models.CharField(

@@ -19,6 +19,8 @@ class Players(models.Model):
         verbose_name = "入学年度",
         validators = [MinValueValidator(1939)],
         # TODO: 一つ前のレコードの年度をdefaultにしたい
+        # 「choiceオプションはcallableであり、
+        # タプルを返す関数を指定すれば動的なリストを作ることができる
     )
 
     name = models.CharField(

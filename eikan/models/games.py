@@ -6,18 +6,25 @@ from eikan.models.teams import Teams
 # Create your models here.
 class Games(models.Model):
 
-    # TODO:大会種別を作成する
     COMPETITON_CHOICES = (
-        (0, "選択"),
-        (1, "甲子園"),
-        # 練習試合も考慮
+        (0,'選択'),
+        (1,'練習試合'),
+        (2,'県大会'),
+        (3,'地区大会'),
+        (4,'甲子園'),
+        (5,'センバツ'),
     )
 
-    # TODO:n回戦を作成する
     ROUND_CHOICES = (
-        (0, "選択"),
-        (1, "1回戦"),
-        ## 練習試合も考慮
+        (0,'選択'),
+        (1,'練習試合'),
+        (2,'1回戦'),
+        (3,'2回戦'),
+        (4,'3回戦'),
+        (5,'4回戦'),
+        (6,'準々決勝'),
+        (7,'準決勝'),
+        (8,'決勝'),
     )
 
     RESULT_CHOICES = (
@@ -27,10 +34,13 @@ class Games(models.Model):
         (3, "分"),
     )
 
-    # TODO: ランクを作成する
     LANK_CHOICES = (
-        (0, "選択"),
-        (1, "そこそこ"),
+        (0,'選択'),
+        (1,'弱小'),
+        (2,'そこそこ'),
+        (3,'中堅'),
+        (4,'強豪'),
+        (5,'名門'),
     )
 
     team_id = models.ForeignKey(

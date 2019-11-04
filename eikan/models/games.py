@@ -48,40 +48,40 @@ class Games(models.Model):
         on_delete=models.CASCADE
     )
 
-    competition_type = models.IntegerField(
+    competition_type = models.PositiveSmallIntegerField(
         verbose_name = "大会",
         choices = COMPETITON_CHOICES,
         validators = [MinValueValidator(1)],
         default = 0,
     )
 
-    competiton_round = models.IntegerField(
+    competiton_round = models.PositiveSmallIntegerField(
         verbose_name = "回戦",
         choices = ROUND_CHOICES,
         validators = [MinValueValidator(1)],
         default = 0
     )
 
-    result = models.IntegerField(
+    result = models.PositiveSmallIntegerField(
         verbose_name = "勝敗",
         choices = RESULT_CHOICES,
         validators = [MinValueValidator(1)],
         default = 0,
     )
 
-    score = models.IntegerField(
+    score = models.PositiveSmallIntegerField(
         verbose_name = "得点",
         validators = [MinValueValidator(0)],
         default = 0,
     )
 
-    run = models.IntegerField(
+    run = models.PositiveSmallIntegerField(
         verbose_name = "失点",
         validators = [MinValueValidator(0)],
         default = 0,
     )
 
-    lank = models.IntegerField(
+    lank = models.PositiveSmallIntegerField(
         verbose_name = "ランク",
         choices = LANK_CHOICES,
         validators = [MinValueValidator(1)],

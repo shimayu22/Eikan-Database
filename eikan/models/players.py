@@ -15,7 +15,7 @@ class Players(models.Model):
         (7,'外'),
     )
 
-    admission_year = models.IntegerField(
+    admission_year = models.PositiveSmallIntegerField(
         verbose_name = "入学年度",
         validators = [MinValueValidator(1939)],
         # TODO: 一つ前のレコードの年度をdefaultにしたい
@@ -26,14 +26,14 @@ class Players(models.Model):
         max_length = 6,
     )
 
-    position = models.IntegerField(
+    position = models.PositiveSmallIntegerField(
         verbose_name = "メインポジション",
         choices = POSITION_CHOICES,
         default = 0,
         validators = [MinValueValidator(1)],
     )
 
-    remark = models.CharField(
+    remark = models.PositiveSmallIntegerField(
         verbose_name = "備考",
         max_length = 100,
         blank = True,

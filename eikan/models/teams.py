@@ -71,34 +71,34 @@ class Teams(models.Model):
         (4,'守備・投手'),
     )
 
-    year = models.IntegerField(
+    year = models.PositiveSmallIntegerField(
         verbose_name = "年度",
         validators = [MinValueValidator(1941)],
         # TODO: 一つ前のレコードの年度をdefaultにしたい
     )
 
-    period = models.IntegerField(
+    period = models.PositiveSmallIntegerField(
         verbose_name = "期間",
         choices = PERIOD_CHOICES,
         validators = [MinValueValidator(1)],
         default = 0,
     )
 
-    prefecture = models.IntegerField(
+    prefecture = models.PositiveSmallIntegerField(
         verbose_name = "都道府県",
         choices = PREFECTURE_CHOICES,
         validators = [MinValueValidator(1)],
         default = 0,
     )
 
-    training_policy = models.IntegerField(
+    training_policy = models.PositiveSmallIntegerField(
         verbose_name = "育成方針",
         choices = POLICY_CHOICES,
         validators = [MinValueValidator(1)],
         default = 0,
     )
 
-    draft_nomination = models.IntegerField(
+    draft_nomination = models.PositiveSmallIntegerField(
         verbose_name = "指名人数",
         validators = [MinValueValidator(0),
                       MaxValueValidator(5)],

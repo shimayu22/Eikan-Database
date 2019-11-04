@@ -17,13 +17,6 @@ class Pitcher_results(models.Model):
         # TODO: 投手だけ表示したい
     )
 
-    # TODO: 入力項目としては不要か
-    game = models.IntegerField(
-        verbose_name = "登板数",
-        validators = [MinValueValidator(1)],
-        default = 1,
-    )
-
     # TODO: boolの方がよい？
     games_started = models.IntegerField(
         verbose_name = "先発登板",
@@ -37,73 +30,73 @@ class Pitcher_results(models.Model):
         default = 0,
     )
 
-    total_batters_faced = models.IntegerField(
+    total_batters_faced = models.PositiveSmallIntegerField(
         verbose_name = "対戦打者",
         validators = [MinValueValidator(0)],
         default = 0,
     )
 
-    number_of_pitch = models.IntegerField(
+    number_of_pitch = models.PositiveSmallIntegerField(
         verbose_name = "投球数",
         validators = [MinValueValidator(0)],
         default = 0,
     )
 
-    hit = models.IntegerField(
+    hit = models.PositiveSmallIntegerField(
         verbose_name = "被安打",
         validators = [MinValueValidator(0)],
         default = 0,
     )
 
-    strike_out = models.IntegerField(
+    strike_out = models.PositiveSmallIntegerField(
         verbose_name = "三振",
         validators = [MinValueValidator(0)],
         default = 0,
     )
 
-    bases_on_balls = models.IntegerField(
+    bases_on_balls = models.PositiveSmallIntegerField(
         verbose_name = "四球",
         validators = [MinValueValidator(0)],
         default = 0,
     )
 
-    hit_by_pitch = models.IntegerField(
+    hit_by_pitch = models.PositiveSmallIntegerField(
         verbose_name = "死球",
         validators = [MinValueValidator(0)],
         default = 0,
     )
 
-    run = models.IntegerField(
+    run = models.PositiveSmallIntegerField(
         verbose_name = "失点",
         validators = [MinValueValidator(0)],
         default = 0,
     )
 
-    earned_run = models.IntegerField(
+    earned_run = models.PositiveSmallIntegerField(
         verbose_name = "自責点",
         validators = [MinValueValidator(0)],
         default = 0,
     )
 
-    wild_pitch = models.IntegerField(
+    wild_pitch = models.PositiveSmallIntegerField(
         verbose_name = "暴投",
         validators = [MinValueValidator(0)],
         default = 0,
     )
 
-    home_run = models.IntegerField(
+    home_run = models.PositiveSmallIntegerField(
         verbose_name = "本塁打",
         validators = [MinValueValidator(0)],
         default = 0,
     )
 
-    sacrifice_bunt = models.IntegerField(
+    sacrifice_bunt = models.PositiveSmallIntegerField(
         verbose_name = "犠打",
         validators = [MinValueValidator(0)],
         default = 0,
     )
 
-    sacrifice_fly = models.IntegerField(
+    sacrifice_fly = models.PositiveSmallIntegerField(
         verbose_name = "犠飛",
         validators = [MinValueValidator(0)],
         default = 0,

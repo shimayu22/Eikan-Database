@@ -4,7 +4,6 @@ from django.core.validators import MinValueValidator,MaxValueValidator
 # Create your models here.
 class Players(models.Model):
 
-    # TODO: ポジションを作成する
     POSITION_CHOICES = (
         (0,'選択'),
         (1,'投'),

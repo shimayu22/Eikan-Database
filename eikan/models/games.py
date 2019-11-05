@@ -95,7 +95,7 @@ class Games(models.Model):
 
     updated_at = models.DateTimeField(
         verbose_name = "更新日",
-        auto_now_add = True,
+        auto_now = True,
     )
 
     def __str__(self):

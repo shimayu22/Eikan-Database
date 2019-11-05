@@ -1,5 +1,4 @@
 from django.db import models
-from django.core.validators import MinValueValidator,MaxValueValidator
 
 from eikan.models.teams import Teams
 
@@ -7,7 +6,7 @@ from eikan.models.teams import Teams
 class Games(models.Model):
 
     COMPETITON_CHOICES = (
-        (0,'選択'),
+        ('','選択'),
         (1,'練習試合'),
         (2,'県大会'),
         (3,'地区大会'),
@@ -16,7 +15,7 @@ class Games(models.Model):
     )
 
     ROUND_CHOICES = (
-        (0,'選択'),
+        ('','選択'),
         (1,'練習試合'),
         (2,'1回戦'),
         (3,'2回戦'),
@@ -28,14 +27,14 @@ class Games(models.Model):
     )
 
     RESULT_CHOICES = (
-        (0, "選択"),
+        ('', "選択"),
         (1, "勝"),
         (2, "負"),
         (3, "分"),
     )
 
     LANK_CHOICES = (
-        (0,'選択'),
+        ('','選択'),
         (1,'弱小'),
         (2,'そこそこ'),
         (3,'中堅'),
@@ -51,40 +50,34 @@ class Games(models.Model):
     competition_type = models.PositiveSmallIntegerField(
         verbose_name = "大会",
         choices = COMPETITON_CHOICES,
-        validators = [MinValueValidator(1)],
         default = 0,
     )
 
     competiton_round = models.PositiveSmallIntegerField(
         verbose_name = "回戦",
         choices = ROUND_CHOICES,
-        validators = [MinValueValidator(1)],
         default = 0
     )
 
     result = models.PositiveSmallIntegerField(
         verbose_name = "勝敗",
         choices = RESULT_CHOICES,
-        validators = [MinValueValidator(1)],
         default = 0,
     )
 
     score = models.PositiveSmallIntegerField(
         verbose_name = "得点",
-        validators = [MinValueValidator(0)],
         default = 0,
     )
 
     run = models.PositiveSmallIntegerField(
         verbose_name = "失点",
-        validators = [MinValueValidator(0)],
         default = 0,
     )
 
     lank = models.PositiveSmallIntegerField(
         verbose_name = "ランク",
         choices = LANK_CHOICES,
-        validators = [MinValueValidator(1)],
         default = 0,
     )
 

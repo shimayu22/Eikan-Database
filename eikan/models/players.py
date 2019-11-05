@@ -5,7 +5,7 @@ from django.core.validators import MinValueValidator,MaxValueValidator
 class Players(models.Model):
 
     POSITION_CHOICES = (
-        (0,'選択'),
+        ('','選択'),
         (1,'投'),
         (2,'捕'),
         (3,'一'),
@@ -32,7 +32,6 @@ class Players(models.Model):
         verbose_name = "メインポジション",
         choices = POSITION_CHOICES,
         default = 0,
-        validators = [MinValueValidator(1)],
     )
 
     remark = models.CharField(

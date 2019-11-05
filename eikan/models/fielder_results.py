@@ -18,91 +18,76 @@ class Fielder_results(models.Model):
 
     at_bat = models.PositiveSmallIntegerField(
         verbose_name = "打数",
-        validators = [MinValueValidator(0)],
         default = 0,
     )
 
     run = models.PositiveSmallIntegerField(
         verbose_name = "得点",
-        validators = [MinValueValidator(0)],
         default = 0,
     )
 
     hit = models.PositiveSmallIntegerField(
         verbose_name = "安打",
-        validators = [MinValueValidator(0)],
         default = 0,
     )
 
     two_base = models.PositiveSmallIntegerField(
         verbose_name = "二塁打",
-        validators = [MinValueValidator(0)],
         default = 0,
     )
 
     three_base = models.PositiveSmallIntegerField(
         verbose_name = "三塁打",
-        validators = [MinValueValidator(0)],
         default = 0,
     )
 
     home_run = models.PositiveSmallIntegerField(
         verbose_name = "本塁打",
-        validators = [MinValueValidator(0)],
         default = 0,
     )
 
     run_batted_in = models.PositiveSmallIntegerField(
         verbose_name = "打点",
-        validators = [MinValueValidator(0)],
         default = 0,
     )
 
     strike_out = models.PositiveSmallIntegerField(
         verbose_name = "三振",
-        validators = [MinValueValidator(0)],
         default = 0,
     )
 
     bases_on_balls = models.PositiveSmallIntegerField(
         verbose_name = "四球",
-        validators = [MinValueValidator(0)],
         default = 0,
     )
 
     hit_by_pitch = models.PositiveSmallIntegerField(
         verbose_name = "死球",
-        validators = [MinValueValidator(0)],
         default = 0,
     )
 
     sacrifice_bunt = models.PositiveSmallIntegerField(
         verbose_name = "犠打",
-        validators = [MinValueValidator(0)],
         default = 0,
     )
 
     sacrifice_fly = models.PositiveSmallIntegerField(
         verbose_name = "犠飛",
-        validators = [MinValueValidator(0)],
         default = 0,
     )
 
     stolen_base = models.PositiveSmallIntegerField(
         verbose_name = "盗塁",
-        validators = [MinValueValidator(0)],
         default = 0,
     )
 
     grounded_into_double_play = models.PositiveSmallIntegerField(
         verbose_name = "併殺",
-        validators = [MinValueValidator(0)],
         default = 0,
     )
 
     error = models.PositiveSmallIntegerField(
         verbose_name = "失策",
-        validators = [MinValueValidator(0)],
         default = 0,
     )
 
@@ -117,4 +102,5 @@ class Fielder_results(models.Model):
     )
 
     class Meta:
+        verbose_name = "打者一覧"
         verbose_name_plural = "打者成績"

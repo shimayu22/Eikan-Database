@@ -5,13 +5,13 @@ from django.core.validators import MinValueValidator,MaxValueValidator
 class Teams(models.Model):
 
     PERIOD_CHOICES = (
-        (0, "選択"),
+        ('', "選択"),
         (1, "夏"),
         (2, "秋"),
     )
 
     PREFECTURE_CHOICES = (
-        (0,'選択'),
+        ('','選択'),
         (1,'北北海道'),
         (2,'南北海道'),
         (3,'青森'),
@@ -80,21 +80,18 @@ class Teams(models.Model):
     period = models.PositiveSmallIntegerField(
         verbose_name = "期間",
         choices = PERIOD_CHOICES,
-        validators = [MinValueValidator(1)],
         default = 0,
     )
 
     prefecture = models.PositiveSmallIntegerField(
         verbose_name = "都道府県",
         choices = PREFECTURE_CHOICES,
-        validators = [MinValueValidator(1)],
         default = 0,
     )
 
     training_policy = models.PositiveSmallIntegerField(
         verbose_name = "育成方針",
         choices = POLICY_CHOICES,
-        validators = [MinValueValidator(1)],
         default = 0,
     )
 

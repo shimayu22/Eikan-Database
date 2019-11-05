@@ -36,73 +36,61 @@ class Pitcher_results(models.Model):
 
     total_batters_faced = models.PositiveSmallIntegerField(
         verbose_name = "対戦打者",
-        validators = [MinValueValidator(0)],
         default = 0,
     )
 
     number_of_pitch = models.PositiveSmallIntegerField(
         verbose_name = "投球数",
-        validators = [MinValueValidator(0)],
         default = 0,
     )
 
     hit = models.PositiveSmallIntegerField(
         verbose_name = "被安打",
-        validators = [MinValueValidator(0)],
         default = 0,
     )
 
     strike_out = models.PositiveSmallIntegerField(
         verbose_name = "三振",
-        validators = [MinValueValidator(0)],
         default = 0,
     )
 
     bases_on_balls = models.PositiveSmallIntegerField(
         verbose_name = "四球",
-        validators = [MinValueValidator(0)],
         default = 0,
     )
 
     hit_by_pitch = models.PositiveSmallIntegerField(
         verbose_name = "死球",
-        validators = [MinValueValidator(0)],
         default = 0,
     )
 
     run = models.PositiveSmallIntegerField(
         verbose_name = "失点",
-        validators = [MinValueValidator(0)],
         default = 0,
     )
 
     earned_run = models.PositiveSmallIntegerField(
         verbose_name = "自責点",
-        validators = [MinValueValidator(0)],
         default = 0,
     )
 
     wild_pitch = models.PositiveSmallIntegerField(
         verbose_name = "暴投",
-        validators = [MinValueValidator(0)],
         default = 0,
     )
 
     home_run = models.PositiveSmallIntegerField(
         verbose_name = "本塁打",
-        validators = [MinValueValidator(0)],
         default = 0,
     )
 
     sacrifice_bunt = models.PositiveSmallIntegerField(
         verbose_name = "犠打",
-        validators = [MinValueValidator(0)],
         default = 0,
     )
 
     sacrifice_fly = models.PositiveSmallIntegerField(
         verbose_name = "犠飛",
-        validators = [MinValueValidator(0)],
         default = 0,
     )
 

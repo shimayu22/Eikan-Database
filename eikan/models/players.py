@@ -53,7 +53,7 @@ class Players(models.Model):
     )
 
     def __str__(self):
-        return str(self.admission_year) + ":" + self.name + "(" + self.POSITION_CHOICES[self.position][1] + ")"
+        return f'{self.admission_year}:{self.name}({self.POSITION_CHOICES[self.position][1]})'
 
     class Meta:
         verbose_name = "選手情報"

@@ -123,7 +123,7 @@ class Teams(models.Model):
     )
 
     def __str__(self):
-        return str(self.year) + " : " + self.PERIOD_CHOICES[self.period][1] + " : " + self.PREFECTURE_CHOICES[self.prefecture][1]
+        return f'{self.year}:{self.PERIOD_CHOICES[self.period][1]}:{self.PREFECTURE_CHOICES[self.prefecture][1]}'
     
     class Meta:
         verbose_name = "チーム情報"

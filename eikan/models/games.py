@@ -99,7 +99,7 @@ class Games(models.Model):
     )
 
     def __str__(self):
-        return str(self.team_id)
+        return f'{self.team_id}'
     
 
     class Meta:

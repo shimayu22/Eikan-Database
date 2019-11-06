@@ -14,8 +14,9 @@ class Pitcher_results(models.Model):
         Players,
         on_delete=models.CASCADE,
         verbose_name = "選手",
+        # 投手のみ表示する
+        limit_choices_to={"position": 1},
         # TODO: 試合がある年度に在籍している選手だけ表示したい
-        # TODO: 投手だけ表示したい
     )
 
     games_started = models.BooleanField(

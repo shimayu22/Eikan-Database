@@ -44,7 +44,8 @@ class Games(models.Model):
 
     team_id = models.ForeignKey(
         Teams,
-        on_delete=models.CASCADE
+        on_delete = models.CASCADE,
+        default = lambda: Teams.objects.latest('pk').id,
     )
 
     competition_type = models.PositiveSmallIntegerField(

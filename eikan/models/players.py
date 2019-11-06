@@ -18,9 +18,8 @@ class Players(models.Model):
     admission_year = models.PositiveSmallIntegerField(
         verbose_name = "入学年度",
         validators = [MinValueValidator(1939)],
-        # TODO: 一つ前のレコードの年度をdefaultにしたい
-        # 「choiceオプションはcallableであり、
-        # タプルを返す関数を指定すれば動的なリストを作ることができる
+        default = lambda: Players.objects.latest('pk').admission_year \
+                          if Players.objects.all() else 1939,
     )
 
     name = models.CharField(

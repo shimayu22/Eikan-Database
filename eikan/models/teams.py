@@ -74,13 +74,16 @@ class Teams(models.Model):
     year = models.PositiveSmallIntegerField(
         verbose_name = "年度",
         validators = [MinValueValidator(1941)],
-        # TODO: 一つ前のレコードの年度をdefaultにしたい
+        default = lambda: Teams.objects.latest('pk').year \
+                          if Teams.objects.all() else 1941,
     )
 
     period = models.PositiveSmallIntegerField(
         verbose_name = "期間",
         choices = PERIOD_CHOICES,
-        default = 0,
+        default = lambda: 1 if Teams.objects.all() and \
+                               Teams.objects.latest('pk').period == 2 \
+                            else 2,
     )
 
     prefecture = models.PositiveSmallIntegerField(

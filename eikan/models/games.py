@@ -46,6 +46,7 @@ class Games(models.Model):
         Teams,
         on_delete = models.CASCADE,
         default = lambda: Teams.objects.latest('pk').id,
+        verbose_name = "チーム"
     )
 
     competition_type = models.PositiveSmallIntegerField(

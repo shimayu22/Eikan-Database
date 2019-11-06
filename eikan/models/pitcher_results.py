@@ -13,6 +13,7 @@ class Pitcher_results(models.Model):
     player_id = models.ForeignKey(
         Players,
         on_delete=models.CASCADE,
+        verbose_name = "選手",
         # TODO: 試合がある年度に在籍している選手だけ表示したい
         # TODO: 投手だけ表示したい
     )

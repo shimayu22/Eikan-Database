@@ -1,10 +1,10 @@
 from django.db import models
-from django.core.validators import MinValueValidator,MaxValueValidator
 
-from eikan.models import Games,Players
+from eikan.models import Games,Players,Teams
 
 # Create your models here.
 class Fielder_results(models.Model):
+
     game_id = models.ForeignKey(
         Games,
         on_delete=models.CASCADE,
@@ -14,7 +14,8 @@ class Fielder_results(models.Model):
         Players,
         on_delete=models.CASCADE,
         verbose_name = "選手",
-        # TODO: 試合がある年度に在籍している選手だけ表示したい
+        # TODO:仮置き
+        limit_choices_to = {"admission_year__gte": 2019},
     )
 
     at_bat = models.PositiveSmallIntegerField(

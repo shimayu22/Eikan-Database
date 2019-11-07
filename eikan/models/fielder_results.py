@@ -10,12 +10,17 @@ class Fielder_results(models.Model):
         on_delete=models.CASCADE,
     )
 
+    # TODO:仮置き
+    # TODO:取得できない場合の処理を追加する
+    this_year = int(str(Games.objects.latest('pk').team_id)[:4])
+
     player_id = models.ForeignKey(
         Players,
         on_delete=models.CASCADE,
         verbose_name = "選手",
         # TODO:仮置き
-        limit_choices_to = {"admission_year__gte": 2019},
+        limit_choices_to = {"admission_year__range": \
+                            (this_year - 2, this_year)},
     )
 
     at_bat = models.PositiveSmallIntegerField(
@@ -102,6 +107,9 @@ class Fielder_results(models.Model):
         verbose_name = "更新日",
         auto_now = True,
     )
+
+    def __str__(self):
+        return f'{self.game_id}:{self.player_id}'
 
     class Meta:
         verbose_name = "打者一覧"

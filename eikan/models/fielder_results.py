@@ -10,9 +10,12 @@ class Fielder_results(models.Model):
         on_delete=models.CASCADE,
     )
 
-    # TODO:仮置き
-    # TODO:取得できない場合の処理を追加する
-    this_year = int(str(Games.objects.latest('pk').team_id)[:4])
+    # 選択できる選手を絞るための年数を設定する
+    finish_year = int(str(Games.objects.latest('pk').team_id)[:4]) + 1 \
+                if Games.objects.all() else 3000
+    
+    start_year = 0 if finish_year == 3000 \
+                 else finish_year - 2
 
     player_id = models.ForeignKey(
         Players,
@@ -20,7 +23,7 @@ class Fielder_results(models.Model):
         verbose_name = "選手",
         # TODO:仮置き
         limit_choices_to = {"admission_year__range": \
-                            (this_year - 2, this_year)},
+                            (start_year, finish_year)},
     )
 
     at_bat = models.PositiveSmallIntegerField(

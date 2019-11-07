@@ -22,7 +22,6 @@ class Pitcher_results(models.Model):
         Players,
         on_delete=models.CASCADE,
         verbose_name = "選手",
-        # TODO: 仮置き
         limit_choices_to = {"admission_year__range": \
                             (start_year, finish_year), \
                             "position": 1   },

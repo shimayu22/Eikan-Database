@@ -81,7 +81,7 @@ class Teams(models.Model):
     period = models.PositiveSmallIntegerField(
         verbose_name = "期間",
         choices = PERIOD_CHOICES,
-        default = lambda: 1 if Teams.objects.all() and \
+        default = lambda: 1 if not Teams.objects.all() or \
                                Teams.objects.latest('pk').period == 2 \
                             else 2,
     )

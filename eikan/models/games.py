@@ -2,6 +2,9 @@ from django.db import models
 
 from eikan.models.teams import Teams
 
+def default_team_id():
+    return Teams.objects.latest('pk').id if Teams.objects.all() else 0
+
 # Create your models here.
 class Games(models.Model):
 
@@ -41,8 +44,6 @@ class Games(models.Model):
         (4,'強豪'),
         (5,'名門'),
     )
-
-    default_team_id = Teams.objects.latest('pk').id if Teams.objects.all() else 0
 
     team_id = models.ForeignKey(
         Teams,

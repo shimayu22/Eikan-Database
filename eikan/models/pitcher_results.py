@@ -3,6 +3,14 @@ from django.core.validators import MinValueValidator,MaxValueValidator
 
 from eikan.models import Games,Players,Teams
 
+# TODO:追加(add)と変更(change)の場合で条件を変える
+def finish_year():
+    return int(str(Games.objects.latest('pk').team_id)[:4]) + 1 if Games.objects.all() else 30000
+
+# TODO:夏は3年生まで表示する、秋は2年生まで表示する
+def start_year():
+    return 0 if finish_year == 30000 else finish_year - 2
+
 # Create your models here.
 class Pitcher_results(models.Model):
 
@@ -10,17 +18,6 @@ class Pitcher_results(models.Model):
         Games,
         on_delete=models.CASCADE,
     )
-
-    # 選択できる選手を絞るための年数を設定する
-    # TODO:追加(add)と変更(change)の場合で条件を変える
-    #      add:最新のチームの年度
-    #      change:今登録しているチームの年度
-    finish_year = int(str(Games.objects.latest('pk').team_id)[:4]) + 1 \
-                if Games.objects.all() else 3000
-    
-    # TODO:夏は3年生まで表示する、秋は2年生まで表示する
-    start_year = 0 if finish_year == 3000 \
-                 else finish_year - 2
 
     player_id = models.ForeignKey(
         Players,

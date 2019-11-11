@@ -1,10 +1,12 @@
 from django.db import models
 from django.core.validators import MinValueValidator,MaxValueValidator
 
+from eikan.models import Teams
+
 # Create your models here.
 def default_admission_year():
-    return Players.objects.latest('pk').admission_year \
-           if Players.objects.all() else 1939
+    return Teams.objects.latest('pk').year \
+           if Teams.objects.all() else 1939
 
 class Players(models.Model):
 

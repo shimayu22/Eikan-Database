@@ -5,11 +5,20 @@ from eikan.models import Games,Players,Teams
 
 # TODO:追加(add)と変更(change)の場合で条件を変える
 def finish_year():
-    return int(str(Games.objects.latest('pk').team_id)[:4]) + 1 if Games.objects.all() else 30000
+    if Teams.objects.all():
+        return Teams.objects.latest('pk').year + 1
+    else:
+        return 9999
 
 # TODO:夏は3年生まで表示する、秋は2年生まで表示する
 def start_year():
-    return 0 if finish_year == 30000 else finish_year - 2
+    if Teams.objects.all():
+        if Teams.objects.latest('pk').period == 1:
+            return Teams.objects.latest('pk').year - 2
+        else:
+            return Teams.objects.latest('pk').year - 1
+    else:
+        return 1939
 
 # Create your models here.
 class Pitcher_results(models.Model):
@@ -23,9 +32,8 @@ class Pitcher_results(models.Model):
         Players,
         on_delete=models.CASCADE,
         verbose_name="選手",
-        limit_choices_to={"admission_year__range": \
-                           (start_year, finish_year), \
-                           "position": 1},
+        limit_choices_to={"admission_year__range":(start_year(), finish_year()), \
+                          "position": 1},
     )
 
     games_started = models.BooleanField(

@@ -6,6 +6,8 @@ from django.forms import NumberInput
 from .models import Teams, Players, Games, \
                     Fielder_results, Pitcher_results
 
+admin.site.site_header = '栄冠ナインデータベース 管理画面'
+
 class Fielder_resultsInline(admin.TabularInline):
     model = Fielder_results
     verbose_name = "野手"

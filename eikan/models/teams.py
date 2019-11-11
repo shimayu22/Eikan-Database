@@ -2,6 +2,15 @@ from django.db import models
 from django.core.validators import MinValueValidator,MaxValueValidator
 
 # Create your models here.
+def default_year():
+    return Teams.objects.latest('pk').year \
+           if Teams.objects.all() else 1941
+
+def default_period():
+    return 1 if not Teams.objects.all()\
+                or Teams.objects.latest('pk').period == 2 \
+             else 2
+
 class Teams(models.Model):
 
     PERIOD_CHOICES = (
@@ -72,54 +81,51 @@ class Teams(models.Model):
     )
 
     year = models.PositiveSmallIntegerField(
-        verbose_name = "年度",
-        validators = [MinValueValidator(1941)],
-        #default = lambda: Teams.objects.latest('pk').year \
-        #                  if Teams.objects.all() else 1941,
+        verbose_name="年度",
+        validators=[MinValueValidator(1941)],
+        default=default_year,
     )
 
     period = models.PositiveSmallIntegerField(
-        verbose_name = "期間",
-        choices = PERIOD_CHOICES,
-        #default = lambda: 1 if not Teams.objects.all() or \
-        #                       Teams.objects.latest('pk').period == 2 \
-        #                    else 2,
+        verbose_name="期間",
+        choices=PERIOD_CHOICES,
+        default=default_period,
     )
 
     prefecture = models.PositiveSmallIntegerField(
-        verbose_name = "都道府県",
-        choices = PREFECTURE_CHOICES,
-        default = 0,
+        verbose_name="都道府県",
+        choices=PREFECTURE_CHOICES,
+        default=0,
     )
 
     training_policy = models.PositiveSmallIntegerField(
-        verbose_name = "育成方針",
-        choices = POLICY_CHOICES,
-        default = 0,
+        verbose_name="育成方針",
+        choices=POLICY_CHOICES,
+        default=0,
     )
 
     draft_nomination = models.PositiveSmallIntegerField(
-        verbose_name = "指名人数",
-        validators = [MinValueValidator(0),
-                      MaxValueValidator(5)],
-        default = 0,
+        verbose_name="指名人数",
+        validators=[MinValueValidator(0),
+                    MaxValueValidator(5)],
+        default=0,
     )
 
     remark = models.CharField(
-        verbose_name = "備考",
-        max_length = 100,
-        blank = True,
-        null = True,
+        verbose_name="備考",
+        max_length=100,
+        blank=True,
+        null=True,
     )
 
     created_at = models.DateTimeField(
-        verbose_name = "登録日",
-        auto_now_add = True,
+        verbose_name="登録日",
+        auto_now_add=True,
     )
 
     updated_at = models.DateTimeField(
-        verbose_name = "更新日",
-        auto_now = True,
+        verbose_name="更新日",
+        auto_now=True,
     )
 
     def __str__(self):

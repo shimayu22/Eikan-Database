@@ -2,6 +2,10 @@ from django.db import models
 from django.core.validators import MinValueValidator,MaxValueValidator
 
 # Create your models here.
+def default_admission_year():
+    return Players.objects.latest('pk').admission_year \
+           if Players.objects.all() else 1939
+
 class Players(models.Model):
 
     POSITION_CHOICES = (
@@ -18,11 +22,8 @@ class Players(models.Model):
     admission_year = models.PositiveSmallIntegerField(
         verbose_name="入学年度",
         validators=[MinValueValidator(1939)],
-        default = 1939,
+        default=default_admission_year,
     )
-
-    #def get_default_admission_year(self):
-    #    return self.objects.latest('pk').admission_year if self.objects.all() else 1939
 
     name = models.CharField(
         verbose_name="名前",

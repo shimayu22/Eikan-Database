@@ -16,38 +16,55 @@ class Players(models.Model):
     )
 
     admission_year = models.PositiveSmallIntegerField(
-        verbose_name = "入学年度",
-        validators = [MinValueValidator(1939)],
-        default = lambda: Players.objects.latest('pk').admission_year \
-                          if Players.objects.all() else 1939,
+        verbose_name="入学年度",
+        validators=[MinValueValidator(1939)],
+        default = 1939,
     )
 
+    #def get_default_admission_year(self):
+    #    return self.objects.latest('pk').admission_year if self.objects.all() else 1939
+
     name = models.CharField(
-        verbose_name = "名前",
-        max_length = 6,
+        verbose_name="名前",
+        max_length=6,
     )
 
     position = models.PositiveSmallIntegerField(
-        verbose_name = "メインポジション",
-        choices = POSITION_CHOICES,
-        default = 0,
+        verbose_name="メインポジション",
+        choices=POSITION_CHOICES,
+        default=0,
+    )
+
+    is_ob = models.BooleanField(
+        verbose_name="OB",
+        default=False,
+    )
+
+    is_active_duty = models.BooleanField(
+        verbose_name="現役",
+        default=False,
+    )
+
+    is_genius = models.BooleanField(
+        verbose_name="天才",
+        default=False,
     )
 
     remark = models.CharField(
-        verbose_name = "備考",
-        max_length = 100,
-        blank = True,
-        null = True,
+        verbose_name="備考",
+        max_length=100,
+        blank=True,
+        null=True,
     )
 
     created_at = models.DateTimeField(
-        verbose_name = "登録日",
-        auto_now_add = True,
+        verbose_name="登録日",
+        auto_now_add=True,
     )
 
     updated_at = models.DateTimeField(
-        verbose_name = "更新日",
-        auto_now = True,
+        verbose_name="更新日",
+        auto_now=True,
     )
 
     def __str__(self):

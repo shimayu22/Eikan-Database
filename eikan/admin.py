@@ -29,7 +29,8 @@ class TeamsAdmin(admin.ModelAdmin):
                     'training_policy', 'draft_nomination', 'remark')
 
 class PlayersAdmin(admin.ModelAdmin):
-    list_display = ('admission_year', 'name' , 'position' , 'remark')
+    list_display = ('admission_year', 'name' , 'position' , 'is_ob', \
+                    'is_active', 'is_genius', 'remark')
 
 class GamesAdmin(admin.ModelAdmin):
     list_display = ('team_id', 'competition_type', 'competiton_round', \

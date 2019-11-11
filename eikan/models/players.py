@@ -41,7 +41,7 @@ class Players(models.Model):
         default=False,
     )
 
-    is_active_duty = models.BooleanField(
+    is_active = models.BooleanField(
         verbose_name="現役",
         default=False,
     )

@@ -42,55 +42,57 @@ class Games(models.Model):
         (5,'名門'),
     )
 
+    default_team_id = Teams.objects.latest('pk').id if Teams.objects.all() else 0
+
     team_id = models.ForeignKey(
         Teams,
-        on_delete = models.CASCADE,
-        default = lambda: Teams.objects.latest('pk').id,
-        verbose_name = "チーム"
+        on_delete=models.CASCADE,
+        default=default_team_id,
+        verbose_name="チーム"
     )
 
     competition_type = models.PositiveSmallIntegerField(
-        verbose_name = "大会",
-        choices = COMPETITON_CHOICES,
-        default = 0,
+        verbose_name="大会",
+        choices=COMPETITON_CHOICES,
+        default=0,
     )
 
     competiton_round = models.PositiveSmallIntegerField(
-        verbose_name = "回戦",
-        choices = ROUND_CHOICES,
-        default = 0
+        verbose_name="回戦",
+        choices=ROUND_CHOICES,
+        default=0
     )
 
     result = models.PositiveSmallIntegerField(
-        verbose_name = "勝敗",
-        choices = RESULT_CHOICES,
-        default = 0,
+        verbose_name="勝敗",
+        choices=RESULT_CHOICES,
+        default=0,
     )
 
     score = models.PositiveSmallIntegerField(
-        verbose_name = "得点",
-        default = 0,
+        verbose_name="得点",
+        default=0,
     )
 
     run = models.PositiveSmallIntegerField(
-        verbose_name = "失点",
-        default = 0,
+        verbose_name="失点",
+        default=0,
     )
 
     lank = models.PositiveSmallIntegerField(
-        verbose_name = "ランク",
-        choices = LANK_CHOICES,
-        default = 0,
+        verbose_name="ランク",
+        choices=LANK_CHOICES,
+        default=0,
     )
 
     created_at = models.DateTimeField(
-        verbose_name = "登録日",
-        auto_now_add = True,
+        verbose_name="登録日",
+        auto_now_add=True,
     )
 
     updated_at = models.DateTimeField(
-        verbose_name = "更新日",
-        auto_now = True,
+        verbose_name="更新日",
+        auto_now=True,
     )
 
     def __str__(self):

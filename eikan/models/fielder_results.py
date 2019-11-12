@@ -5,7 +5,7 @@ from eikan.models import Games,Players,Teams
 # player_idで選択できる範囲の設定
 def finish_year():
     if Teams.objects.all():
-        return Teams.objects.latest('pk').year + 1
+        return Teams.objects.latest('pk').year
     else:
         return 9999
 
@@ -31,8 +31,8 @@ class Fielder_results(models.Model):
         Players,
         on_delete=models.CASCADE,
         verbose_name="選手",
-        limit_choices_to={"admission_year__range": \
-                          (start_year(), finish_year())},
+        limit_choices_to={"admission_year__gte": start_year(), \
+                          "admission_year__lte": finish_year()},
     )
 
     at_bat = models.PositiveSmallIntegerField(

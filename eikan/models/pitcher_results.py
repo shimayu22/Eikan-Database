@@ -3,14 +3,13 @@ from django.core.validators import MinValueValidator,MaxValueValidator
 
 from eikan.models import Games,Players,Teams
 
-# TODO:追加(add)と変更(change)の場合で条件を変える
+# player_idで選択できる範囲の設定
 def finish_year():
     if Teams.objects.all():
         return Teams.objects.latest('pk').year + 1
     else:
         return 9999
 
-# TODO:夏は3年生まで表示する、秋は2年生まで表示する
 def start_year():
     if Teams.objects.all():
         if Teams.objects.latest('pk').period == 1:

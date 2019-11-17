@@ -38,6 +38,11 @@ class Players(models.Model):
         default=0,
     )
 
+    is_pitched = models.BooleanField(
+        verbose_name="野手登板",
+        default=False,
+    )
+
     is_ob = models.BooleanField(
         verbose_name="OB",
         default=False,
@@ -60,6 +65,12 @@ class Players(models.Model):
         null=True,
     )
 
+    is_pitcher = models.BooleanField(
+        verbose_name="投手",
+        default=False,
+        editable=False,
+    )
+
     created_at = models.DateTimeField(
         verbose_name="登録日",
         auto_now_add=True,
@@ -69,6 +80,11 @@ class Players(models.Model):
         verbose_name="更新日",
         auto_now=True,
     )
+
+    def save(self, *args, **kwargs):
+        if self.position == 1 or self.is_pitched:
+            self.is_pitcher = True
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f'{self.admission_year}:{self.name}({self.POSITION_CHOICES[self.position][1]})'

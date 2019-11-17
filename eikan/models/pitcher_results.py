@@ -33,7 +33,7 @@ class Pitcher_results(models.Model):
         verbose_name="選手",
         limit_choices_to={"admission_year__gte": start_year(), \
                           "admission_year__lte": finish_year(), \
-                          "position": 1},
+                          "is_pitcher": True},
     )
 
     games_started = models.BooleanField(

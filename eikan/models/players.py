@@ -84,6 +84,8 @@ class Players(models.Model):
     def save(self, *args, **kwargs):
         if self.position == 1 or self.is_pitched:
             self.is_pitcher = True
+        elif self.position > 1 and not self.is_pitched:
+            self.is_pitcher = False
         super().save(*args, **kwargs)
 
     def __str__(self):

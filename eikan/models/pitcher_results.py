@@ -1,7 +1,8 @@
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.core.validators import MinValueValidator,MaxValueValidator
 
-from eikan.models import Games,Players,Teams
+from eikan.models import Games, Players, Teams
+
 
 # player_idで選択できる範囲の設定
 def finish_year():

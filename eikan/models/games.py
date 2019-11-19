@@ -2,6 +2,7 @@ from django.db import models
 
 from eikan.models.teams import Teams
 
+
 def default_team_id():
     return Teams.objects.latest('pk').id if Teams.objects.all() else 0
 

@@ -1,6 +1,6 @@
 from django.db import models
 
-from eikan.models import Games,Players,Teams
+from eikan.models import Games, Players, Teams
 
 # player_idで選択できる範囲の設定
 

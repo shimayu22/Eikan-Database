@@ -14,7 +14,7 @@ class Fielder_resultsInline(admin.TabularInline):
     extra = 9
     formfield_overrides = {
         models.PositiveSmallIntegerField: \
-            {'widget': NumberInput(attrs={'style':'width: 2.5em;'})}
+            {'widget': NumberInput(attrs={'style':'width: 2em;'})}
     }
 
 class Pitcher_resultsInline(admin.TabularInline):
@@ -23,7 +23,7 @@ class Pitcher_resultsInline(admin.TabularInline):
     extra = 1
     formfield_overrides = {
         models.PositiveSmallIntegerField: \
-            {'widget': NumberInput(attrs={'style':'width: 2.5em;'})}
+            {'widget': NumberInput(attrs={'style':'width: 3em;'})}
     }
 
 class TeamsAdmin(admin.ModelAdmin):

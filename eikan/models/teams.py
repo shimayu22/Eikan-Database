@@ -128,6 +128,88 @@ class Teams(models.Model):
         auto_now=True,
     )
 
+    # 以下編集不可
+
+    total_win = models.PositiveSmallIntegerField(
+        verbose_name="勝",
+        default=0,
+        editable=False,
+    )
+
+    total_lose = models.PositiveSmallIntegerField(
+        verbose_name="負",
+        default=0,
+        editable=False,
+    )
+
+    total_draw = models.PositiveSmallIntegerField(
+        verbose_name="分",
+        default=0,
+        editable=False,
+    )
+
+    score = models.PositiveSmallIntegerField(
+        verbose_name="得点",
+        default=0,
+        editable=False,
+    )
+
+    run = models.PositiveSmallIntegerField(
+        verbose_name="失点",
+        default=0,
+        editable=False,
+    )
+
+    score_difference = models.IntegerField(
+        verbose_name="得失点差",
+        default=0,
+        editable=False,
+    )
+
+    lank = models.PositiveSmallIntegerField(
+        verbose_name="ランク",
+        default=0,
+        editable=False,
+    )
+
+    batting_average = models.DecimalField(
+        verbose_name="打率",
+        max_digits=4,
+        decimal_places=3,
+        default=0.000,
+        editable=False,
+    )
+
+    ops = models.DecimalField(
+        verbose_name="OPS",
+        max_digits=4,
+        decimal_places=3,
+        default=0.000,
+        editable=False,
+    )
+
+    hr = models.PositiveSmallIntegerField(
+        verbose_name="HR",
+        default=0,
+        editable=False,
+    )
+
+    era = models.DecimalField(
+        verbose_name="防御率",
+        max_digits=5,
+        decimal_places=2,
+        default=0.00,
+        editable=False,
+    )
+
+    der = models.DecimalField(
+        verbose_name="DER",
+        max_digits=4,
+        decimal_places=3,
+        default=0.000,
+        editable=False,
+    )
+
     def __str__(self):
         return f'{self.year}:{self.PERIOD_CHOICES[self.period][1]}:{self.PREFECTURE_CHOICES[self.prefecture][1]}'
     

@@ -3,7 +3,7 @@ from . import views
 
 urlpatterns = [
     # /eikan/
-    path('', views.index, name='index'),
+    path('', views.IndexView.as_view(), name='index'),
     # チーム一覧 /eikan/team/
     path('team', views.TeamView.as_view(), name='teams'),
     # チーム詳細 /eikan/team/id/

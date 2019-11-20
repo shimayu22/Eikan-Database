@@ -1,10 +1,6 @@
 from django.db import models
-
-from eikan.models.teams import Teams
-
-
-def default_team_id():
-    return Teams.objects.latest('pk').id if Teams.objects.all() else 0
+from eikan import model_def
+from . import Teams
 
 # Create your models here.
 class Games(models.Model):
@@ -49,8 +45,8 @@ class Games(models.Model):
     team_id = models.ForeignKey(
         Teams,
         on_delete=models.CASCADE,
-        default=default_team_id,
-        verbose_name="チーム"
+        default=model_def.default_team_id,
+        verbose_name="チーム",
     )
 
     competition_type = models.PositiveSmallIntegerField(

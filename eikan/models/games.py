@@ -1,6 +1,5 @@
 from django.db import models
-from eikan import model_def
-from . import Teams
+from eikan.models import Teams
 
 # Create your models here.
 class Games(models.Model):
@@ -45,7 +44,8 @@ class Games(models.Model):
     team_id = models.ForeignKey(
         Teams,
         on_delete=models.CASCADE,
-        default=model_def.default_team_id,
+        default=Teams.objects.latest('pk').id \
+                 if Teams.objects.count() > 0 else 0,
         verbose_name="チーム",
     )
 

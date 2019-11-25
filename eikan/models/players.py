@@ -1,12 +1,6 @@
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from eikan import model_def
-
-
-# Create your models here.
-#def default_admission_year():
-#    return Teams.objects.latest('pk').year \
-#           if Teams.objects.all() else 1939
+from eikan.models import Teams
 
 class Players(models.Model):
 
@@ -24,7 +18,8 @@ class Players(models.Model):
     admission_year = models.PositiveSmallIntegerField(
         verbose_name="入学年度",
         validators=[MinValueValidator(1939)],
-        default=model_def.default_admission_year,
+        default=Teams.objects.latest('pk').year \
+                 if Teams.objects.count() > 0 else 1939,
     )
 
     name = models.CharField(

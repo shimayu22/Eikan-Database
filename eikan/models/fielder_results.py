@@ -1,7 +1,19 @@
 from django.db import models
-from eikan import model_def
-from eikan.models import Games, Players
+from eikan.models import Games, Players, Teams
 
+def set_select_players():
+    teams = Teams.objects.latest('pk')
+    count = Teams.objects.count()
+    condition_dict = {}
+    
+    if count > 0:
+        condition_dict["admission_year__gte"] = \
+            (teams.year - 2) if teams.period == 1 \
+                             else (teams.year - 1)
+        
+        condition_dict["admission_year__lte"] = teams.year
+    
+    return condition_dict
 
 # Create your models here.
 class Fielder_results(models.Model):
@@ -15,8 +27,7 @@ class Fielder_results(models.Model):
         Players,
         on_delete=models.CASCADE,
         verbose_name="選手",
-        limit_choices_to={"admission_year__gte": model_def.start_year(), \
-                          "admission_year__lte": model_def.finish_year()},
+        limit_choices_to=set_select_players,
     )
 
     at_bat = models.PositiveSmallIntegerField(

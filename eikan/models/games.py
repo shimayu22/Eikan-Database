@@ -2,6 +2,10 @@ from django.db import models
 from eikan.models import Teams
 
 # Create your models here.
+def default_team_id():
+    return Teams.objects.latest('pk').id \
+                 if Teams.objects.count() > 0 else 0
+
 class Games(models.Model):
 
     COMPETITON_CHOICES = (
@@ -44,8 +48,7 @@ class Games(models.Model):
     team_id = models.ForeignKey(
         Teams,
         on_delete=models.CASCADE,
-        default=Teams.objects.latest('pk').id \
-                 if Teams.objects.count() > 0 else 0,
+        default=default_team_id,
         verbose_name="チーム",
     )
 

@@ -8,6 +8,14 @@ from .models import Teams, Players, Games, \
 
 admin.site.site_header = '栄冠ナインデータベース 管理画面'
 
+class TeamsAdmin(admin.ModelAdmin):
+    list_display = ('year', 'period', 'prefecture', \
+                    'training_policy', 'draft_nomination', 'remark')
+
+class PlayersAdmin(admin.ModelAdmin):
+    list_display = ('name', 'admission_year', 'position' , 'is_ob', \
+                    'is_active', 'is_genius', 'remark')
+
 class Fielder_resultsInline(admin.TabularInline):
     model = Fielder_results
     verbose_name = "野手"
@@ -25,15 +33,6 @@ class Pitcher_resultsInline(admin.TabularInline):
         models.PositiveSmallIntegerField: \
             {'widget': NumberInput(attrs={'style':'width: 3em;'})}
     }
-
-class TeamsAdmin(admin.ModelAdmin):
-    list_display = ('year', 'period', 'prefecture', \
-                    'training_policy', 'draft_nomination', 'remark')
-
-class PlayersAdmin(admin.ModelAdmin):
-    list_display = ('name', 'admission_year', 'position' , 'is_ob', \
-                    'is_active', 'is_genius', 'remark')
-
 
 class GamesAdmin(admin.ModelAdmin):
     list_display = ('team_id', 'competition_type', 'competiton_round', \

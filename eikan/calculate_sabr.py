@@ -28,7 +28,7 @@ class CalculateSabr:
 
     def on_base_percentage(self):
         # (安打数 + 四死球) / (打数 + 四死球)
-        # 栄冠ナインの使用上、犠飛を除外
+        # 栄冠ナインの仕様上、犠飛を除外
         obp = (self.total_hit + self.total_bb_hbp) / \
               (self.total_at_bat + self.total_bb_hbp)
         return obp

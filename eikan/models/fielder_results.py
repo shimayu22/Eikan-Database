@@ -70,23 +70,13 @@ class Fielder_results(models.Model):
         default=0,
     )
 
-    bases_on_balls = models.PositiveSmallIntegerField(
-        verbose_name="四球",
-        default=0,
-    )
-
-    hit_by_pitch = models.PositiveSmallIntegerField(
-        verbose_name="死球",
+    bb_hbp = models.PositiveSmallIntegerField(
+        verbose_name="四死球",
         default=0,
     )
 
     sacrifice_bunt = models.PositiveSmallIntegerField(
         verbose_name="犠打",
-        default=0,
-    )
-
-    sacrifice_fly = models.PositiveSmallIntegerField(
-        verbose_name="犠飛",
         default=0,
     )
 

@@ -14,48 +14,56 @@ class CalculateSabr:
         self.total_sacrifice_bunt = self.fielder_results.aggregate(models.Sum('sacrifice_bunt'))
         self.total_strike_out = self.fielder_results.aggregate(models.Sum('strike_out'))
         self.total_stolen_base = self.fielder_results.aggregate(models.Sum('stolen_base'))
+        self.tb = 0
+        self.slg = 0
+        self.obp = 0
+        self.ba = 0
 
     def total_bases(self):
         # 安打 + 二塁打 + 三塁打 * 2 + 本塁打 * 3
         tb = self.total_hit + self.total_two_base + \
                       self.total_three_base * 2 + self.total_home_run * 3
-        return tb
+        self.tb = tb
+        return self.tb
     
-    def slugging_percentage(self, tb):
+    def slugging_percentage(self):
         # 塁打 / 打数
-        slg = tb / self.total_at_bat
-        return slg
+        slg = self.tb / self.total_at_bat
+        self.slg = slg
+        return self.slg
 
     def on_base_percentage(self):
         # (安打数 + 四死球) / (打数 + 四死球)
         # 栄冠ナインの仕様上、犠飛を除外
         obp = (self.total_hit + self.total_bb_hbp) / \
               (self.total_at_bat + self.total_bb_hbp)
-        return obp
+        self.obp = obp
+        return self.obp
 
-    def on_base_plus_slugging(self, slg, obp):
-        ops = slg + obp
+    def on_base_plus_slugging(self):
+        ops = self.slg + self.obp
         return ops
 
-    def gross_production_average(self,slg, obp):
-        gpa = (obp * 1.8 + obp) / 4
+    def gross_production_average(self):
+        gpa = (self.obp * 1.8 + self.obp) / 4
         return gpa
     
     def batting_average(self):
         ba = self.total_hit / self.total_at_bat
-        return ba
+        self.ba = ba
+        return self.ba
     
     def bb_hbp_percentage(self):
         bbhp_per = self.total_bb_hbp / \
                     (self.total_at_bat + self.total_bb_hbp + self.total_sacrifice_bunt)
         return bbhp_per
 
-    def isolated_discipline(self, obp, ba):
-        isod = obp - ba
+    def isolated_discipline(self):
+        isod = self.obp - self.ba
         return isod
 
-    def isolated_power(self, slg, ba):
-        isop = slg - ba
+    def isolated_power(self):
+        isop = self.slg - self.ba
         return isop
 
     def bb_hbp_per_so(self):

@@ -1,7 +1,7 @@
 from django.db import models
 from eikan.models import Teams, Players, Games, Fielder_results, Pitcher_results
 
-class CalculateSabr:
+class CalculateFielderSabr:
     def __init__(self, player_id):
         self.player_id = player_id
         self.fielder_results = Fielder_results.objects.filter(player_id=self.player_id)
@@ -76,4 +76,75 @@ class CalculateSabr:
         return p_s
 
 
+class CalculatePitcherSabr:
+    def __init__(self, player_id):
+        self.player_id = player_id
+        self.pitcher_result = Pitcher_results.objects.filter(player_id=self.player_id)
+        self.total_innings_pitched = self.pitcher_result.innings_pitched.aggregate(models.Sum('innings_pitched'))
+        self.total_innings_pitched_fraction = self.pitcher_result.innings_pitched.aggregate(models.Sum('innings_pitched_fraction'))
+        self.total_batters_faced = self.pitcher_result.innings_pitched.aggregate(models.Sum('total_batters_faced'))
+        self.total_number_of_pitch = self.pitcher_result.innings_pitched.aggregate(models.Sum('number_of_pitch'))
+        self.total_hit = self.pitcher_result.innings_pitched.aggregate(models.Sum('hit'))
+        self.total_strike_out = self.pitcher_result.innings_pitched.aggregate(models.Sum('strike_out'))
+        self.total_bb_hbp = self.pitcher_result.innings_pitched.aggregate(models.Sum('bb_hbp'))
+        self.total_run = self.pitcher_result.innings_pitched.aggregate(models.Sum('run'))
+        self.total_earned_run = self.pitcher_result.innings_pitched.aggregate(models.Sum('earned_run'))
+        self.total_wild_pitch = self.pitcher_result.innings_pitched.aggregate(models.Sum('wild_pitch'))
+        self.total_home_run = self.pitcher_result.innings_pitched.aggregate(models.Sum('home_run'))
 
+    def earned_runs_average(self):
+        era = (self.total_earned_run * 9 * 3) / \
+              ((self.total_innings_pitched + self.total_innings_pitched_fraction) * 3 )
+        return era
+
+    def runs_average(self):
+        ra = (self.total_run * 9 * 3) / \
+             ((self.total_innings_pitched + self.total_innings_pitched_fraction) * 3 )
+        return ra
+
+    def walks_plus_hits_per_inning_pitched(self):
+        whip = (self.total_hit + self.total_bb_hbp) / \
+               ((self.total_innings_pitched + self.total_innings_pitched_fraction) * 3 )
+        return whip
+
+    def strike_out_per_bbhp(self):
+        k_per_bbhp = self.total_strike_out / self.total_bb_hbp
+        return k_per_bbhp
+    
+    def strike_out_per_game(self):
+        k_per_game = (self.total_strike_out * 9 * 3) / \
+                     ((self.total_innings_pitched + self.total_innings_pitched_fraction) * 3 )
+        return k_per_game
+    
+    def strike_out_percentage(self):
+        k__percentage = self.total_strike_out / self.total_batters_faced
+        return k_percentage
+    
+    def bbhp_per_game(self):
+        bbhp_per_game = (self.total_bb_hbp * 9 * 3) / \
+                        ((self.total_innings_pitched + self.total_innings_pitched_fraction) * 3 )
+        return bbhp_per_game
+    
+    def bbhp_percentage(self):
+        bbhp_percentage = self.total_bb_hbp / self.total_batters_faced
+        return bbhp_percentage
+    
+    def home_run_per_game(self):
+        hr_per_game = (self.total_home_run * 9 * 3) / \
+                      ((self.total_innings_pitched + self.total_innings_pitched_fraction) * 3 )
+        return hr_per_game
+    
+    def home_run_percentage(self):
+        hr_percentage = self.total_home_run / self.total_batters_faced
+        return hr_percentage
+    
+    def left_on_base_percentage(self):
+        lob = (self.total_hit + self.total_bb_hbp - self.total_run) / \
+              (self.total_hit + self.total_bb_hbp - self.total_home_run * 1.4)
+        return lob
+    
+    def pitch_per_inning(self):
+        p_per_ip = (self.total_number_of_pitch * 3) / \
+                   ((self.total_innings_pitched + self.total_innings_pitched_fraction) * 3 )
+        return p_per_ip
+    

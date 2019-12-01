@@ -107,4 +107,5 @@ class PitcherResults(models.Model):
         return f'{self.game_id}:{self.player_id}'
 
     class Meta:
+        verbose_name = "投手一覧"
         verbose_name_plural = "投手成績"

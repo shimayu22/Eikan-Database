@@ -4,16 +4,21 @@ from eikan.models import Teams, Players, Games, FielderResults, PitcherResults
 class CalculateFielderSabr:
     def __init__(self, player_id):
         self.player_id = player_id
-        self.FielderResults = FielderResults.objects.filter(player_id=self.player_id)
-        self.total_at_bat = self.FielderResults.aggregate(models.Sum('at_bat'))
-        self.total_hit = self.FielderResults.aggregate(models.Sum('hit'))
-        self.total_two_base = self.FielderResults.aggregate(models.Sum('two_base'))
-        self.total_three_base = self.FielderResults.aggregate(models.Sum('three_base'))
-        self.total_home_run = self.FielderResults.aggregate(models.Sum('home_run'))
-        self.total_bb_hbp = self.FielderResults.aggregate(models.Sum('bb_hbp'))
-        self.total_sacrifice_bunt = self.FielderResults.aggregate(models.Sum('sacrifice_bunt'))
-        self.total_strike_out = self.FielderResults.aggregate(models.Sum('strike_out'))
-        self.total_stolen_base = self.FielderResults.aggregate(models.Sum('stolen_base'))
+        self.fielder_results = FielderResults.objects.filter(player_id=self.player_id)
+        self.total_at_bat = self.fielder_results.aggregate(models.Sum('at_bat'))
+        self.total_run = self.fielder_results.aggregate(models.Sum('run'))
+        self.total_hit = self.fielder_results.aggregate(models.Sum('hit'))
+        self.total_two_base = self.fielder_results.aggregate(models.Sum('two_base'))
+        self.total_three_base = self.fielder_results.aggregate(models.Sum('three_base'))
+        self.total_home_run = self.fielder_results.aggregate(models.Sum('home_run'))
+        self.total_rbi = self.fielder_results.aggregate(models.Sum('run_batted_in'))
+        self.total_k = self.fielder_results.aggregate(models.Sum('strike_out'))
+        self.total_bb_hbp = self.fielder_results.aggregate(models.Sum('bb_hbp'))
+        self.total_sacrifice_bunt = self.fielder_results.aggregate(models.Sum('sacrifice_bunt'))
+        self.total_strike_out = self.fielder_results.aggregate(models.Sum('strike_out'))
+        self.total_stolen_base = self.fielder_results.aggregate(models.Sum('stolen_base'))
+        self.total_gibp = self.fielder_results.aggregate(models.Sum('grounded_into_double_play'))
+        self.total_error = self.fielder_results.aggregate(models.Sum('error'))
         self.tb = 0
         self.slg = 0
         self.obp = 0
@@ -97,19 +102,20 @@ class CalculateFielderSabr:
 class CalculatePitcherSabr:
     def __init__(self, player_id):
         self.player_id = player_id
-        self.pitcher_result = PitcherResults.objects.filter(player_id=self.player_id)
-        self.total_innings_pitched = self.pitcher_result.aggregate(models.Sum('innings_pitched'))
-        self.total_innings_pitched_fraction = self.pitcher_result.aggregate(models.Sum('innings_pitched_fraction'))
-        self.total_batters_faced = self.pitcher_result.aggregate(models.Sum('total_batters_faced'))
-        self.total_number_of_pitch = self.pitcher_result.aggregate(models.Sum('number_of_pitch'))
-        self.total_hit = self.pitcher_result.aggregate(models.Sum('hit'))
-        self.total_strike_out = self.pitcher_result.aggregate(models.Sum('strike_out'))
-        self.total_bb_hbp = self.pitcher_result.aggregate(models.Sum('bb_hbp'))
-        self.total_run = self.pitcher_result.aggregate(models.Sum('run'))
-        self.total_earned_run = self.pitcher_result.aggregate(models.Sum('earned_run'))
-        self.total_wild_pitch = self.pitcher_result.aggregate(models.Sum('wild_pitch'))
-        self.total_home_run = self.pitcher_result.aggregate(models.Sum('home_run'))
-        self.total_sum_innings_pitched = self.total_innings_pitched + self.total_innings_pitched_fraction
+        self.pitcher_results = PitcherResults.objects.filter(player_id=self.player_id)
+        self.games_started_count = PitcherResults.objects.filter(player_id=self.player_id, games_started=True).count()
+        self.total_innings_pitched = self.pitcher_results.aggregate(models.Sum('innings_pitched'))
+        self.total_innings_pitched_fraction = self.pitcher_results.aggregate(models.Sum('innings_pitched_fraction'))
+        self.total_batters_faced = self.pitcher_results.aggregate(models.Sum('total_batters_faced'))
+        self.total_number_of_pitch = self.pitcher_results.aggregate(models.Sum('number_of_pitch'))
+        self.total_hit = self.pitcher_results.aggregate(models.Sum('hit'))
+        self.total_strike_out = self.pitcher_results.aggregate(models.Sum('strike_out'))
+        self.total_bb_hbp = self.pitcher_results.aggregate(models.Sum('bb_hbp'))
+        self.total_run = self.pitcher_results.aggregate(models.Sum('run'))
+        self.total_earned_run = self.pitcher_results.aggregate(models.Sum('earned_run'))
+        self.total_wild_pitch = self.pitcher_results.aggregate(models.Sum('wild_pitch'))
+        self.total_home_run = self.pitcher_results.aggregate(models.Sum('home_run'))
+        self.total_sum_innings_pitched = (self.total_innings_pitched + (self.total_innings_pitched_fraction / 3)) * 3
 
     def earned_runs_average(self):
         if self.total_sum_innings_pitched == 0:
@@ -129,7 +135,7 @@ class CalculatePitcherSabr:
         if self.total_sum_innings_pitched == 0:
             return 0
 
-        whip = (self.total_hit + self.total_bb_hbp) / self.total_sum_innings_pitched
+        whip = (self.total_hit + self.total_bb_hbp) * 3 / self.total_sum_innings_pitched
         return whip
 
     def strike_out_per_bbhp(self):
@@ -204,9 +210,6 @@ class CalculateTeamSabr:
         self.start_year = (self.year - 2) if self.period == 1 else (self.year - 1)
         self.players = Players.objects.filter(admission_year__gte=self.start_year, admission_year__lte=self.year)
         self.pitchers = Players.objects.filter(admission_year__gte=self.start_year, admission_year__lte=self.year, is_pitcher=True)
-        self.tb = 0
-        self.slg = 0
-        self.obp = 0
 
     def team_batting_average(self):
         self.players_at_bat = self.players.aggregate(models.Sum('at_bat'))

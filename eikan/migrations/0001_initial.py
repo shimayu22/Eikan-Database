@@ -3,8 +3,8 @@
 import django.core.validators
 from django.db import migrations, models
 import django.db.models.deletion
-import eikan.models.fielder_results
-import eikan.models.pitcher_results
+import eikan.models.FielderResults
+import eikan.models.PitcherResults
 import eikan.models.teams
 
 
@@ -110,7 +110,7 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='Pitcher_results',
+            name='PitcherResults',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('games_started', models.BooleanField(default=False, verbose_name='先発登板')),
@@ -131,7 +131,7 @@ class Migration(migrations.Migration):
                 ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='登録日')),
                 ('updated_at', models.DateTimeField(auto_now=True, verbose_name='更新日')),
                 ('game_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='eikan.Games')),
-                ('player_id', models.ForeignKey(limit_choices_to=eikan.models.pitcher_results.set_select_pitchers, on_delete=django.db.models.deletion.CASCADE, to='eikan.Players', verbose_name='選手')),
+                ('player_id', models.ForeignKey(limit_choices_to=eikan.models.PitcherResults.set_select_pitchers, on_delete=django.db.models.deletion.CASCADE, to='eikan.Players', verbose_name='選手')),
             ],
             options={
                 'verbose_name_plural': '投手成績',
@@ -143,7 +143,7 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(default=2, on_delete=django.db.models.deletion.CASCADE, to='eikan.Teams', verbose_name='チーム'),
         ),
         migrations.CreateModel(
-            name='Fielder_results',
+            name='FielderResults',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('at_bat', models.PositiveSmallIntegerField(default=0, verbose_name='打数')),
@@ -164,7 +164,7 @@ class Migration(migrations.Migration):
                 ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='登録日')),
                 ('updated_at', models.DateTimeField(auto_now=True, verbose_name='更新日')),
                 ('game_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='eikan.Games')),
-                ('player_id', models.ForeignKey(limit_choices_to=eikan.models.fielder_results.set_select_players, on_delete=django.db.models.deletion.CASCADE, to='eikan.Players', verbose_name='選手')),
+                ('player_id', models.ForeignKey(limit_choices_to=eikan.models.FielderResults.set_select_players, on_delete=django.db.models.deletion.CASCADE, to='eikan.Players', verbose_name='選手')),
             ],
             options={
                 'verbose_name': '打者一覧',

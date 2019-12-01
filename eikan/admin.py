@@ -4,7 +4,7 @@ from django.forms import NumberInput
 
 # Register your models here.
 from .models import Teams, Players, Games, \
-                    Fielder_results, Pitcher_results
+                    FielderResults, PitcherResults
 
 admin.site.site_header = '栄冠ナインデータベース 管理画面'
 
@@ -16,8 +16,8 @@ class PlayersAdmin(admin.ModelAdmin):
     list_display = ('name', 'admission_year', 'position' , 'is_ob', \
                     'is_active', 'is_genius', 'remark')
 
-class Fielder_resultsInline(admin.TabularInline):
-    model = Fielder_results
+class FielderResultsInline(admin.TabularInline):
+    model = FielderResults
     verbose_name = "野手"
     extra = 9
     formfield_overrides = {
@@ -25,8 +25,8 @@ class Fielder_resultsInline(admin.TabularInline):
             {'widget': NumberInput(attrs={'style':'width: 2em;'})}
     }
 
-class Pitcher_resultsInline(admin.TabularInline):
-    model = Pitcher_results
+class PitcherResultsInline(admin.TabularInline):
+    model = PitcherResults
     verbose_name = "投手"
     extra = 1
     formfield_overrides = {
@@ -37,7 +37,7 @@ class Pitcher_resultsInline(admin.TabularInline):
 class GamesAdmin(admin.ModelAdmin):
     list_display = ('team_id', 'competition_type', 'competiton_round', \
                     'result', 'score', 'run', 'lank')
-    inlines = [Fielder_resultsInline, Pitcher_resultsInline]
+    inlines = [FielderResultsInline, PitcherResultsInline]
 
 admin.site.register(Teams, TeamsAdmin)
 admin.site.register(Players, PlayersAdmin)

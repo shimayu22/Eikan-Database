@@ -15,40 +15,40 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RemoveField(
-            model_name='fielder_results',
+            model_name='FielderResults',
             name='bases_on_balls',
         ),
         migrations.RemoveField(
-            model_name='fielder_results',
+            model_name='FielderResults',
             name='hit_by_pitch',
         ),
         migrations.RemoveField(
-            model_name='fielder_results',
+            model_name='FielderResults',
             name='sacrifice_fly',
         ),
         migrations.RemoveField(
-            model_name='pitcher_results',
+            model_name='PitcherResults',
             name='bases_on_balls',
         ),
         migrations.RemoveField(
-            model_name='pitcher_results',
+            model_name='PitcherResults',
             name='hit_by_pitch',
         ),
         migrations.RemoveField(
-            model_name='pitcher_results',
+            model_name='PitcherResults',
             name='sacrifice_bunt',
         ),
         migrations.RemoveField(
-            model_name='pitcher_results',
+            model_name='PitcherResults',
             name='sacrifice_fly',
         ),
         migrations.AddField(
-            model_name='fielder_results',
+            model_name='FielderResults',
             name='bb_hbp',
             field=models.PositiveSmallIntegerField(default=0, verbose_name='四死球'),
         ),
         migrations.AddField(
-            model_name='pitcher_results',
+            model_name='PitcherResults',
             name='bb_hbp',
             field=models.PositiveSmallIntegerField(default=0, verbose_name='四死球'),
         ),

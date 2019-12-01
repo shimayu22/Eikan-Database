@@ -16,7 +16,7 @@ def set_select_players():
     return condition_dict
 
 # Create your models here.
-class Fielder_results(models.Model):
+class FielderResults(models.Model):
 
     game_id = models.ForeignKey(
         Games,

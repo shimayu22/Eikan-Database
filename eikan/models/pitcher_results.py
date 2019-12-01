@@ -17,7 +17,7 @@ def set_select_pitchers():
     return condition_dict
 
 # Create your models here.
-class Pitcher_results(models.Model):
+class PitcherResults(models.Model):
 
     game_id = models.ForeignKey(
         Games,

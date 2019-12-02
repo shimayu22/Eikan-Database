@@ -4,7 +4,8 @@ from django.forms import NumberInput
 
 # Register your models here.
 from .models import Teams, Players, Games, \
-                    FielderResults, PitcherResults
+                    FielderResults, PitcherResults, \
+                    PlayersFielder, PlayersPitcher
 
 admin.site.site_header = '栄冠ナインデータベース 管理画面'
 
@@ -39,6 +40,15 @@ class GamesAdmin(admin.ModelAdmin):
                     'result', 'score', 'run', 'lank')
     inlines = [FielderResultsInline, PitcherResultsInline]
 
+class PlayersFielderAdmin(admin.ModelAdmin):
+    list_display = ('player_id',)
+
+class PlayersPitcherAdmin(admin.ModelAdmin):
+    list_display = ('player_id',)
+
+
 admin.site.register(Teams, TeamsAdmin)
 admin.site.register(Players, PlayersAdmin)
 admin.site.register(Games, GamesAdmin)
+admin.site.register(PlayersFielder, PlayersFielderAdmin)
+admin.site.register(PlayersPitcher, PlayersPitcherAdmin)

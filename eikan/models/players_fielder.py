@@ -1,84 +1,97 @@
 from django.db import models
 from eikan.models import Players
 
-class PlayersFielder(model.Model):
+class PlayersFielder(models.Model):
 
     player_id = models.ForeignKey(
         Players,
         on_delete=models.CASCADE,
         verbose_name="選手",
-        limit_choices_to=set_select_players,
+        editable=False,
     )
 
     at_bat = models.PositiveSmallIntegerField(
         verbose_name="打数",
         default=0,
+        editable=False,
     )
 
     run = models.PositiveSmallIntegerField(
         verbose_name="得点",
         default=0,
+        editable=False,
     )
 
     hit = models.PositiveSmallIntegerField(
         verbose_name="安打",
         default=0,
+        editable=False,
     )
 
     two_base = models.PositiveSmallIntegerField(
         verbose_name="二塁打",
         default=0,
+        editable=False,
     )
 
     three_base = models.PositiveSmallIntegerField(
         verbose_name="三塁打",
         default=0,
+        editable=False,
     )
 
     home_run = models.PositiveSmallIntegerField(
         verbose_name="本塁打",
         default=0,
+        editable=False,
     )
 
     run_batted_in = models.PositiveSmallIntegerField(
         verbose_name="打点",
         default=0,
+        editable=False,
     )
 
     strike_out = models.PositiveSmallIntegerField(
         verbose_name="三振",
         default=0,
+        editable=False,
     )
 
     bb_hbp = models.PositiveSmallIntegerField(
         verbose_name="四死球",
         default=0,
+        editable=False,
     )
 
     sacrifice_bunt = models.PositiveSmallIntegerField(
         verbose_name="犠打",
         default=0,
+        editable=False,
     )
 
     stolen_base = models.PositiveSmallIntegerField(
         verbose_name="盗塁",
         default=0,
+        editable=False,
     )
 
     grounded_into_double_play = models.PositiveSmallIntegerField(
         verbose_name="併殺",
         default=0,
+        editable=False,
     )
 
     error = models.PositiveSmallIntegerField(
         verbose_name="失策",
         default=0,
+        editable=False,
     )
 
     total_bases = models.PositiveIntegerField(
         verbose_name="塁打",
         default=0,
-        editable=False,     
+        editable=False,   
     )
 
     slg = models.DecimalField(

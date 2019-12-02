@@ -1,69 +1,79 @@
 from django.db import models
 from eikan.models import Players
 
-class PlayersPitcher(model.Model):
+class PlayersPitcher(models.Model):
 
     player_id = models.ForeignKey(
         Players,
         on_delete=models.CASCADE,
         verbose_name="選手",
-        limit_choices_to=set_select_players,
+        editable=False,
     )
 
     games_started = models.PositiveSmallIntegerField(
         verbose_name="先発登板",
         default=0,
+        editable=False,
     )
 
     innings_pitched = models.PositiveSmallIntegerField(
         verbose_name="イニング",
-        validators=[MinValueValidator(0),MaxValueValidator(15)],
         default=0,
+        editable=False,
     )
 
     total_batters_faced = models.PositiveSmallIntegerField(
         verbose_name="対戦打者",
         default=0,
+        editable=False,
     )
 
     number_of_pitch = models.PositiveSmallIntegerField(
         verbose_name="投球数",
         default=0,
+        editable=False,
     )
 
     hit = models.PositiveSmallIntegerField(
         verbose_name="被安打",
         default=0,
+        editable=False,
     )
 
     strike_out = models.PositiveSmallIntegerField(
         verbose_name="三振",
         default=0,
+        editable=False,
     )
 
     bb_hbp = models.PositiveSmallIntegerField(
         verbose_name="四死球",
         default=0,
+        editable=False,
     )
 
     run = models.PositiveSmallIntegerField(
         verbose_name="失点",
         default=0,
+        editable=False,
     )
 
     earned_run = models.PositiveSmallIntegerField(
         verbose_name="自責点",
         default=0,
+        editable=False,
     )
 
     wild_pitch = models.PositiveSmallIntegerField(
         verbose_name="暴投",
         default=0,
+        editable=False,
     )
 
     home_run = models.PositiveSmallIntegerField(
         verbose_name="本塁打",
         default=0,
+        editable=False,
     )
 
     era = models.DecimalField(
@@ -176,4 +186,5 @@ class PlayersPitcher(model.Model):
         return f'{self.player_id}'
 
     class Meta:
-        verbose_name_plural = "投手成績"
+        verbose_name = "投手総合成績"
+        verbose_name_plural = "投手総合成績"

@@ -57,7 +57,12 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from eikan import calculate_sabr as c
 
-# 選手を登録したらPlayersFielder,PlayersPitcherも初期値でレコードを登録する
+# 選手を登録したらPlayersFielder,PlayersPitcherも対応するレコードを登録する
+@receiver(post_save, sender=Players)
+def insert_new_player_results(sender, instance, **kwargs):
+    PlayersFielder.objects.create(player_id=instance)
+    if instance.is_pitcher:
+        PlayersPitcher.objects.create(player_id=instance)
 
 # チーム総合成績の更新
 @receiver(post_save, sender=Games)

@@ -41,10 +41,16 @@ class GamesAdmin(admin.ModelAdmin):
     inlines = [FielderResultsInline, PitcherResultsInline]
 
 class PlayersFielderAdmin(admin.ModelAdmin):
-    list_display = ('player_id',)
+    list_display = ('player_id', 'ops', 'slg', 'obp', 'gpa', 'batting_average', 'at_bat', \
+                    'run', 'hit', 'two_base', 'three_base', 'home_run', 'run_batted_in', \
+                    'strike_out', 'bb_hbp', 'sacrifice_bunt', 'stolen_base', 'grounded_into_double_play', \
+                    'error', 'total_bases', 'bbhp_percent', 'isod', 'isop', 'bbhp_k', 'p_s',)
 
 class PlayersPitcherAdmin(admin.ModelAdmin):
-    list_display = ('player_id',)
+    list_display = ('player_id', 'era', 'whip', 'k_bbhp', 'k_9', 'k_percent', 'bbhp_9', \
+                    'p_bbhp_percent', 'hr_9', 'hr_percent', 'lob_percent', 'p_ip', 'ura', \
+                    'games_started', 'innings_pitched', 'total_batters_faced', 'number_of_pitch', \
+                    'hit', 'strike_out', 'bb_hbp', 'run', 'earned_run', 'wild_pitch', 'home_run',)
 
 
 admin.site.register(Teams, TeamsAdmin)
@@ -73,8 +79,8 @@ def update_cal_team_results(sender, instance, **kwargs):
 @receiver(post_save, sender=FielderResults)
 def update_cal_fielder_results(sender, instance, **kwargs):
     print(instance.player_id)
-    c_s = c.CalculateFielderSabr(instance.player_id)
-    print("更新しました")
+    cs = c.CalculateFielderSabr(instance.player_id)
+    cs.update_total_results()
     
 # 投手成績の更新
 @receiver(post_save, sender=PitcherResults)

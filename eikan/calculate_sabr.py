@@ -31,7 +31,7 @@ class CalculateFielderSabr:
         tb = self.total_hit + self.total_two_base + \
                       self.total_three_base * 2 + self.total_home_run * 3
         self.tb = tb
-        return self.tb
+        return tb
     
     def slugging_percentage(self):
         # 塁打 / 打数
@@ -40,7 +40,7 @@ class CalculateFielderSabr:
         
         slg = self.tb / self.total_at_bat
         self.slg = slg
-        return self.slg
+        return slg
 
     def on_base_percentage(self):
         # (安打数 + 四死球) / (打数 + 四死球)
@@ -51,7 +51,7 @@ class CalculateFielderSabr:
 
         obp = (self.total_hit + self.total_bb_hbp) / a
         self.obp = obp
-        return self.obp
+        return obp
 
     def on_base_plus_slugging(self):
         ops = self.slg + self.obp
@@ -67,7 +67,7 @@ class CalculateFielderSabr:
 
         ba = self.total_hit / self.total_at_bat
         self.ba = ba
-        return self.ba
+        return ba
     
     def bb_hp_percentage(self):
         a = self.total_at_bat + self.total_bb_hbp + self.total_sacrifice_bunt
@@ -101,13 +101,32 @@ class CalculateFielderSabr:
         return p_s
 
     def update_total_results(self):
-        # TODO:PlayersFielderを更新する処理を追加する
-        #      投手、チームも同様
-        players_fielder = PlayersFielder.objects.get(player_id)
-        self.total_bases()
-        self.slugging_percentage()
-        self.on_base_percentage()
-        self.on_base_plus_slugging()
+        players_fielder = PlayersFielder.objects.get(player_id=self.player_id)
+        players_fielder.at_bat = self.total_at_bat
+        players_fielder.run = self.total_run
+        players_fielder.hit = self.total_hit
+        players_fielder.two_base = self.total_two_base
+        players_fielder.three_base = self.total_three_base
+        players_fielder.home_run = self.total_home_run
+        players_fielder.run_batted_in = self.total_rbi
+        players_fielder.strike_out = self.total_strike_out
+        players_fielder.sacrifice_bunt = self.total_sacrifice_bunt
+        players_fielder.stolen_base = self.total_stolen_base
+        players_fielder.grounded_into_double_play = self.total_gibp
+        players_fielder.error = self.total_error
+        players_fielder.total_bases = self.total_bases()
+        players_fielder.slg = self.slugging_percentage()
+        players_fielder.obp = self.on_base_percentage()
+        players_fielder.ops = self.on_base_plus_slugging()
+        players_fielder.gpa = self.gross_production_average()
+        players_fielder.batting_average = self.batting_average()
+        players_fielder.bbhp_percent = self.bb_hp_percentage()
+        players_fielder.isod = self.isolated_discipline()
+        players_fielder.isop = self.isolated_power()
+        players_fielder.bbhp_k = self.bb_hbp_per_so()
+        players_fielder.p_s = self.power_speed_number()
+        print(players_fielder)
+        players_fielder.save()
 
 
 class CalculatePitcherSabr:
@@ -212,6 +231,8 @@ class CalculatePitcherSabr:
 
         p_per_ip = (self.total_number_of_pitch * 3) / self.total_sum_innings_pitched
         return p_per_ip
+    
+    # TODO:PlayersPitcherを更新する処理を追加する
     
 class CalculateTeamSabr:
     # TODO:うまい具合にチームの総計を取得して計算する

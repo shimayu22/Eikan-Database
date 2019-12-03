@@ -56,7 +56,7 @@ class CalculateFielderSabr:
         return ops
 
     def gross_production_average(self):
-        gpa = (self.obp * 1.8 + self.obp) / 4
+        gpa = (self.obp * 1.8 + self.slg) / 4
         return gpa
     
     def batting_average(self):

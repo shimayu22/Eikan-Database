@@ -156,7 +156,7 @@ class CalculatePitcherSabr:
         if self.total_batters_faced == 0:
             return 0
 
-        k__percentage = self.total_strike_out / self.total_batters_faced
+        k_percentage = self.total_strike_out / self.total_batters_faced
         return k_percentage
     
     def bbhp_per_game(self):

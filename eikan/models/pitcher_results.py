@@ -47,14 +47,14 @@ class PitcherResults(models.Model):
         validators=[MinValueValidator(0),MaxValueValidator(2)],
         default=0,
     )
-
-    total_batters_faced = models.PositiveSmallIntegerField(
-        verbose_name="対戦打者",
+    
+    number_of_pitch = models.PositiveSmallIntegerField(
+        verbose_name="投球数",
         default=0,
     )
 
-    number_of_pitch = models.PositiveSmallIntegerField(
-        verbose_name="投球数",
+    total_batters_faced = models.PositiveSmallIntegerField(
+        verbose_name="対戦打者",
         default=0,
     )
 

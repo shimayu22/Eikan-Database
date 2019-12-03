@@ -110,6 +110,14 @@ class PlayersFielder(models.Model):
         editable=False,
     )
 
+    ops = models.DecimalField(
+        verbose_name="OPS",
+        max_digits=4,
+        decimal_places=3,
+        default=0.000,
+        editable=False,
+    )    
+
     gpa = models.DecimalField(
         verbose_name="GPA",
         max_digits=4,

@@ -52,3 +52,26 @@ admin.site.register(Players, PlayersAdmin)
 admin.site.register(Games, GamesAdmin)
 admin.site.register(PlayersFielder, PlayersFielderAdmin)
 admin.site.register(PlayersPitcher, PlayersPitcherAdmin)
+
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from eikan import calculate_sabr as c
+
+# 選手を登録したらPlayersFielder,PlayersPitcherも初期値でレコードを登録する
+
+# チーム総合成績の更新
+@receiver(post_save, sender=Games)
+def update_cal_team_results(sender, instance, **kwargs):
+    print("Admin")
+
+# 野手成績の更新
+@receiver(post_save, sender=FielderResults)
+def update_cal_fielder_results(sender, instance, **kwargs):
+    print(instance.player_id)
+    c_s = c.CalculateFielderSabr(instance.player_id)
+    print("更新しました")
+    
+# 投手成績の更新
+@receiver(post_save, sender=PitcherResults)
+def update_cal_pitcher_results(sender, instance, **kwargs):
+    print(instance.innings_pitched)

@@ -22,9 +22,9 @@ class PlayersPitcher(models.Model):
         editable=False,
     )
 
-    innings_pitched = models.PositiveSmallIntegerField(
+    innings_pitched = models.FloatField(
         verbose_name="イニング",
-        default=0,
+        default=0.0,
         editable=False,
     )
 

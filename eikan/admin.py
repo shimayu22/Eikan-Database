@@ -10,8 +10,10 @@ from .models import Teams, Players, Games, \
 admin.site.site_header = '栄冠ナインデータベース 管理画面'
 
 class TeamsAdmin(admin.ModelAdmin):
-    list_display = ('year', 'period', 'prefecture', \
-                    'training_policy', 'draft_nomination', 'remark')
+    list_display = ('year', 'period', 'prefecture', 'training_policy', \
+                    'draft_nomination', 'total_win', 'total_lose', 'total_draw', \
+                    'score', 'run', 'score_difference', 'lank', 'batting_average', \
+                    'ops', 'hr', 'era', 'der', 'remark')
 
 class PlayersAdmin(admin.ModelAdmin):
     list_display = ('name', 'admission_year', 'position' , 'is_ob', \

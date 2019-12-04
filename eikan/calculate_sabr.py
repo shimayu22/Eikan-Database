@@ -237,7 +237,13 @@ class CalculatePitcherSabr:
         players_pitcer = PlayersPitcher.objects.get(player_id=self.player_id)
         players_pitcer.games = self.game_count
         players_pitcer.games_started = self.games_started_count
-        players_pitcer.innings_pitched = self.total_sum_innings_pitched
+        innings = float(self.total_innings_pitched + self.total_innings_pitched_fraction // 3)
+        outcount = self.total_innings_pitched_fraction % 3
+        if outcount == 1:
+            innings += 0.1
+        elif outcount == 2:
+            innings += 0.2
+        players_pitcer.innings_pitched = innings
         players_pitcer.number_of_pitch = self.total_number_of_pitch
         players_pitcer.total_batters_faced = self.total_batters_faced
         players_pitcer.hit = self.total_hit
@@ -270,14 +276,31 @@ class CalculateTeamSabr:
         self.start_year = (self.year - 2) if self.period == 1 else (self.year - 1)
         self.players = Players.objects.filter(admission_year__gte=self.start_year, admission_year__lte=self.year)
         self.pitchers = Players.objects.filter(admission_year__gte=self.start_year, admission_year__lte=self.year, is_pitcher=True)
+        self.temas_at_bat = PlayersFielder.objects.filter(player_id__in=self.players).aggregate(models.Sum('at_bat'))['at_bat__sum']
+        self.team_hit = PlayersFielder.objects.filter(player_id__in=self.players).aggregate(models.Sum('hit'))['hit__sum']
+        self.team_two_base = PlayersFielder.objects.filter(player_id__in=self.players).aggregate(models.Sum('two_base'))['two_base__sum']
+        self.team_three_base = PlayersFielder.objects.filter(player_id__in=self.players).aggregate(models.Sum('three_base'))['three_base__sum']
+        self.team_home_run = PlayersFielder.objects.filter(player_id__in=self.players).aggregate(models.Sum('home_run'))['home_run__sum']
+        self.team_bbhp = PlayersFielder.objects.filter(player_id__in=self.players).aggregate(models.Sum('bb_hbp'))['bb_hbp__sum']
 
     def team_batting_average(self):
-        self.players_at_bat = self.players.aggregate(models.Sum('at_bat'))['at_bat__sum']
-        if self.players_at_bat == 0:
+        if self.temas_at_bat == 0:
             return 0
 
-        return self.players.aggregate(models.Sum('hit'))['hit__sum'] / self.players_at_bat
+        return self.team_hit / self.temas_at_bat
     
     def team_ops(self):
-        return 0
-        
+        if self.temas_at_bat == 0:
+            return 0
+
+        tb = self.team_hit + self.team_two_base + self.team_three_base * 2 + \
+             self.team_home_run * 3
+        slg = tb / self.temas_at_bat
+        obp = (self.team_hit + self.team_bbhp) / (self.temas_at_bat + self.team_bbhp)
+
+        return slg + obp
+    
+    '''
+    def team_era(self):
+        team_ip = PlayersPitcher.objects.filter(player_id__in=self.pitchers).aggregate(models.Sum('innings_pitched'))
+    '''

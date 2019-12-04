@@ -1,7 +1,7 @@
 from django.db import models
 from eikan.models import Teams, Players, Games, \
                          FielderResults, PitcherResults, \
-                         PlayersFielder, PlayersPitcher
+                         FielderTotalResults, PitcherTotalResults
 
 class CalculateFielderSabr:
     def __init__(self, player_id):
@@ -101,32 +101,32 @@ class CalculateFielderSabr:
         return p_s
 
     def update_total_results(self):
-        players_fielder = PlayersFielder.objects.get(player_id=self.player_id)
-        players_fielder.at_bat = self.total_at_bat
-        players_fielder.run = self.total_run
-        players_fielder.hit = self.total_hit
-        players_fielder.two_base = self.total_two_base
-        players_fielder.three_base = self.total_three_base
-        players_fielder.home_run = self.total_home_run
-        players_fielder.run_batted_in = self.total_rbi
-        players_fielder.strike_out = self.total_strike_out
-        players_fielder.sacrifice_bunt = self.total_sacrifice_bunt
-        players_fielder.stolen_base = self.total_stolen_base
-        players_fielder.grounded_into_double_play = self.total_gibp
-        players_fielder.error = self.total_error
-        players_fielder.total_bases = self.total_bases()
-        players_fielder.slg = self.slugging_percentage()
-        players_fielder.obp = self.on_base_percentage()
-        players_fielder.ops = self.on_base_plus_slugging()
-        players_fielder.gpa = self.gross_production_average()
-        players_fielder.batting_average = self.batting_average()
-        players_fielder.bbhp_percent = self.bb_hp_percentage()
-        players_fielder.isod = self.isolated_discipline()
-        players_fielder.isop = self.isolated_power()
-        players_fielder.bbhp_k = self.bb_hbp_per_so()
-        players_fielder.p_s = self.power_speed_number()
+        fielder_total_results = FielderTotalResults.objects.get(player_id=self.player_id)
+        fielder_total_results.at_bat = self.total_at_bat
+        fielder_total_results.run = self.total_run
+        fielder_total_results.hit = self.total_hit
+        fielder_total_results.two_base = self.total_two_base
+        fielder_total_results.three_base = self.total_three_base
+        fielder_total_results.home_run = self.total_home_run
+        fielder_total_results.run_batted_in = self.total_rbi
+        fielder_total_results.strike_out = self.total_strike_out
+        fielder_total_results.sacrifice_bunt = self.total_sacrifice_bunt
+        fielder_total_results.stolen_base = self.total_stolen_base
+        fielder_total_results.grounded_into_double_play = self.total_gibp
+        fielder_total_results.error = self.total_error
+        fielder_total_results.total_bases = self.total_bases()
+        fielder_total_results.slg = self.slugging_percentage()
+        fielder_total_results.obp = self.on_base_percentage()
+        fielder_total_results.ops = self.on_base_plus_slugging()
+        fielder_total_results.gpa = self.gross_production_average()
+        fielder_total_results.batting_average = self.batting_average()
+        fielder_total_results.bbhp_percent = self.bb_hp_percentage()
+        fielder_total_results.isod = self.isolated_discipline()
+        fielder_total_results.isop = self.isolated_power()
+        fielder_total_results.bbhp_k = self.bb_hbp_per_so()
+        fielder_total_results.p_s = self.power_speed_number()
         # 以上をupdateする
-        players_fielder.save()
+        fielder_total_results.save()
 
 
 class CalculatePitcherSabr:
@@ -234,63 +234,77 @@ class CalculatePitcherSabr:
         return p_per_ip
     
     def update_total_results(self):
-        players_pitcer = PlayersPitcher.objects.get(player_id=self.player_id)
-        players_pitcer.games = self.game_count
-        players_pitcer.games_started = self.games_started_count
+        pitcher_total_results = PitcherTotalResults.objects.get(player_id=self.player_id)
+        pitcher_total_results.games = self.game_count
+        pitcher_total_results.games_started = self.games_started_count
         innings = float(self.total_innings_pitched + self.total_innings_pitched_fraction // 3)
         outcount = self.total_innings_pitched_fraction % 3
         if outcount == 1:
             innings += 0.1
         elif outcount == 2:
             innings += 0.2
-        players_pitcer.innings_pitched = innings
-        players_pitcer.number_of_pitch = self.total_number_of_pitch
-        players_pitcer.total_batters_faced = self.total_batters_faced
-        players_pitcer.hit = self.total_hit
-        players_pitcer.strike_out = self.total_strike_out
-        players_pitcer.bb_hbp = self.total_bb_hbp
-        players_pitcer.run = self.total_run
-        players_pitcer.earned_run = self.total_earned_run
-        players_pitcer.wild_pitch = self.total_wild_pitch
-        players_pitcer.home_run = self.total_home_run
-        players_pitcer.era = self.earned_runs_average()
-        players_pitcer.ura = self.runs_average()
-        players_pitcer.whip = self.walks_plus_hits_per_inning_pitched()
-        players_pitcer.k_bbhp = self.strike_out_per_bbhp()
-        players_pitcer.k_9 = self.strike_out_per_game()
-        players_pitcer.k_percent = self.strike_out_percentage()
-        players_pitcer.bbhp_9 = self.bbhp_per_game()
-        players_pitcer.p_bbhp_percent = self.bbhp_percentage()
-        players_pitcer.hr_9 = self.home_run_per_game()
-        players_pitcer.hr_percent = self.home_run_percentage()
-        players_pitcer.lob_percent = self.left_on_base_percentage()
-        players_pitcer.p_ip = self.pitch_per_inning()
+        pitcher_total_results.innings_pitched = innings
+        pitcher_total_results.number_of_pitch = self.total_number_of_pitch
+        pitcher_total_results.total_batters_faced = self.total_batters_faced
+        pitcher_total_results.hit = self.total_hit
+        pitcher_total_results.strike_out = self.total_strike_out
+        pitcher_total_results.bb_hbp = self.total_bb_hbp
+        pitcher_total_results.run = self.total_run
+        pitcher_total_results.earned_run = self.total_earned_run
+        pitcher_total_results.wild_pitch = self.total_wild_pitch
+        pitcher_total_results.home_run = self.total_home_run
+        pitcher_total_results.era = self.earned_runs_average()
+        pitcher_total_results.ura = self.runs_average()
+        pitcher_total_results.whip = self.walks_plus_hits_per_inning_pitched()
+        pitcher_total_results.k_bbhp = self.strike_out_per_bbhp()
+        pitcher_total_results.k_9 = self.strike_out_per_game()
+        pitcher_total_results.k_percent = self.strike_out_percentage()
+        pitcher_total_results.bbhp_9 = self.bbhp_per_game()
+        pitcher_total_results.p_bbhp_percent = self.bbhp_percentage()
+        pitcher_total_results.hr_9 = self.home_run_per_game()
+        pitcher_total_results.hr_percent = self.home_run_percentage()
+        pitcher_total_results.lob_percent = self.left_on_base_percentage()
+        pitcher_total_results.p_ip = self.pitch_per_inning()
         # 上記をupdateする
-        players_pitcer.save()
+        pitcher_total_results.save()
     
 class CalculateTeamSabr:
-    # TODO:うまい具合にチームの総計を取得して計算する
     def __init__(self, team_id):
+        # Teams
         self.teams = Teams.objects.filter(id=team_id)
         self.year = self.teams.year
         self.period = self.teams.period
         self.start_year = (self.year - 2) if self.period == 1 else (self.year - 1)
+        # Games
         self.games = Games.objects.filter(team_id=team_id)
         self.total_win = self.games.filter(result=1).count()
         self.total_lose = self.games.filter(result=2).count()
         self.total_draw = self.games.filter(result=3).count()
-        self.latest_rank = self.games.latest('pk').rank # TODO
         self.total_score = self.games.aggregate(models.Sum('score'))['score__sum']
         self.total_run = self.games.aggregate(models.Sum('run'))['run__sum']
+        self.latest_rank = self.games.latest('pk').rank
+        # Players
         self.players = Players.objects.filter(admission_year__gte=self.start_year, admission_year__lte=self.year)
         self.pitchers = Players.objects.filter(admission_year__gte=self.start_year, admission_year__lte=self.year, is_pitcher=True)
-        self.player_fielder = PlayersFielder.objects.filter(player_id__in=self.players)
-        self.tema_at_bat = self.player_fielder.aggregate(models.Sum('at_bat'))['at_bat__sum']
-        self.team_hit = self.player_fielder.aggregate(models.Sum('hit'))['hit__sum']
-        self.team_two_base = self.player_fielder.aggregate(models.Sum('two_base'))['two_base__sum']
-        self.team_three_base = self.player_fielder.aggregate(models.Sum('three_base'))['three_base__sum']
-        self.team_home_run = self.player_fielder.aggregate(models.Sum('home_run'))['home_run__sum']
-        self.team_bbhp = self.player_fielder.aggregate(models.Sum('bb_hbp'))['bb_hbp__sum']
+        # FielderTotalResults
+        self.fielder_total_results = FielderTotalResults.objects.filter(player_id__in=self.players)
+        self.tema_at_bat = self.fielder_total_results.aggregate(models.Sum('at_bat'))['at_bat__sum']
+        self.team_hit = self.fielder_total_results.aggregate(models.Sum('hit'))['hit__sum']
+        self.team_two_base = self.fielder_total_results.aggregate(models.Sum('two_base'))['two_base__sum']
+        self.team_three_base = self.fielder_total_results.aggregate(models.Sum('three_base'))['three_base__sum']
+        self.team_home_run = self.fielder_total_results.aggregate(models.Sum('home_run'))['home_run__sum']
+        self.team_bbhp = self.fielder_total_results.aggregate(models.Sum('bb_hbp'))['bb_hbp__sum']
+        self.team_error = self.fielder_total_results.aggregate(models.Sum('error'))['error__sum']
+        # PitcherTotalResults
+        self.pitcher_total_results = PitcherTotalResults.objects.filter(player_id__in=self.pitchers)
+        self.team_er = self.pitcher_total_results.aggregate(models.Sum('earned_run'))['earned_run__sum']
+        self.team_pi = self.pitcher_total_results.aggregate(models.Sum('innings_pitched'))['innings_pitched__sum']
+        self.team_total_batters_faced = self.pitcher_total_results.aggregate(models.Sum('total_batters_faced'))['total_batters_faced__sum']
+        self.team_suffer_hit = self.pitcher_total_results.aggregate(models.Sum('hit'))['hit__sum']
+        self.team_bb_hbp = self.pitcher_total_results.aggregate(models.Sum('bb_hbp'))['bb_hbp__sum']
+        self.team_strike_out = self.pitcher_total_results.aggregate(models.Sum('strike_out'))['strike_out__sum']
+        self.team_suffer_home_run = self.pitcher_total_results.aggregate(models.Sum('shome_run'))['home_run__sum']
+
 
     def team_batting_average(self):
         if self.tema_at_bat == 0:
@@ -309,7 +323,41 @@ class CalculateTeamSabr:
 
         return slg + obp
     
-    '''
     def team_era(self):
-        team_ip = PlayersPitcher.objects.filter(player_id__in=self.pitchers).aggregate(models.Sum('innings_pitched'))
-    '''
+        ip = int(self.team_pi)
+        outcount = 0
+        if self.team_pi - ip == 0.1:
+            outcount = 1
+        elif self.team_pi - ip == 0.2:
+            outcount = 2
+
+        if self.team_pi < 0.1:
+            return 0
+        
+        return (self.team_er * 9 * 3) / ((ip + (outcount / 3)) * 3)
+    
+    def team_der(self):
+        a = self.team_total_batters_faced - self.team_suffer_hit - \
+            self.team_bb_hbp - self.team_strike_out - self.team_error
+        
+        b = self.team_total_batters_faced - self.team_suffer_home_run - \
+            self.team_bb_hbp - self.team_strike_out
+
+        return a / b
+    
+    def update_total_results(self):
+        teams = Teams.objects.get(id=team_id)
+        teams.total_win = self.total_win
+        teams.total_lose = self.total_lose
+        teams.total_draw = self.total_draw
+        teams.score = self.total_score
+        teams.run = self.total_run
+        teams.score_difference = self.total_score - self.total_run
+        teams.rank = self.latest_rank
+        teams.batting_average = self.team_batting_average()
+        teams.ops = self.team_ops()
+        teams.hr = self.team_suffer_home_run
+        teams.era = self.team_era()
+        teams.der = self.team_der()
+        # 以上をupdateする
+        teams.save()

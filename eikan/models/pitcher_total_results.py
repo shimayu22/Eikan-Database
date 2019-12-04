@@ -1,7 +1,7 @@
 from django.db import models
 from eikan.models import Players
 
-class PlayersPitcher(models.Model):
+class PitcherTotalResults(models.Model):
 
     player_id = models.ForeignKey(
         Players,

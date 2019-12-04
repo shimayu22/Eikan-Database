@@ -5,7 +5,7 @@ from django.forms import NumberInput
 # Register your models here.
 from .models import Teams, Players, Games, \
                     FielderResults, PitcherResults, \
-                    PlayersFielder, PlayersPitcher
+                    FielderTotalResults, PitcherTotalResults
 
 admin.site.site_header = '栄冠ナインデータベース 管理画面'
 
@@ -42,13 +42,13 @@ class GamesAdmin(admin.ModelAdmin):
                     'result', 'score', 'run', 'rank')
     inlines = [FielderResultsInline, PitcherResultsInline]
 
-class PlayersFielderAdmin(admin.ModelAdmin):
+class FielderTotalResultsAdmin(admin.ModelAdmin):
     list_display = ('player_id', 'ops', 'slg', 'obp', 'gpa', 'batting_average', 'at_bat', \
                     'run', 'hit', 'two_base', 'three_base', 'home_run', 'run_batted_in', \
                     'strike_out', 'bb_hbp', 'sacrifice_bunt', 'stolen_base', 'grounded_into_double_play', \
                     'error', 'total_bases', 'bbhp_percent', 'isod', 'isop', 'bbhp_k', 'p_s',)
 
-class PlayersPitcherAdmin(admin.ModelAdmin):
+class PitcherTotalResultsAdmin(admin.ModelAdmin):
     list_display = ('player_id', 'era', 'whip', 'k_bbhp', 'k_9', 'k_percent', 'bbhp_9', \
                     'p_bbhp_percent', 'hr_9', 'hr_percent', 'lob_percent', 'p_ip', 'ura', \
                     'games', 'games_started', 'innings_pitched', 'total_batters_faced', 'number_of_pitch', \
@@ -58,28 +58,31 @@ class PlayersPitcherAdmin(admin.ModelAdmin):
 admin.site.register(Teams, TeamsAdmin)
 admin.site.register(Players, PlayersAdmin)
 admin.site.register(Games, GamesAdmin)
-admin.site.register(PlayersFielder, PlayersFielderAdmin)
-admin.site.register(PlayersPitcher, PlayersPitcherAdmin)
+admin.site.register(FielderTotalResults, FielderTotalResultsAdmin)
+admin.site.register(PitcherTotalResults, PitcherTotalResultsAdmin)
 
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from eikan import calculate_sabr as c
 
-# 選手を登録したらPlayersFielder,PlayersPitcherも対応するレコードを登録する
+# 選手を登録したらFielderTotalResults,PitcherTotalResultsも対応するレコードを登録する
 @receiver(post_save, sender=Players)
 def insert_new_player_results(sender, instance, **kwargs):
-    PlayersFielder.objects.create(player_id=instance)
+    FielderTotalResults.objects.create(player_id=instance)
     if instance.is_pitcher:
-        PlayersPitcher.objects.create(player_id=instance)
+        PitcherTotalResults.objects.create(player_id=instance)
 
 # チーム総合成績の更新
 @receiver(post_save, sender=Games)
 def update_cal_team_results(sender, instance, **kwargs):
-    print("Admin")
+    print(type(instance.team_id))
+    #cs = c.CalculateTeamSabr(instance.team_id)
+    #cs.update_total_results()
 
 # 野手成績の更新
 @receiver(post_save, sender=FielderResults)
 def update_cal_fielder_results(sender, instance, **kwargs):
+    print(type(instance.player_id))
     cs = c.CalculateFielderSabr(instance.player_id)
     cs.update_total_results()
     

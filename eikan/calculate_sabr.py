@@ -125,7 +125,7 @@ class CalculateFielderSabr:
         players_fielder.isop = self.isolated_power()
         players_fielder.bbhp_k = self.bb_hbp_per_so()
         players_fielder.p_s = self.power_speed_number()
-        print(players_fielder)
+        # 以上をupdateする
         players_fielder.save()
 
 
@@ -133,6 +133,7 @@ class CalculatePitcherSabr:
     def __init__(self, player_id):
         self.player_id = player_id
         self.pitcher_results = PitcherResults.objects.filter(player_id=self.player_id)
+        self.game_count = self.pitcher_results.count()
         self.games_started_count = PitcherResults.objects.filter(player_id=self.player_id, games_started=True).count()
         self.total_innings_pitched = self.pitcher_results.aggregate(models.Sum('innings_pitched'))['innings_pitched__sum']
         self.total_innings_pitched_fraction = self.pitcher_results.aggregate(models.Sum('innings_pitched_fraction'))['innings_pitched_fraction__sum']
@@ -232,7 +233,34 @@ class CalculatePitcherSabr:
         p_per_ip = (self.total_number_of_pitch * 3) / self.total_sum_innings_pitched
         return p_per_ip
     
-    # TODO:PlayersPitcherを更新する処理を追加する
+    def update_total_results(self):
+        players_pitcer = PlayersPitcher.objects.get(player_id=self.player_id)
+        players_pitcer.games = self.game_count
+        players_pitcer.games_started = self.games_started_count
+        players_pitcer.innings_pitched = self.total_sum_innings_pitched
+        players_pitcer.number_of_pitch = self.total_number_of_pitch
+        players_pitcer.total_batters_faced = self.total_batters_faced
+        players_pitcer.hit = self.total_hit
+        players_pitcer.strike_out = self.total_strike_out
+        players_pitcer.bb_hbp = self.total_bb_hbp
+        players_pitcer.run = self.total_run
+        players_pitcer.earned_run = self.total_earned_run
+        players_pitcer.wild_pitch = self.total_wild_pitch
+        players_pitcer.home_run = self.total_home_run
+        players_pitcer.era = self.earned_runs_average()
+        players_pitcer.ura = self.runs_average()
+        players_pitcer.whip = self.walks_plus_hits_per_inning_pitched()
+        players_pitcer.k_bbhp = self.strike_out_per_bbhp()
+        players_pitcer.k_9 = self.strike_out_per_game()
+        players_pitcer.k_percent = self.strike_out_percentage()
+        players_pitcer.bbhp_9 = self.bbhp_per_game()
+        players_pitcer.p_bbhp_percent = self.bbhp_percentage()
+        players_pitcer.hr_9 = self.home_run_per_game()
+        players_pitcer.hr_percent = self.home_run_percentage()
+        players_pitcer.lob_percent = self.left_on_base_percentage()
+        players_pitcer.p_ip = self.pitch_per_inning()
+        # 上記をupdateする
+        players_pitcer.save()
     
 class CalculateTeamSabr:
     # TODO:うまい具合にチームの総計を取得して計算する

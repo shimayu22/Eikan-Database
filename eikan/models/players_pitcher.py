@@ -10,6 +10,12 @@ class PlayersPitcher(models.Model):
         editable=False,
     )
 
+    games = models.PositiveSmallIntegerField(
+        verbose_name="登板",
+        default=0,
+        editable=False,
+    )
+
     games_started = models.PositiveSmallIntegerField(
         verbose_name="先発登板",
         default=0,
@@ -22,14 +28,14 @@ class PlayersPitcher(models.Model):
         editable=False,
     )
 
-    total_batters_faced = models.PositiveSmallIntegerField(
-        verbose_name="対戦打者",
+    number_of_pitch = models.PositiveSmallIntegerField(
+        verbose_name="投球数",
         default=0,
         editable=False,
     )
-
-    number_of_pitch = models.PositiveSmallIntegerField(
-        verbose_name="投球数",
+    
+    total_batters_faced = models.PositiveSmallIntegerField(
+        verbose_name="対戦打者",
         default=0,
         editable=False,
     )

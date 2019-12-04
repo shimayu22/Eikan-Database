@@ -49,7 +49,7 @@ class PlayersFielderAdmin(admin.ModelAdmin):
 class PlayersPitcherAdmin(admin.ModelAdmin):
     list_display = ('player_id', 'era', 'whip', 'k_bbhp', 'k_9', 'k_percent', 'bbhp_9', \
                     'p_bbhp_percent', 'hr_9', 'hr_percent', 'lob_percent', 'p_ip', 'ura', \
-                    'games_started', 'innings_pitched', 'total_batters_faced', 'number_of_pitch', \
+                    'games', 'games_started', 'innings_pitched', 'total_batters_faced', 'number_of_pitch', \
                     'hit', 'strike_out', 'bb_hbp', 'run', 'earned_run', 'wild_pitch', 'home_run',)
 
 
@@ -78,11 +78,11 @@ def update_cal_team_results(sender, instance, **kwargs):
 # 野手成績の更新
 @receiver(post_save, sender=FielderResults)
 def update_cal_fielder_results(sender, instance, **kwargs):
-    print(instance.player_id)
     cs = c.CalculateFielderSabr(instance.player_id)
     cs.update_total_results()
     
 # 投手成績の更新
 @receiver(post_save, sender=PitcherResults)
 def update_cal_pitcher_results(sender, instance, **kwargs):
-    print(instance.innings_pitched)
+    cs = c.CalculatePitcherSabr(instance.player_id)
+    cs.update_total_results()

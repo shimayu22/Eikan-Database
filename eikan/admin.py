@@ -12,7 +12,7 @@ admin.site.site_header = '栄冠ナインデータベース 管理画面'
 class TeamsAdmin(admin.ModelAdmin):
     list_display = ('year', 'period', 'prefecture', 'training_policy', \
                     'draft_nomination', 'total_win', 'total_lose', 'total_draw', \
-                    'score', 'run', 'score_difference', 'lank', 'batting_average', \
+                    'score', 'run', 'score_difference', 'rank', 'batting_average', \
                     'ops', 'hr', 'era', 'der', 'remark')
 
 class PlayersAdmin(admin.ModelAdmin):
@@ -39,7 +39,7 @@ class PitcherResultsInline(admin.TabularInline):
 
 class GamesAdmin(admin.ModelAdmin):
     list_display = ('team_id', 'competition_type', 'competiton_round', \
-                    'result', 'score', 'run', 'lank')
+                    'result', 'score', 'run', 'rank')
     inlines = [FielderResultsInline, PitcherResultsInline]
 
 class PlayersFielderAdmin(admin.ModelAdmin):

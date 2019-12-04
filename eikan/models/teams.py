@@ -81,7 +81,7 @@ class Teams(models.Model):
         (4,'守備・投手'),
     )
 
-    LANK_CHOICES = (
+    RANK_CHOICES = (
         ('','選択'),
         (1,'弱小'),
         (2,'そこそこ'),
@@ -176,10 +176,10 @@ class Teams(models.Model):
         editable=False,
     )
 
-    lank = models.PositiveSmallIntegerField(
+    rank = models.PositiveSmallIntegerField(
         verbose_name="ランク",
         default=0,
-        choices=LANK_CHOICES,
+        choices=RANK_CHOICES,
         editable=False,
     )
 

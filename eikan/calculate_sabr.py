@@ -279,7 +279,7 @@ class CalculateTeamSabr:
         self.total_win = self.games.filter(result=1).count()
         self.total_lose = self.games.filter(result=2).count()
         self.total_draw = self.games.filter(result=3).count()
-        self.latest_rank = self.games.latest('pk').lank # TODO
+        self.latest_rank = self.games.latest('pk').rank # TODO
         self.total_score = self.games.aggregate(models.Sum('score'))['score__sum']
         self.total_run = self.games.aggregate(models.Sum('run'))['run__sum']
         self.players = Players.objects.filter(admission_year__gte=self.start_year, admission_year__lte=self.year)

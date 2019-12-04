@@ -36,7 +36,7 @@ class Games(models.Model):
         (3, "分"),
     )
 
-    LANK_CHOICES = (
+    RANK_CHOICES = (
         ('','選択'),
         (1,'弱小'),
         (2,'そこそこ'),
@@ -80,9 +80,9 @@ class Games(models.Model):
         default=0,
     )
 
-    lank = models.PositiveSmallIntegerField(
+    rank = models.PositiveSmallIntegerField(
         verbose_name="ランク",
-        choices=LANK_CHOICES,
+        choices=RANK_CHOICES,
         default=0,
     )
 

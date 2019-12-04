@@ -81,6 +81,15 @@ class Teams(models.Model):
         (4,'守備・投手'),
     )
 
+    LANK_CHOICES = (
+        ('','選択'),
+        (1,'弱小'),
+        (2,'そこそこ'),
+        (3,'中堅'),
+        (4,'強豪'),
+        (5,'名門'),
+    )
+
     year = models.PositiveSmallIntegerField(
         verbose_name="年度",
         validators=[MinValueValidator(1941)],
@@ -170,6 +179,7 @@ class Teams(models.Model):
     lank = models.PositiveSmallIntegerField(
         verbose_name="ランク",
         default=0,
+        choices=LANK_CHOICES,
         editable=False,
     )
 
@@ -190,7 +200,7 @@ class Teams(models.Model):
     )
 
     hr = models.PositiveSmallIntegerField(
-        verbose_name="HR",
+        verbose_name="本塁打",
         default=0,
         editable=False,
     )

@@ -1,7 +1,8 @@
 from django.db import models
 from eikan.models import Teams, Players, Games, \
                          FielderResults, PitcherResults, \
-                         FielderTotalResults, PitcherTotalResults
+                         FielderTotalResults, PitcherTotalResults, \
+                         TeamsTotalResults
 
 class CalculateFielderSabr:
     def __init__(self, player_id):
@@ -270,10 +271,10 @@ class CalculatePitcherSabr:
     
 class CalculateTeamSabr:
     def __init__(self, team_id):
-        # Teams
-        self.teams = Teams.objects.filter(id=team_id)
-        self.year = self.teams.year
-        self.period = self.teams.period
+        # TeamsTotalResults
+        self.teams_total_results = TeamsTotalResults.objects.get(team_id=team_id)
+        self.year = self.teams_total_results.year
+        self.period = self.teams_total_results.period
         self.start_year = (self.year - 2) if self.period == 1 else (self.year - 1)
         # Games
         self.games = Games.objects.filter(team_id=team_id)
@@ -303,7 +304,7 @@ class CalculateTeamSabr:
         self.team_suffer_hit = self.pitcher_total_results.aggregate(models.Sum('hit'))['hit__sum']
         self.team_bb_hbp = self.pitcher_total_results.aggregate(models.Sum('bb_hbp'))['bb_hbp__sum']
         self.team_strike_out = self.pitcher_total_results.aggregate(models.Sum('strike_out'))['strike_out__sum']
-        self.team_suffer_home_run = self.pitcher_total_results.aggregate(models.Sum('shome_run'))['home_run__sum']
+        self.team_suffer_home_run = self.pitcher_total_results.aggregate(models.Sum('home_run'))['home_run__sum']
 
 
     def team_batting_average(self):
@@ -343,21 +344,23 @@ class CalculateTeamSabr:
         b = self.team_total_batters_faced - self.team_suffer_home_run - \
             self.team_bb_hbp - self.team_strike_out
 
+        if b == 0:
+            return 0
+
         return a / b
     
     def update_total_results(self):
-        teams = Teams.objects.get(id=team_id)
-        teams.total_win = self.total_win
-        teams.total_lose = self.total_lose
-        teams.total_draw = self.total_draw
-        teams.score = self.total_score
-        teams.run = self.total_run
-        teams.score_difference = self.total_score - self.total_run
-        teams.rank = self.latest_rank
-        teams.batting_average = self.team_batting_average()
-        teams.ops = self.team_ops()
-        teams.hr = self.team_suffer_home_run
-        teams.era = self.team_era()
-        teams.der = self.team_der()
+        self.teams_total_results.total_win = self.total_win
+        self.teams_total_results.total_lose = self.total_lose
+        self.teams_total_results.total_draw = self.total_draw
+        self.teams_total_results.score = self.total_score
+        self.teams_total_results.run = self.total_run
+        self.teams_total_results.score_difference = self.total_score - self.total_run
+        self.teams_total_results.rank = self.latest_rank
+        self.teams_total_results.batting_average = self.team_batting_average()
+        self.teams_total_results.ops = self.team_ops()
+        self.teams_total_results.hr = self.team_suffer_home_run
+        self.teams_total_results.era = self.team_era()
+        self.teams_total_results.der = self.team_der()
         # 以上をupdateする
-        teams.save()
+        self.teams_total_results.save()

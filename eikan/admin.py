@@ -11,10 +11,14 @@ from .models import Teams, Players, Games, \
 admin.site.site_header = '栄冠ナインデータベース 管理画面'
 
 class TeamsAdmin(admin.ModelAdmin):
+    fields = (('year', 'period', 'prefecture'), 'training_policy', \
+              'draft_nomination', 'remark')
     list_display = ('year', 'period', 'prefecture', 'training_policy', \
                     'draft_nomination', 'remark')
 
 class PlayersAdmin(admin.ModelAdmin):
+    fields = ('name', 'admission_year', 'position', ('is_pitched' , \
+              'is_ob', 'is_active', 'is_genius'), 'remark')
     list_display = ('name', 'admission_year', 'position' , 'is_ob', \
                     'is_active', 'is_genius', 'remark')
 
@@ -37,6 +41,8 @@ class PitcherResultsInline(admin.TabularInline):
     }
 
 class GamesAdmin(admin.ModelAdmin):
+    fields = ('team_id', ('competition_type', 'competiton_round'), \
+                    ('result', 'score', 'run'), 'rank')
     list_display = ('team_id', 'competition_type', 'competiton_round', \
                     'result', 'score', 'run', 'rank')
     inlines = [FielderResultsInline, PitcherResultsInline]

@@ -75,23 +75,22 @@ def insert_new_teams_total_results(sender, instance, **kwargs):
     TeamsTotalResults.objects.create(team_id=instance, year=instance.year, \
                                      period=instance.period, remark=instance.remark)
 
-# 選手を登録したらFielderTotalResults,PitcherTotalResultsも対応するレコードを登録する
+# 選手を登録したらFielderTotalResults,
+# PitcherTotalResultsも対応するレコードを登録する
 @receiver(post_save, sender=Players)
 def insert_new_player_results(sender, instance, **kwargs):
     FielderTotalResults.objects.create(player_id=instance)
     if instance.is_pitcher:
         PitcherTotalResults.objects.create(player_id=instance)
 
-# チーム総合成績の更新
+# 更新順序の関係で行う（できればもっとスマートな方法でやりたい）
 @receiver(post_save, sender=Games)
-def update_cal_team_results(sender, instance, **kwargs):
-    cs = c.CalculateTeamSabr(instance.team_id)
-    cs.update_total_results()
+def update_teams_total_results_updated_at(sender,instance, **kwargs):
+    TeamsTotalResults.objects.get(team_id=instance.team_id).save()
 
 # 野手成績の更新
 @receiver(post_save, sender=FielderResults)
 def update_cal_fielder_results(sender, instance, **kwargs):
-    print(type(instance.player_id))
     cs = c.CalculateFielderSabr(instance.player_id)
     cs.update_total_results()
     
@@ -99,4 +98,11 @@ def update_cal_fielder_results(sender, instance, **kwargs):
 @receiver(post_save, sender=PitcherResults)
 def update_cal_pitcher_results(sender, instance, **kwargs):
     cs = c.CalculatePitcherSabr(instance.player_id)
+    cs.update_total_results()
+
+# チーム総合成績の更新
+@receiver(post_save, sender=PitcherTotalResults)
+def update_cal_team_results(sender, **kwargs):
+    team_id = TeamsTotalResults.objects.latest('updated_at').team_id
+    cs = c.CalculateTeamSabr(team_id)
     cs.update_total_results()

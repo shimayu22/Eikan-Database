@@ -145,6 +145,6 @@ class Teams(models.Model):
     
     class Meta:
         verbose_name = "チーム情報"
-        verbose_name_plural = "チーム情報"
+        verbose_name_plural = "(3)チーム情報"
         # 試合情報で入力しやすいように追加
         ordering = ['-year', '-period']

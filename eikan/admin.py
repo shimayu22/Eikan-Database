@@ -85,9 +85,9 @@ def insert_new_teams_total_results(sender, instance, **kwargs):
 # PitcherTotalResultsも対応するレコードを登録する
 @receiver(post_save, sender=Players)
 def insert_new_player_results(sender, instance, **kwargs):
-    FielderTotalResults.objects.create(player_id=instance)
+    FielderTotalResults.objects.get_or_create(player_id=instance)
     if instance.is_pitcher:
-        PitcherTotalResults.objects.create(player_id=instance)
+        PitcherTotalResults.objects.get_or_create(player_id=instance)
 
 # 更新順序の関係で行う（できればもっとスマートな方法でやりたい）
 @receiver(post_save, sender=Games)
@@ -108,7 +108,12 @@ def update_cal_pitcher_results(sender, instance, **kwargs):
 
 # チーム総合成績の更新
 @receiver(post_save, sender=PitcherTotalResults)
-def update_cal_team_results(sender, **kwargs):
-    team_id = TeamsTotalResults.objects.latest('updated_at').team_id
-    cs = c.CalculateTeamSabr(team_id)
-    cs.update_total_results()
+def update_cal_team_results(sender, instance, **kwargs):
+    # 投手の新規登録時に実行しないようにする
+    # できればこの方法やめたい
+    if instance.created_at == instance.updated_at:
+        pass
+    else:
+        team_id = TeamsTotalResults.objects.latest('updated_at').team_id
+        cs = c.CalculateTeamSabr(team_id)
+        cs.update_total_results()

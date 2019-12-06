@@ -84,8 +84,9 @@ def insert_new_teams_total_results(sender, instance, **kwargs):
 # 選手を登録したらFielderTotalResults,
 # PitcherTotalResultsも対応するレコードを登録する
 @receiver(post_save, sender=Players)
-def insert_new_player_results(sender, instance, **kwargs):
-    FielderTotalResults.objects.get_or_create(player_id=instance)
+def insert_new_player_results(sender, instance, created, **kwargs):
+    if created:
+        FielderTotalResults.objects.create(player_id=instance)
     if instance.is_pitcher:
         PitcherTotalResults.objects.get_or_create(player_id=instance)
 
@@ -97,23 +98,22 @@ def update_teams_total_results_updated_at(sender,instance, **kwargs):
 # 野手成績の更新
 @receiver(post_save, sender=FielderResults)
 def update_cal_fielder_results(sender, instance, **kwargs):
-    cs = c.CalculateFielderSabr(instance.player_id)
-    cs.update_total_results()
+    cfs = c.CalculateFielderSabr(instance.player_id)
+    cfs.update_total_results()
     
 # 投手成績の更新
 @receiver(post_save, sender=PitcherResults)
 def update_cal_pitcher_results(sender, instance, **kwargs):
-    cs = c.CalculatePitcherSabr(instance.player_id)
-    cs.update_total_results()
+    cps = c.CalculatePitcherSabr(instance.player_id)
+    cps.update_total_results()
 
 # チーム総合成績の更新
 @receiver(post_save, sender=PitcherTotalResults)
-def update_cal_team_results(sender, instance, **kwargs):
-    # 投手の新規登録時に実行しないようにする
-    # できればこの方法やめたい
-    if instance.created_at == instance.updated_at:
+def update_cal_team_results(sender, instance, created, **kwargs):
+    if created:
+        # PitcherTotalResults新規登録時は処理をしない
         pass
     else:
         team_id = TeamsTotalResults.objects.latest('updated_at').team_id
-        cs = c.CalculateTeamSabr(team_id)
-        cs.update_total_results()
+        cts = c.CalculateTeamSabr(team_id)
+        cts.update_total_results()

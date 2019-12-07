@@ -77,9 +77,10 @@ from eikan import calculate_sabr as c
 
 # チームを登録したらTeamsTotalResultsも対応するレコードを登録する
 @receiver(post_save, sender=Teams)
-def insert_new_teams_total_results(sender, instance, **kwargs):
-    TeamsTotalResults.objects.create(team_id=instance, year=instance.year, \
-                                     period=instance.period, remark=instance.remark)
+def insert_new_teams_total_results(sender, instance, created, **kwargs):
+    if created:
+        TeamsTotalResults.objects.create(team_id=instance, year=instance.year, \
+                                         period=instance.period, remark=instance.remark)
 
 # 選手を登録したらFielderTotalResults,
 # PitcherTotalResultsも対応するレコードを登録する
@@ -92,8 +93,12 @@ def insert_new_player_results(sender, instance, created, **kwargs):
 
 # 更新順序の関係で行う（できればもっとスマートな方法でやりたい）
 @receiver(post_save, sender=Games)
-def update_teams_total_results_updated_at(sender,instance, **kwargs):
-    TeamsTotalResults.objects.get(team_id=instance.team_id).save()
+def update_teams_total_results_updated_at(sender,instance, created, **kwargs):
+    if created:
+        TeamsTotalResults.objects.get(team_id=instance.team_id).save()
+    else:
+        cts = c.CalculateTeamSabr(instance.team_id)
+        cts.update_total_results()
 
 # 野手成績の更新
 @receiver(post_save, sender=FielderResults)

@@ -1,0 +1,13 @@
+{% if team_list %}
+    <ul>
+        {% for team in team_list %}
+            <li><a href="{% url 'eikan:team_detail' team.id %}">
+                {{ team.year }}年：{{ team.get_period_display }}：{{ team.get_prefecture_display }}：
+                {{ team.get_training_policy_display }}：{{ team.draft_nomination }}人：
+                補足：{{ team.remark }}
+            </a></li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>（登録データが）ないです</p>
+{% endif %}

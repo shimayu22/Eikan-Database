@@ -1,13 +1,39 @@
-{% if team_list %}
-    <ul>
-        {% for team in team_list %}
-            <li><a href="{% url 'eikan:team_detail' team.id %}">
-                {{ team.year }}年：{{ team.get_period_display }}：{{ team.get_prefecture_display }}：
-                {{ team.get_training_policy_display }}：{{ team.draft_nomination }}人：
-                補足：{{ team.remark }}
-            </a></li>
-        {% endfor %}
-    </ul>
+{% if team_total_result %}
+    <table border=1>
+        <tr>
+            <th>年度:期間:地区</th>
+            <th>勝</th>
+            <th>負</th>
+            <th>分</th>
+            <th>得点</th>
+            <th>失点</th>
+            <th>得失点差</th>
+            <th>ランク</th>
+            <th>打率</th>
+            <th>OPS</th>
+            <th>HR</th>
+            <th>防御率</th>
+            <th>DER</th>
+            <th>備考</th>
+        </tr>
+        <tr>
+            <td>{{ team_total_result.team_id }}</td>
+            <td>{{ team_total_result.total_win }}</td>
+            <td>{{ team_total_result.total_lose }}</td>
+            <td>{{ team_total_result.total_draw }}</td>
+            <td>{{ team_total_result.score }}</td>
+            <td>{{ team_total_result.run }}</td>
+            <td>{{ team_total_result.score_difference }}</td>
+            <td>{{ team_total_result.get_rank_display }}</td>
+            <td>{{ team_total_result.batting_average }}</td>
+            <td>{{ team_total_result.ops }}</td>
+            <td>{{ team_total_result.hr }}</td>
+            <td>{{ team_total_result.era }}</td>
+            <td>{{ team_total_result.der }}</td>
+            <td>{{ team_total_result.remark }}</td>
+        </tr>
+    </table>
+
 {% else %}
     <p>（登録データが）ないです</p>
 {% endif %}

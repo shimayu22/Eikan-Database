@@ -7,7 +7,7 @@ from .models import Teams, Players, TeamsTotalResults, \
 
 # Create your views here.
 class IndexView(generic.TemplateView):
-    template_name = 'eikan/index.html'
+    template_name = 'eikan/index2.html'
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)

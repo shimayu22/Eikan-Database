@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <title>EN.DB</title>
+</head>
+<body>
+    <div class="container">
+        {% if team_total_result %}
+            <table class="table table-bordered">
+                <thead class="thead-light">
+                    <tr>
+                        <th>年度:期間:地区</th>
+                        <th>勝</th>
+                        <th>負</th>
+                        <th>分</th>
+                        <th>得点</th>
+                        <th>失点</th>
+                        <th>得失点差</th>
+                        <th>ランク</th>
+                        <th>打率</th>
+                        <th>OPS</th>
+                        <th>HR</th>
+                        <th>防御率</th>
+                        <th>DER</th>
+                        <th>備考</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>{{ team_total_result.team_id }}</th>
+                        <td>{{ team_total_result.total_win }}</td>
+                        <td>{{ team_total_result.total_lose }}</td>
+                        <td>{{ team_total_result.total_draw }}</td>
+                        <td>{{ team_total_result.score }}</td>
+                        <td>{{ team_total_result.run }}</td>
+                        <td>{{ team_total_result.score_difference }}</td>
+                        <td>{{ team_total_result.get_rank_display }}</td>
+                        <td>{{ team_total_result.batting_average }}</td>
+                        <td>{{ team_total_result.ops }}</td>
+                        <td>{{ team_total_result.hr }}</td>
+                        <td>{{ team_total_result.era }}</td>
+                        <td>{{ team_total_result.der }}</td>
+                        <td>{{ team_total_result.remark }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <hr>
+            <table class="table table-bordered table-hover table-responsive text-nowrap">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Player</th>
+                        <th>OPS</th>
+                        <th>SLG</th>
+                        <th>AVG</th>
+                        <th>OBP</th>
+                        <th>GPA</th>
+                        <th>AB</th>
+                        <th>R</th>
+                        <th>H</th>
+                        <th>2B</th>
+                        <th>3B</th>
+                        <th>HR</th>
+                        <th>RBI</th>
+                        <th>SO</th>
+                        <th>BB</th>
+                        <th>SAC</th>
+                        <th>SB</th>
+                        <th>GDP</th>
+                        <th>ER</th>
+                        <th>TB</th>
+                        <th>BB%</th>
+                        <th>IsoD</th>
+                        <th>IsoP</th>
+                        <th>BB/K</th>
+                        <th>P-S</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ftr in fielder_total_results %}
+                    <tr>
+                        <th>{{ ftr.player_id }}</th>
+                        <td>{{ ftr.ops }}</td>
+                        <td>{{ ftr.slg }}</td>
+                        <td>{{ ftr.batting_average }}</td>
+                        <td>{{ ftr.obp }}</td>
+                        <td>{{ ftr.gpa }}</td>
+                        <td>{{ ftr.at_bat }}</td>
+                        <td>{{ ftr.run }}</td>
+                        <td>{{ ftr.hit }}</td>
+                        <td>{{ ftr.two_base }}</td>
+                        <td>{{ ftr.three_base }}</td>
+                        <td>{{ ftr.home_run }}</td>
+                        <td>{{ ftr.run_batted_in }}</td>
+                        <td>{{ ftr.strike_out }}</td>
+                        <td>{{ ftr.bb_hbp }}</td>
+                        <td>{{ ftr.sacrifice_bunt }}</td>
+                        <td>{{ ftr.stolen_base }}</td>
+                        <td>{{ ftr.grounded_into_double_play }}</td>
+                        <td>{{ ftr.error }}</td>
+                        <td>{{ ftr.total_bases }}</td>
+                        <td>{{ ftr.bbhp_percent }}</td>
+                        <td>{{ ftr.isod }}</td>
+                        <td>{{ ftr.isop }}</td>
+                        <td>{{ ftr.bbhp_k }}</td>
+                        <td>{{ ftr.p_s }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <hr>
+            <table class="table table-bordered table-hover table-responsive text-nowrap">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Player</th>
+                        <th>G</th>
+                        <th>GS</th>
+                        <th>PI</th>
+                        <th>NP</th>
+                        <th>TBF</th>
+                        <th>H</th>
+                        <th>SO</th>
+                        <th>BBHP</th>
+                        <th>R</th>
+                        <th>ER</th>
+                        <th>WP</th>
+                        <th>HR</th>
+                        <th>ERA</th>
+                        <th>URA</th>
+                        <th>WHIP</th>
+                        <th>K/BB</th>
+                        <th>k/9</th>
+                        <th>K%</th>
+                        <th>BB/9</th>
+                        <th>BB%</th>
+                        <th>HR/9</th>
+                        <th>HR%</th>
+                        <th>LOB%</th>
+                        <th>P/IP</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ptr in pitcher_total_results %}
+                    <tr>
+                        <th>{{ ptr.player_id }}</th>
+                        <td>{{ ptr.games }}</td>
+                        <td>{{ ptr.games_started }}</td>
+                        <td>{{ ptr.innings_pitched }}</td>
+                        <td>{{ ptr.number_of_pitch }}</td>
+                        <td>{{ ptr.total_batters_faced }}</td>
+                        <td>{{ ptr.hit }}</td>
+                        <td>{{ ptr.strike_out }}</td>
+                        <td>{{ ptr.bb_hbp }}</td>
+                        <td>{{ ptr.run }}</td>
+                        <td>{{ ptr.earned_run }}</td>
+                        <td>{{ ptr.wild_pitch }}</td>
+                        <td>{{ ptr.home_run }}</td>
+                        <td>{{ ptr.era }}</td>
+                        <td>{{ ptr.ura }}</td>
+                        <td>{{ ptr.whip }}</td>
+                        <td>{{ ptr.k_bbhp }}</td>
+                        <td>{{ ptr.k_9 }}</td>
+                        <td>{{ ptr.k_percent }}</td>
+                        <td>{{ ptr.bbhp_9 }}</td>
+                        <td>{{ ptr.p_bbhp_percent }}</td>
+                        <td>{{ ptr.hr_9 }}</td>
+                        <td>{{ ptr.hr_percent }}</td>
+                        <td>{{ ptr.lob_percent }}</td>
+                        <td>{{ ptr.p_ip }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>（登録データが）ないです</p>
+        {% endif %}
+    </div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+</body>
+</html>

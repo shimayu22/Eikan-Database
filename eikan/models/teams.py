@@ -138,11 +138,12 @@ class Teams(models.Model):
         auto_now=True,
     )
 
- 
-
     def __str__(self):
         return f'{self.year}:{self.PERIOD_CHOICES[self.period][1]}:{self.PREFECTURE_CHOICES[self.prefecture][1]}'
-    
+
+    def __int__(self):
+        return self.pk
+
     class Meta:
         verbose_name = "チーム情報"
         verbose_name_plural = "(3)チーム情報"

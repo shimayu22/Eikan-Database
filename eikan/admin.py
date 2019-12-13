@@ -6,12 +6,12 @@ from django.forms import NumberInput
 from .models import Teams, Players, Games, \
                     FielderResults, PitcherResults, \
                     FielderTotalResults, PitcherTotalResults, \
-                    TeamsTotalResults
+                    TeamTotalResults
 
 admin.site.site_header = '栄冠ナインデータベース 管理画面'
 
 class TeamsAdmin(admin.ModelAdmin):
-    fields = (('year', 'period', 'prefecture'), 'training_policy', \
+    fields = (('year', 'period', 'prefecture'), 'rank', 'training_policy', \
               'draft_nomination', 'remark')
     list_display = ('year', 'period', 'prefecture', 'training_policy', \
                     'draft_nomination', 'remark')
@@ -69,17 +69,17 @@ admin.site.register(Players, PlayersAdmin)
 admin.site.register(Games, GamesAdmin)
 admin.site.register(FielderTotalResults, FielderTotalResultsAdmin)
 admin.site.register(PitcherTotalResults, PitcherTotalResultsAdmin)
-admin.site.register(TeamsTotalResults, TeamTotalResultsAdmin)
+admin.site.register(TeamTotalResults, TeamTotalResultsAdmin)
 
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from eikan import calculate_sabr as c
 
-# チームを登録したらTeamsTotalResultsも対応するレコードを登録する
+# チームを登録したらTeamTotalResultsも対応するレコードを登録する
 @receiver(post_save, sender=Teams)
 def insert_new_teams_total_results(sender, instance, created, **kwargs):
     if created:
-        TeamsTotalResults.objects.create(team_id=instance,)
+        TeamTotalResults.objects.create(team_id=instance,)
 
 # 選手を登録したらFielderTotalResults,
 # PitcherTotalResultsも対応するレコードを登録する
@@ -94,7 +94,7 @@ def insert_new_player_results(sender, instance, created, **kwargs):
 @receiver(post_save, sender=Games)
 def update_teams_total_results_updated_at(sender,instance, created, **kwargs):
     if created:
-        TeamsTotalResults.objects.get(team_id=instance.team_id).save()
+        TeamTotalResults.objects.get(team_id=instance.team_id).save()
     else:
         cts = c.CalculateTeamSabr(instance.team_id)
         cts.update_total_results()
@@ -118,6 +118,6 @@ def update_cal_team_results(sender, instance, created, **kwargs):
         # PitcherTotalResults新規登録時は処理をしない
         pass
     else:
-        team_id = TeamsTotalResults.objects.latest('updated_at').team_id
+        team_id = TeamTotalResults.objects.latest('updated_at').team_id
         cts = c.CalculateTeamSabr(team_id)
         cts.update_total_results()

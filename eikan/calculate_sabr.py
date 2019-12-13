@@ -2,7 +2,7 @@ from django.db import models
 from eikan.models import Teams, Players, Games, \
                          FielderResults, PitcherResults, \
                          FielderTotalResults, PitcherTotalResults, \
-                         TeamsTotalResults
+                         TeamTotalResults
 
 class CalculateFielderSabr:
     def __init__(self, player_id):
@@ -304,8 +304,8 @@ class CalculateTeamSabr:
         self.team_bb_hbp = self.pitcher_total_results.aggregate(models.Sum('bb_hbp'))['bb_hbp__sum']
         self.team_strike_out = self.pitcher_total_results.aggregate(models.Sum('strike_out'))['strike_out__sum']
         self.team_suffer_home_run = self.pitcher_total_results.aggregate(models.Sum('home_run'))['home_run__sum']
-        # TeamsTotalResults
-        self.teams_total_results = TeamsTotalResults.objects.get(team_id=team_id)
+        # TeamTotalResults
+        self.teams_total_results = TeamTotalResults.objects.get(team_id=team_id)
 
     def team_batting_average(self):
         if self.tema_at_bat == 0:

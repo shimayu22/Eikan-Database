@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import generic
 
-from .models import Teams, Players, TeamsTotalResults, \
+from .models import Teams, Players, TeamTotalResults, \
                     FielderTotalResults, PitcherTotalResults
 
 # Create your views here.
@@ -11,7 +11,7 @@ class IndexView(generic.TemplateView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx['team_total_result'] = TeamsTotalResults.objects.latest('pk')
+        ctx['team_total_result'] = TeamTotalResults.objects.latest('pk')
         start_year = (ctx['team_total_result'].year - 2) if ctx['team_total_result'].period == 1 else (ctx['team_total_result'].year - 1)
         players = Players.objects.filter(admission_year__gte=start_year, admission_year__lte=ctx['team_total_result'].year)
         pitchers = Players.objects.filter(admission_year__gte=start_year, admission_year__lte=ctx['team_total_result'].year, is_pitcher=True)
@@ -26,7 +26,7 @@ class TeamView(generic.ListView):
 
     def get_queryset(self):
         return Teams.objects.order_by('-year', '-period')
-        #return TeamsTotalResults.order_by('team_id')
+        #return TeamTotalResults.order_by('team_id')
 
 class TeamDetailView(generic.DetailView):
     model = Teams

@@ -359,7 +359,7 @@ class CalculateTeamSabr:
         self.teams_total_results.rank = self.latest_rank
         self.teams_total_results.batting_average = self.team_batting_average()
         self.teams_total_results.ops = self.team_ops()
-        self.teams_total_results.hr = self.home_run
+        self.teams_total_results.hr = self.team_home_run
         self.teams_total_results.era = self.team_era()
         self.teams_total_results.der = self.team_der()
         # 以上をupdateする

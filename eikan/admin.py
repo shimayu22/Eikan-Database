@@ -11,9 +11,9 @@ from .models import Teams, Players, Games, \
 admin.site.site_header = '栄冠ナインデータベース 管理画面'
 
 class TeamsAdmin(admin.ModelAdmin):
-    fields = (('year', 'period', 'prefecture'), 'rank', 'training_policy', \
+    fields = (('year', 'period', 'prefecture'), 'training_policy', \
               'draft_nomination', 'remark')
-    list_display = ('year', 'period', 'prefecture', 'training_policy', \
+    list_display = ('year', 'period', 'prefecture', 'rank', 'training_policy', \
                     'draft_nomination', 'remark')
 
 class PlayersAdmin(admin.ModelAdmin):

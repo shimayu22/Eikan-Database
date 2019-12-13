@@ -81,15 +81,6 @@ class Teams(models.Model):
         (4,'守備・投手'),
     )
 
-    RANK_CHOICES = (
-        ('','選択'),
-        (1,'弱小'),
-        (2,'そこそこ'),
-        (3,'中堅'),
-        (4,'強豪'),
-        (5,'名門'),
-    )
-
     year = models.PositiveSmallIntegerField(
         verbose_name="年度",
         validators=[MinValueValidator(1941)],
@@ -130,12 +121,11 @@ class Teams(models.Model):
 
     rank = models.CharField(
         verbose_name="ランク",
-        max_length=100,
+        max_length=4,
         blank=True,
         null=True,
         editable=False,
     )
-
 
     created_at = models.DateTimeField(
         verbose_name="登録日",

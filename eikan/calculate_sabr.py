@@ -283,7 +283,7 @@ class CalculateTeamSabr:
         self.total_draw = self.games.filter(result=3).count()
         self.total_score = self.games.aggregate(models.Sum('score'))['score__sum']
         self.total_run = self.games.aggregate(models.Sum('run'))['run__sum']
-        self.update_rank = self.games.rank
+        self.update_rank = ["-","弱小","そこそこ","中堅","強豪","名門"][self.games.latest('pk').rank]
         # Players
         self.players = Players.objects.filter(admission_year__gte=self.start_year, admission_year__lte=self.year)
         self.pitchers = Players.objects.filter(admission_year__gte=self.start_year, admission_year__lte=self.year, is_pitcher=True)
@@ -353,7 +353,7 @@ class CalculateTeamSabr:
     def update_total_results(self):
         # Teamsのランクを更新する
         self.teams.rank = self.update_rank
-        self.temas.save()
+        self.teams.save()
         # TeamTotalResultsを更新する
         self.team_total_results.total_win = self.total_win
         self.team_total_results.total_lose = self.total_lose

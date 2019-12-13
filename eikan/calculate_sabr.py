@@ -283,6 +283,7 @@ class CalculateTeamSabr:
         self.total_draw = self.games.filter(result=3).count()
         self.total_score = self.games.aggregate(models.Sum('score'))['score__sum']
         self.total_run = self.games.aggregate(models.Sum('run'))['run__sum']
+        self.update_rank = self.games.rank
         # Players
         self.players = Players.objects.filter(admission_year__gte=self.start_year, admission_year__lte=self.year)
         self.pitchers = Players.objects.filter(admission_year__gte=self.start_year, admission_year__lte=self.year, is_pitcher=True)
@@ -305,7 +306,7 @@ class CalculateTeamSabr:
         self.team_strike_out = self.pitcher_total_results.aggregate(models.Sum('strike_out'))['strike_out__sum']
         self.team_suffer_home_run = self.pitcher_total_results.aggregate(models.Sum('home_run'))['home_run__sum']
         # TeamTotalResults
-        self.teams_total_results = TeamTotalResults.objects.get(team_id=team_id)
+        self.team_total_results = TeamTotalResults.objects.get(team_id=team_id)
 
     def team_batting_average(self):
         if self.tema_at_bat == 0:
@@ -350,16 +351,20 @@ class CalculateTeamSabr:
         return a / b
     
     def update_total_results(self):
-        self.teams_total_results.total_win = self.total_win
-        self.teams_total_results.total_lose = self.total_lose
-        self.teams_total_results.total_draw = self.total_draw
-        self.teams_total_results.score = self.total_score
-        self.teams_total_results.run = self.total_run
-        self.teams_total_results.score_difference = self.total_score - self.total_run
-        self.teams_total_results.batting_average = self.team_batting_average()
-        self.teams_total_results.ops = self.team_ops()
-        self.teams_total_results.hr = self.team_home_run
-        self.teams_total_results.era = self.team_era()
-        self.teams_total_results.der = self.team_der()
+        # Teamsのランクを更新する
+        self.teams.rank = self.update_rank
+        self.temas.save()
+        # TeamTotalResultsを更新する
+        self.team_total_results.total_win = self.total_win
+        self.team_total_results.total_lose = self.total_lose
+        self.team_total_results.total_draw = self.total_draw
+        self.team_total_results.score = self.total_score
+        self.team_total_results.run = self.total_run
+        self.team_total_results.score_difference = self.total_score - self.total_run
+        self.team_total_results.batting_average = self.team_batting_average()
+        self.team_total_results.ops = self.team_ops()
+        self.team_total_results.hr = self.team_home_run
+        self.team_total_results.era = self.team_era()
+        self.team_total_results.der = self.team_der()
         # 以上をupdateする
-        self.teams_total_results.save()
+        self.team_total_results.save()

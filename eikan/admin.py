@@ -77,7 +77,7 @@ from eikan import calculate_sabr as c
 
 # チームを登録したらTeamTotalResultsも対応するレコードを登録する
 @receiver(post_save, sender=Teams)
-def insert_new_teams_total_results(sender, instance, created, **kwargs):
+def insert_new_team_total_results(sender, instance, created, **kwargs):
     if created:
         TeamTotalResults.objects.create(team_id=instance,)
 
@@ -98,6 +98,8 @@ def update_teams_total_results_updated_at(sender,instance, created, **kwargs):
     else:
         cts = c.CalculateTeamSabr(instance.team_id)
         cts.update_total_results()
+
+
 
 # 野手成績の更新
 @receiver(post_save, sender=FielderResults)

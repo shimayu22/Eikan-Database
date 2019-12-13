@@ -5,4 +5,4 @@ from eikan.models.fielder_results import FielderResults
 from eikan.models.pitcher_results import PitcherResults
 from eikan.models.fielder_total_results import FielderTotalResults
 from eikan.models.pitcher_total_results import PitcherTotalResults
-from eikan.models.teams_total_results import TeamTotalResults
+from eikan.models.team_total_results import TeamTotalResults

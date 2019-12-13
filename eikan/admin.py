@@ -99,8 +99,6 @@ def update_teams_total_results_updated_at(sender,instance, created, **kwargs):
         cts = c.CalculateTeamSabr(instance.team_id)
         cts.update_total_results()
 
-
-
 # 野手成績の更新
 @receiver(post_save, sender=FielderResults)
 def update_cal_fielder_results(sender, instance, **kwargs):

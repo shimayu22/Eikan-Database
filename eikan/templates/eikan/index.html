@@ -45,7 +45,11 @@
                         <td>{{ team_total_result.hr }}</td>
                         <td>{{ team_total_result.era }}</td>
                         <td>{{ team_total_result.der }}</td>
-                        <td>{{ teams.remark }}</td>
+                        <td>
+                        {% if teams.remark %}
+                            {{ teams.remark }}    
+                        {% endif %}
+                        </td>
                     </tr>
                 </tbody>
             </table>

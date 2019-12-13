@@ -16,8 +16,8 @@ class IndexView(generic.TemplateView):
         start_year = (ctx['teams'].year - 2) if ctx['teams'].period == 1 else (ctx['teams'].year - 1)
         players = Players.objects.filter(admission_year__gte=start_year, admission_year__lte=ctx['teams'].year)
         pitchers = Players.objects.filter(admission_year__gte=start_year, admission_year__lte=ctx['teams'].year, is_pitcher=True)
-        ctx['fielder_total_results'] = FielderTotalResults.objects.filter(player_id__in=players).order_by('-ops', '-slg','player_id')
-        ctx['pitcher_total_results'] = PitcherTotalResults.objects.filter(player_id__in=pitchers).order_by('player_id')
+        ctx['fielder_total_results'] = FielderTotalResults.objects.filter(player_id__in=players).order_by('-ops', '-slg','-player_id')
+        ctx['pitcher_total_results'] = PitcherTotalResults.objects.filter(player_id__in=pitchers).order_by('-player_id')
 
         return ctx
 

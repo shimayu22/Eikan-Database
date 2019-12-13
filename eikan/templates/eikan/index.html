@@ -39,15 +39,15 @@
                         <td>{{ team_total_result.score }}</td>
                         <td>{{ team_total_result.run }}</td>
                         <td>{{ team_total_result.score_difference }}</td>
-                        <td>{{ teams.rank }}</td>
+                        <td>{{ team_total_result.team_id.rank }}</td>
                         <td>{{ team_total_result.batting_average }}</td>
                         <td>{{ team_total_result.ops }}</td>
                         <td>{{ team_total_result.hr }}</td>
                         <td>{{ team_total_result.era }}</td>
                         <td>{{ team_total_result.der }}</td>
                         <td>
-                        {% if teams.remark %}
-                            {{ teams.remark }}    
+                        {% if team_total_result.team_id.remark %}
+                            {{ team_total_result.team_id.remark }}    
                         {% endif %}
                         </td>
                     </tr>
@@ -58,6 +58,7 @@
                 <thead class="thead-light">
                     <tr>
                         <th>Player</th>
+                        <th>備考</th>
                         <th>OPS</th>
                         <th>SLG</th>
                         <th>AVG</th>
@@ -88,6 +89,20 @@
                     {% for ftr in fielder_total_results %}
                     <tr>
                         <th>{{ ftr.player_id }}</th>
+                        <td>
+                            {% if ftr.player_id.is_ob %}
+                                OB 
+                            {% endif %} 
+                            {% if ftr.player_id.is_active %}
+                                現役 
+                            {% endif %} 
+                            {% if ftr.player_id.is_genius %}
+                                天才 
+                            {% endif %} 
+                            {% if ftr.player_id.remark %}
+                                {{ ftr.player_id.remark }}
+                            {% endif %}
+                        </td>
                         <td>{{ ftr.ops }}</td>
                         <td>{{ ftr.slg }}</td>
                         <td>{{ ftr.batting_average }}</td>
@@ -121,6 +136,7 @@
                 <thead class="thead-light">
                     <tr>
                         <th>Player</th>
+                        <th>備考</th>
                         <th>G</th>
                         <th>GS</th>
                         <th>PI</th>
@@ -151,6 +167,20 @@
                     {% for ptr in pitcher_total_results %}
                     <tr>
                         <th>{{ ptr.player_id }}</th>
+                        <td>
+                            {% if ptr.player_id.is_ob %}
+                                OB 
+                            {% endif %} 
+                            {% if ptr.player_id.is_active %}
+                                現役 
+                            {% endif %} 
+                            {% if ptr.player_id.is_genius %}
+                                天才 
+                            {% endif %} 
+                            {% if ptr.player_id.remark %}
+                                {{ ptr.player_id.remark }}
+                            {% endif %}
+                        </td>
                         <td>{{ ptr.games }}</td>
                         <td>{{ ptr.games_started }}</td>
                         <td>{{ ptr.innings_pitched }}</td>

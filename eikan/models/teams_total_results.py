@@ -3,31 +3,10 @@ from eikan.models import Teams
 
 class TeamsTotalResults(models.Model):
 
-    RANK_CHOICES = (
-        ('','選択'),
-        (1,'弱小'),
-        (2,'そこそこ'),
-        (3,'中堅'),
-        (4,'強豪'),
-        (5,'名門'),
-    )
-
     team_id = models.ForeignKey(
         Teams,
         on_delete=models.CASCADE,
         verbose_name="チーム",
-        editable=False,
-    )
-
-    year = models.PositiveSmallIntegerField(
-        verbose_name="年度",
-        default=0,
-        editable=False,
-    )
-
-    period = models.PositiveSmallIntegerField(
-        verbose_name="期間",
-        default=0,
         editable=False,
     )
 
@@ -67,13 +46,6 @@ class TeamsTotalResults(models.Model):
         editable=False,
     )
 
-    rank = models.PositiveSmallIntegerField(
-        verbose_name="ランク",
-        default=0,
-        choices=RANK_CHOICES,
-        editable=False,
-    )
-
     batting_average = models.DecimalField(
         verbose_name="打率",
         max_digits=4,
@@ -109,14 +81,6 @@ class TeamsTotalResults(models.Model):
         max_digits=4,
         decimal_places=3,
         default=0.000,
-        editable=False,
-    )
-
-    remark = models.CharField(
-        verbose_name="備考",
-        max_length=100,
-        blank=True,
-        null=True,
         editable=False,
     )
 

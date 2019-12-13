@@ -271,10 +271,10 @@ class CalculatePitcherSabr:
     
 class CalculateTeamSabr:
     def __init__(self, team_id):
-        # TeamsTotalResults
-        self.teams_total_results = TeamsTotalResults.objects.get(team_id=team_id)
-        self.year = self.teams_total_results.year
-        self.period = self.teams_total_results.period
+        # Teams
+        self.teams = Teams.objects.get(id=int(team_id))
+        self.year = self.teams.year
+        self.period = self.teams.period
         self.start_year = (self.year - 2) if self.period == 1 else (self.year - 1)
         # Games
         self.games = Games.objects.filter(team_id=team_id)
@@ -283,7 +283,6 @@ class CalculateTeamSabr:
         self.total_draw = self.games.filter(result=3).count()
         self.total_score = self.games.aggregate(models.Sum('score'))['score__sum']
         self.total_run = self.games.aggregate(models.Sum('run'))['run__sum']
-        self.latest_rank = self.games.latest('pk').rank
         # Players
         self.players = Players.objects.filter(admission_year__gte=self.start_year, admission_year__lte=self.year)
         self.pitchers = Players.objects.filter(admission_year__gte=self.start_year, admission_year__lte=self.year, is_pitcher=True)
@@ -305,7 +304,8 @@ class CalculateTeamSabr:
         self.team_bb_hbp = self.pitcher_total_results.aggregate(models.Sum('bb_hbp'))['bb_hbp__sum']
         self.team_strike_out = self.pitcher_total_results.aggregate(models.Sum('strike_out'))['strike_out__sum']
         self.team_suffer_home_run = self.pitcher_total_results.aggregate(models.Sum('home_run'))['home_run__sum']
-
+        # TeamsTotalResults
+        self.teams_total_results = TeamsTotalResults.objects.get(team_id=team_id)
 
     def team_batting_average(self):
         if self.tema_at_bat == 0:
@@ -356,7 +356,6 @@ class CalculateTeamSabr:
         self.teams_total_results.score = self.total_score
         self.teams_total_results.run = self.total_run
         self.teams_total_results.score_difference = self.total_score - self.total_run
-        self.teams_total_results.rank = self.latest_rank
         self.teams_total_results.batting_average = self.team_batting_average()
         self.teams_total_results.ops = self.team_ops()
         self.teams_total_results.hr = self.team_home_run

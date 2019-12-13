@@ -48,8 +48,8 @@ class GamesAdmin(admin.ModelAdmin):
     inlines = [FielderResultsInline, PitcherResultsInline]
 
 class TeamTotalResultsAdmin(admin.ModelAdmin):
-    list_display = ('team_id', 'rank', 'total_win', 'total_lose', 'total_draw', 'score', \
-                    'run', 'score_difference', 'batting_average', 'ops', 'hr', 'era', 'der', 'remark')
+    list_display = ('team_id', 'total_win', 'total_lose', 'total_draw', 'score', \
+                    'run', 'score_difference', 'batting_average', 'ops', 'hr', 'era', 'der',)
 
 class FielderTotalResultsAdmin(admin.ModelAdmin):
     list_display = ('player_id', 'ops', 'slg', 'obp', 'gpa', 'batting_average', 'at_bat', \
@@ -79,8 +79,7 @@ from eikan import calculate_sabr as c
 @receiver(post_save, sender=Teams)
 def insert_new_teams_total_results(sender, instance, created, **kwargs):
     if created:
-        TeamsTotalResults.objects.create(team_id=instance, year=instance.year, \
-                                         period=instance.period, remark=instance.remark)
+        TeamsTotalResults.objects.create(team_id=instance,)
 
 # 選手を登録したらFielderTotalResults,
 # PitcherTotalResultsも対応するレコードを登録する

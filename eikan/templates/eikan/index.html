@@ -3,7 +3,7 @@
 <div class="container">
     <h3 class="mt-2">チーム成績</h3>
     {% if team_total_result %}
-        <table class="table table-bordered table-sm text-nowrap">
+        <table class="table table-bordered table-hover table-sm table-responsive-lg text-nowrap">
             <thead class="thead-light text-center">
                 <tr>
                     <th>年度:期間:地区</th>
@@ -12,7 +12,7 @@
                     <th>分</th>
                     <th>得点</th>
                     <th>失点</th>
-                    <th>得失点差</th>
+                    <th>得失</th>
                     <th>ランク</th>
                     <th>打率</th>
                     <th>OPS</th>
@@ -47,7 +47,7 @@
         </table>
         <hr>
         <h3 class="mt-2">打者成績</h3>
-        <table class="table table-bordered table-hover table-sm table-responsive text-nowrap">
+        <table class="table table-bordered table-hover table-sm table-responsive-lg text-nowrap">
             <thead class="thead-light text-center">
                 <tr>
                     <th>Player</th>
@@ -126,7 +126,7 @@
         </table>
         <hr>
         <h3 class="mt-2">投手成績</h3>
-        <table class="table table-bordered table-hover table-sm table-responsive text-nowrap">
+        <table class="table table-bordered table-hover table-sm table-responsive-lg text-nowrap">
             <thead class="thead-light text-center">
                 <tr>
                     <th>Player</th>
@@ -204,7 +204,10 @@
             </tbody>
         </table>
     {% else %}
-        <p>（登録データが）ないです</p>
+        <div class="text-center">
+            <h4>（登録データが）ないです</h4>
+            <p><a href="{% url 'admin:index' %}">管理画面</a>からデータを登録してください。</p>
+        </div>
     {% endif %}
 </div>
 {% endblock %}

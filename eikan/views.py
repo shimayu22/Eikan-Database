@@ -1,12 +1,12 @@
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
-from django.views import generic
+from django.views.generic import TemplateView, ListView, DetailView
 
 from .models import Teams, Players, TeamTotalResults, \
                     FielderTotalResults, PitcherTotalResults
 
 # Create your views here.
-class IndexView(generic.TemplateView):
+class IndexView(TemplateView):
     template_name = 'eikan/index.html'
 
     def get_context_data(self, **kwargs):
@@ -21,25 +21,26 @@ class IndexView(generic.TemplateView):
 
         return ctx
 
-class TeamView(generic.ListView):
-    template_name = 'eikan/team.html'
-    context_object_name = 'team_list'
+class TeamView(ListView):
+    model = TeamTotalResults
+    template_name = 'eikan/teams.html'
+    context_object_name = 'team_total_results'
 
-    def get_queryset(self):
-        return Teams.objects.order_by('-year', '-period')
-        #return TeamTotalResults.order_by('team_id')
 
-class TeamDetailView(generic.DetailView):
+class TeamDetailView(DetailView):
     model = Teams
     template_name = 'eikan/team_detail.html'
 
-class PlayerView(generic.ListView):
-    template_name = 'eikan/player.html'
-    context_object_name = 'player_list'
+class FielderView(ListView):
+    model = FielderTotalResults
+    template_name = 'eikan/fielders.html'
+    context_object_name = 'fielder_total_results'
 
-    def get_queryset(self):
-        return Players.objects.order_by('-admission_year','position')
+class PitcherView(ListView):
+    model = PitcherTotalResults
+    template_name = 'eikan/pitchers.html'
+    context_object_name = 'pitcher_total_results'
 
-class PlayerDetailView(generic.DetailView):
+class PlayerDetailView(DetailView):
     model = Players
     template_name = 'eikan/player_detail.html'

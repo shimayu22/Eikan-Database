@@ -89,6 +89,9 @@ class Players(models.Model):
     def __str__(self):
         return f'{self.admission_year}:{self.name}({self.POSITION_CHOICES[self.position][1]})'
 
+    def __int__(self):
+        return self.pk
+
     class Meta:
         verbose_name = "選手情報"
         verbose_name_plural = "(2)選手情報"

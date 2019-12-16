@@ -1,6 +1,5 @@
 {% extends './_base.html' %}
 {% block content %}
-<div class="container">
     <h3 class="mt-2">チーム成績</h3>
     {% if team_total_result %}
         <table class="table table-bordered table-hover table-sm table-responsive-lg text-nowrap">
@@ -209,5 +208,5 @@
             <p><a href="{% url 'admin:index' %}">管理画面</a>からデータを登録してください。</p>
         </div>
     {% endif %}
-</div>
+
 {% endblock %}

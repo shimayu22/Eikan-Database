@@ -50,5 +50,7 @@ class PlayerDetailView(DetailView):
         
         ctx = super().get_context_data(**kwargs)
         ctx['fielder_total_results'] = FielderTotalResults.objects.get(player_id=player_id)
-        #ctx['pitcher_total_results'] = PitcherTotalResults.objects.get(player_id=player_id)
+        if player_id.is_pitcher:
+            ctx['pitcher_total_results'] = PitcherTotalResults.objects.get(player_id=player_id)
+        
         return ctx

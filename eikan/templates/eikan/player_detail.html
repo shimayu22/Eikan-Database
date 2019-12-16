@@ -1,6 +1,153 @@
 {% extends './_base.html' %}
 {% block content %}
-<div class="container">
-    <h3 class="mt-2">{{ fielder_total_results }}</h3>
+<hr class="mt-5">
+<div class="row h4 text-nowrap">
+    <div class="col text-right">名前：</div>
+    <div class="col">{{ players.name }}</div>
+    <div class="col text-right">入学年度：</div>
+    <div class="col">{{ players.admission_year }}</div>
+    <div class="col text-right">ポジション：</div>
+    <div class="col">{{ players.get_position_display }}</div>
+    <div class="col text-right">備考：</div>
+    <div class="col">
+        {% if players.is_ob %}
+            OB 
+        {% endif %} 
+        {% if players.is_active %}
+            現役 
+        {% endif %} 
+        {% if players.is_genius %}
+            天才 
+        {% endif %} 
+        {% if players.remark %}
+            {{ players.remark }}
+        {% endif %}
+    </div>
 </div>
+<hr class="mb-5">
+<h3 class="mt-2">打者成績</h3>
+<table class="table table-bordered table-hover table-sm table-responsive-lg text-nowrap">
+    <thead class="thead-light text-center">
+        <tr>
+            <th>　</th>
+            <th>AB</th>
+            <th>R</th>
+            <th>H</th>
+            <th>2B</th>
+            <th>3B</th>
+            <th>HR</th>
+            <th>RBI</th>
+            <th>SO</th>
+            <th>BB</th>
+            <th>SAC</th>
+            <th>SB</th>
+            <th>GDP</th>
+            <th>ER</th>
+            <th>TB</th>
+            <th>OPS</th>
+            <th>SLG</th>
+            <th>AVG</th>
+            <th>OBP</th>
+            <th>GPA</th>
+            <th>BB%</th>
+            <th>IsoD</th>
+            <th>IsoP</th>
+            <th>BB/K</th>
+            <th>P-S</th>
+        </tr>
+    </thead>
+    <tbody class="text-right">
+        <tr>
+            <td>通算</td>
+            <td>{{ fielder_total_results.at_bat }}</td>
+            <td>{{ fielder_total_results.run }}</td>
+            <td>{{ fielder_total_results.hit }}</td>
+            <td>{{ fielder_total_results.two_base }}</td>
+            <td>{{ fielder_total_results.three_base }}</td>
+            <td>{{ fielder_total_results.home_run }}</td>
+            <td>{{ fielder_total_results.run_batted_in }}</td>
+            <td>{{ fielder_total_results.strike_out }}</td>
+            <td>{{ fielder_total_results.bb_hbp }}</td>
+            <td>{{ fielder_total_results.sacrifice_bunt }}</td>
+            <td>{{ fielder_total_results.stolen_base }}</td>
+            <td>{{ fielder_total_results.grounded_into_double_play }}</td>
+            <td>{{ fielder_total_results.error }}</td>
+            <td>{{ fielder_total_results.total_bases }}</td>
+            <td>{{ fielder_total_results.ops }}</td>
+            <td>{{ fielder_total_results.slg }}</td>
+            <td>{{ fielder_total_results.batting_average }}</td>
+            <td>{{ fielder_total_results.obp }}</td>
+            <td>{{ fielder_total_results.gpa }}</td>
+            <td>{{ fielder_total_results.bbhp_percent }}</td>
+            <td>{{ fielder_total_results.isod }}</td>
+            <td>{{ fielder_total_results.isop }}</td>
+            <td>{{ fielder_total_results.bbhp_k }}</td>
+            <td>{{ fielder_total_results.p_s }}</td>
+        </tr>
+    </tbody>
+</table>
+<hr class="mt-5 mb-5">
+{% if pitcher_total_results %}
+    <h3 class="mt-2">投手成績</h3>
+    <table class="table table-bordered table-hover table-sm table-responsive-lg text-nowrap">
+        <thead class="thead-light text-center">
+            <tr>
+                <th>　</th>
+                <th>AB</th>
+                <th>R</th>
+                <th>H</th>
+                <th>2B</th>
+                <th>3B</th>
+                <th>HR</th>
+                <th>RBI</th>
+                <th>SO</th>
+                <th>BB</th>
+                <th>SAC</th>
+                <th>SB</th>
+                <th>GDP</th>
+                <th>ER</th>
+                <th>TB</th>
+                <th>OPS</th>
+                <th>SLG</th>
+                <th>AVG</th>
+                <th>OBP</th>
+                <th>GPA</th>
+                <th>BB%</th>
+                <th>IsoD</th>
+                <th>IsoP</th>
+                <th>BB/K</th>
+                <th>P-S</th>
+            </tr>
+        </thead>
+        <tbody class="text-right">
+            <tr>
+                <td>通算</td>
+                <td>{{ fielder_total_results.at_bat }}</td>
+                <td>{{ fielder_total_results.run }}</td>
+                <td>{{ fielder_total_results.hit }}</td>
+                <td>{{ fielder_total_results.two_base }}</td>
+                <td>{{ fielder_total_results.three_base }}</td>
+                <td>{{ fielder_total_results.home_run }}</td>
+                <td>{{ fielder_total_results.run_batted_in }}</td>
+                <td>{{ fielder_total_results.strike_out }}</td>
+                <td>{{ fielder_total_results.bb_hbp }}</td>
+                <td>{{ fielder_total_results.sacrifice_bunt }}</td>
+                <td>{{ fielder_total_results.stolen_base }}</td>
+                <td>{{ fielder_total_results.grounded_into_double_play }}</td>
+                <td>{{ fielder_total_results.error }}</td>
+                <td>{{ fielder_total_results.total_bases }}</td>
+                <td>{{ fielder_total_results.ops }}</td>
+                <td>{{ fielder_total_results.slg }}</td>
+                <td>{{ fielder_total_results.batting_average }}</td>
+                <td>{{ fielder_total_results.obp }}</td>
+                <td>{{ fielder_total_results.gpa }}</td>
+                <td>{{ fielder_total_results.bbhp_percent }}</td>
+                <td>{{ fielder_total_results.isod }}</td>
+                <td>{{ fielder_total_results.isop }}</td>
+                <td>{{ fielder_total_results.bbhp_k }}</td>
+                <td>{{ fielder_total_results.p_s }}</td>
+            </tr>
+        </tbody>
+    </table>
+{% endif %}
 {% endblock %}

@@ -1,7 +1,7 @@
 {% extends './_base.html' %}
 {% block content %}
 <div class="container">
-    <span class="h2">チーム成績</span>
+    <h3 class="mt-2">チーム成績</h3>
     {% if team_total_result %}
         <table class="table table-bordered table-sm text-nowrap">
             <thead class="thead-light text-center">
@@ -37,7 +37,7 @@
                     <td>{{ team_total_result.hr }}</td>
                     <td>{{ team_total_result.era }}</td>
                     <td>{{ team_total_result.der }}</td>
-                    <td>
+                    <td class="text-left">
                     {% if team_total_result.team_id.remark %}
                         {{ team_total_result.team_id.remark }}    
                     {% endif %}
@@ -46,7 +46,7 @@
             </tbody>
         </table>
         <hr>
-        <span class="h2">打者成績</span>
+        <h3 class="mt-2">打者成績</h3>
         <table class="table table-bordered table-hover table-sm table-responsive text-nowrap">
             <thead class="thead-light text-center">
                 <tr>
@@ -82,7 +82,7 @@
                 {% for ftr in fielder_total_results %}
                 <tr>
                     <th>{{ ftr.player_id }}</th>
-                    <td class="text-center">
+                    <td class="text-left">
                         {% if ftr.player_id.is_ob %}
                             OB 
                         {% endif %} 
@@ -118,14 +118,14 @@
                     <td>{{ ftr.bbhp_percent }}</td>
                     <td>{{ ftr.isod }}</td>
                     <td>{{ ftr.isop }}</td>
-                    <td>{{ ftr.bbhp_k }}</td class="text-right">
+                    <td>{{ ftr.bbhp_k }}</td>
                     <td>{{ ftr.p_s }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
         <hr>
-        <span class="h2">投手成績</span>
+        <h3 class="mt-2">投手成績</h3>
         <table class="table table-bordered table-hover table-sm table-responsive text-nowrap">
             <thead class="thead-light text-center">
                 <tr>

@@ -284,59 +284,48 @@ class CalculateTeamSabr:
         self.total_score = self.games.aggregate(models.Sum('score'))['score__sum']
         self.total_run = self.games.aggregate(models.Sum('run'))['run__sum']
         self.update_rank = ["-","弱小","そこそこ","中堅","強豪","名門"][self.games.latest('pk').rank]
-        # Players
-        self.players = Players.objects.filter(admission_year__gte=self.start_year, admission_year__lte=self.year)
-        self.pitchers = Players.objects.filter(admission_year__gte=self.start_year, admission_year__lte=self.year, is_pitcher=True)
-        # FielderTotalResults
-        self.fielder_total_results = FielderTotalResults.objects.filter(player_id__in=self.players)
-        self.tema_at_bat = self.fielder_total_results.aggregate(models.Sum('at_bat'))['at_bat__sum']
-        self.team_hit = self.fielder_total_results.aggregate(models.Sum('hit'))['hit__sum']
-        self.team_two_base = self.fielder_total_results.aggregate(models.Sum('two_base'))['two_base__sum']
-        self.team_three_base = self.fielder_total_results.aggregate(models.Sum('three_base'))['three_base__sum']
-        self.team_home_run = self.fielder_total_results.aggregate(models.Sum('home_run'))['home_run__sum']
-        self.team_bbhp = self.fielder_total_results.aggregate(models.Sum('bb_hbp'))['bb_hbp__sum']
-        self.team_error = self.fielder_total_results.aggregate(models.Sum('error'))['error__sum']
-        # PitcherTotalResults
-        self.pitcher_total_results = PitcherTotalResults.objects.filter(player_id__in=self.pitchers)
-        self.team_er = self.pitcher_total_results.aggregate(models.Sum('earned_run'))['earned_run__sum']
-        self.team_pi = self.pitcher_total_results.aggregate(models.Sum('innings_pitched'))['innings_pitched__sum']
-        self.team_total_batters_faced = self.pitcher_total_results.aggregate(models.Sum('total_batters_faced'))['total_batters_faced__sum']
-        self.team_suffer_hit = self.pitcher_total_results.aggregate(models.Sum('hit'))['hit__sum']
-        self.team_bb_hbp = self.pitcher_total_results.aggregate(models.Sum('bb_hbp'))['bb_hbp__sum']
-        self.team_strike_out = self.pitcher_total_results.aggregate(models.Sum('strike_out'))['strike_out__sum']
-        self.team_suffer_home_run = self.pitcher_total_results.aggregate(models.Sum('home_run'))['home_run__sum']
+        # FielderResults
+        self.fielder_results = FielderResults.objects.filter(game_id__in=self.games)
+        self.team_at_bat = self.fielder_results.aggregate(models.Sum('at_bat'))['at_bat__sum']
+        self.team_hit = self.fielder_results.aggregate(models.Sum('hit'))['hit__sum']
+        self.team_two_base = self.fielder_results.aggregate(models.Sum('two_base'))['two_base__sum']
+        self.team_three_base = self.fielder_results.aggregate(models.Sum('three_base'))['three_base__sum']
+        self.team_home_run = self.fielder_results.aggregate(models.Sum('home_run'))['home_run__sum']
+        self.team_bbhp = self.fielder_results.aggregate(models.Sum('bb_hbp'))['bb_hbp__sum']
+        self.team_error = self.fielder_results.aggregate(models.Sum('error'))['error__sum']
+        # PitcherResults
+        self.pitcher_results = PitcherResults.objects.filter(game_id__in=self.games)
+        self.team_er = self.pitcher_results.aggregate(models.Sum('earned_run'))['earned_run__sum']
+        self.team_pi = self.pitcher_results.aggregate(models.Sum('innings_pitched'))['innings_pitched__sum']
+        self.team_pi_fraction = self.pitcher_results.aggregate(models.Sum('innings_pitched_fraction'))['innings_pitched_fraction__sum']
+        self.total_sum_pi = (self.team_pi + (self.team_pi_fraction / 3)) * 3
+        self.team_total_batters_faced = self.pitcher_results.aggregate(models.Sum('total_batters_faced'))['total_batters_faced__sum']
+        self.team_suffer_hit = self.pitcher_results.aggregate(models.Sum('hit'))['hit__sum']
+        self.team_bb_hbp = self.pitcher_results.aggregate(models.Sum('bb_hbp'))['bb_hbp__sum']
+        self.team_strike_out = self.pitcher_results.aggregate(models.Sum('strike_out'))['strike_out__sum']
+        self.team_suffer_home_run = self.pitcher_results.aggregate(models.Sum('home_run'))['home_run__sum']
         # TeamTotalResults
         self.team_total_results = TeamTotalResults.objects.get(team_id=team_id)
 
     def team_batting_average(self):
-        if self.tema_at_bat == 0:
+        if self.team_at_bat == 0:
             return 0
 
-        return self.team_hit / self.tema_at_bat
+        return self.team_hit / self.team_at_bat
     
     def team_ops(self):
-        if self.tema_at_bat == 0:
+        if self.team_at_bat == 0:
             return 0
 
         tb = self.team_hit + self.team_two_base + self.team_three_base * 2 + \
              self.team_home_run * 3
-        slg = tb / self.tema_at_bat
-        obp = (self.team_hit + self.team_bbhp) / (self.tema_at_bat + self.team_bbhp)
+        slg = tb / self.team_at_bat
+        obp = (self.team_hit + self.team_bbhp) / (self.team_at_bat + self.team_bbhp)
 
         return slg + obp
     
     def team_era(self):
-        ip = int(self.team_pi)
-        outcount = 0
-        if self.team_pi - ip == 0.1:
-            outcount = 1
-        elif self.team_pi - ip == 0.2:
-            outcount = 2
-
-        if self.team_pi < 0.1:
-            return 0
-        
-        return (self.team_er * 9 * 3) / ((ip + (outcount / 3)) * 3)
+        return (self.team_er * 9 * 3) / self.total_sum_pi
     
     def team_der(self):
         a = self.team_total_batters_faced - self.team_suffer_hit - \

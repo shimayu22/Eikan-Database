@@ -25,8 +25,8 @@
                 </tr>
             </thead>
             <tbody class="text-right">
-                <tr>
-                    {% for ttr in team_total_results %}
+                {% for ttr in team_total_results %}
+                    <tr>
                         <th class="text-center">{{ ttr.team_id }}</th>
                         <td>{{ ttr.total_win }}</td>
                         <td>{{ ttr.total_lose }}</td>
@@ -47,8 +47,8 @@
                             {{ ttr.team_id.remark }}    
                         {% endif %}
                         </td>
-                    {% endfor %}
-                </tr>
+                    </tr>
+                {% endfor %}
             </tbody>
         </table>
     {% else %}

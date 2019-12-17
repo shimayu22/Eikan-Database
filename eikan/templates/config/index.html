@@ -15,22 +15,25 @@
             <h1 class="mt-5 mb-5">栄冠ナインデータベース</h1>
             <hr>
             <p>
-                <a class="btn btn-outline-info btn-lg m-3" href="{% url 'eikan:index' %}">記録を表示する</a>
                 <a class="btn btn-outline-info btn-lg m-3" href="{% url 'admin:index' %}">記録を登録する</a>
+                <a class="btn btn-outline-info btn-lg m-3" href="{% url 'eikan:index' %}">記録を表示する</a>
             </p>
         </div>
         <hr class="mb-5">
-        <div class="bg-lignt">
+        <div class="bg-lignt offset-3 col-6 border">
             <h3>使い方</h3>
             <p class="text-info"><strong>まず「<a href="{% url 'admin:index' %}">記録を登録する</a>」でチーム情報、選手情報を登録してください</strong></p>
-            <ul>
+            <ol>
                 <li>
-                    「<a href="{% url 'admin:index' %}">記録を登録する</a>」チーム、選手、試合結果を記録してください
+                    「<a href="{% url 'admin:eikan_teams_add' %}">(3)チーム情報</a>」で、現在のチームを登録してください
                 </li>
                 <li>
-
+                    「<a href="{% url 'admin:eikan_players_add' %}">(2)選手情報</a>」で、入学した選手を登録してください
                 </li>
-            </ul>
+                <li>
+                    「<a href="{% url 'admin:eikan_games_add' %}">(1)試合情報</a>」で、試合結果を登録してください
+                </li>
+            </ol>
         </div>
     </div>
     <!-- Optional JavaScript -->

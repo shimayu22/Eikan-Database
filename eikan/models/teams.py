@@ -12,6 +12,10 @@ def default_period():
                 or Teams.objects.latest('pk').period == 2 \
              else 2
 
+def default_prefecture():
+    a = Teams.objects.latest('pk')
+    return 0 if not a else a.prefecture
+
 class Teams(models.Model):
 
     PERIOD_CHOICES = (
@@ -96,7 +100,7 @@ class Teams(models.Model):
     prefecture = models.PositiveSmallIntegerField(
         verbose_name="都道府県",
         choices=PREFECTURE_CHOICES,
-        default=0,
+        default=default_prefecture,
     )
 
     training_policy = models.PositiveSmallIntegerField(

@@ -1,6 +1,7 @@
-from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, render
+from django.urls import reverse
+from django.views.generic import TemplateView
 
 # Create your views here.
-def index(request):
-    # TODO:Viewを作成する
-    return HttpResponse("index工事中")
+class IndexView(TemplateView):
+    template_name = 'config/index.html'

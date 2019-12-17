@@ -13,8 +13,8 @@ def default_period():
              else 2
 
 def default_prefecture():
-    a = Teams.objects.latest('pk')
-    return 0 if not a else a.prefecture
+    return 0 if not Teams.objects.all()\
+            else Teams.objects.latest('pk').prefecture
 
 class Teams(models.Model):
 

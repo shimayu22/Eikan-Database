@@ -14,8 +14,11 @@
     <div class="container">
         <ul class="nav nav-pills nav-fill mb-5 bg-light">
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'eikan:index' %}">TOP</a>
+                <a class="nav-link" href="{% url 'index' %}">TOP</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'eikan:index' %}">現在のチーム</a>
+            </li>            
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'eikan:teams' %}">チーム一覧</a>
             </li>

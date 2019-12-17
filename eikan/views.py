@@ -1,4 +1,4 @@
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_list_or_404, render
 from django.urls import reverse
 from django.views.generic import TemplateView, ListView, DetailView
 
@@ -10,6 +10,10 @@ class IndexView(TemplateView):
     template_name = 'eikan/index.html'
 
     def get_context_data(self, **kwargs):
+        # 雑な404
+        get_list_or_404(Teams)
+        get_list_or_404(Players)
+
         ctx = super().get_context_data(**kwargs)
         ctx['teams'] = Teams.objects.latest('pk')
         ctx['team_total_result'] = TeamTotalResults.objects.get(team_id=ctx['teams'].pk)

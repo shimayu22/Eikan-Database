@@ -1,1 +1,1 @@
-web: gunicorn プロジェクトフォルダー名.wsgi --log-file -
+web: gunicorn config.wsgi --log-file -

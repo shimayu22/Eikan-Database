@@ -71,7 +71,6 @@ admin.site.register(FielderTotalResults, FielderTotalResultsAdmin)
 admin.site.register(PitcherTotalResults, PitcherTotalResultsAdmin)
 admin.site.register(TeamTotalResults, TeamTotalResultsAdmin)
 
-"""
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from eikan import calculate_sabr as c
@@ -122,4 +121,3 @@ def update_cal_team_results(sender, instance, created, **kwargs):
         team_id = TeamTotalResults.objects.latest('updated_at').team_id
         cts = c.CalculateTeamSabr(team_id)
         cts.update_total_results()
-"""

@@ -95,4 +95,4 @@ class Players(models.Model):
     class Meta:
         verbose_name = "選手情報"
         verbose_name_plural = "(2)選手情報"
-        ordering = ['-admission_year', 'position']
+        ordering = ['admission_year', 'position']

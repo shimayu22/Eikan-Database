@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
-#import dj_database_url
+import dj_database_url
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -132,7 +132,7 @@ try:
 except ImportError:
     pass
 
-"""
+
 if not DEBUG:
     SECRET_KEY = os.environ['SECRET_KEY']
     import django_heroku
@@ -142,4 +142,4 @@ db_from_env = dj_database_url.config(conn_max_age=600, ssl_require=True)
 DATABASES['default'].update(db_from_env)
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-"""
+

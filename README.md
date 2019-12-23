@@ -20,7 +20,7 @@
     manage.py runserver
 
 ### Mac版
-    python3 -m venv enva
+    python3 -m venv env
     source env\bin\activate
     pip install -r requirements.txt
     python manage.py migrate

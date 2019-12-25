@@ -17,7 +17,7 @@
                     <th>OPS</th>
                     <th>HR</th>
                     <th>防御率</th>
-                    <th>DER</th>
+                    <th><abbr title="(対戦打者-被安打-与四死球-奪三振-失策)/(対戦打者-被本塁打-与四死球-奪三振)">DER</abbr></th>
                     <th>備考</th>
                 </tr>
             </thead>
@@ -51,30 +51,30 @@
                 <tr>
                     <th>Player</th>
                     <th>備考</th>
-                    <th>OPS</th>
-                    <th>SLG</th>
-                    <th>AVG</th>
-                    <th>OBP</th>
-                    <th>GPA</th>
-                    <th>AB</th>
-                    <th>R</th>
-                    <th>H</th>
-                    <th>2B</th>
-                    <th>3B</th>
-                    <th>HR</th>
-                    <th>RBI</th>
-                    <th>SO</th>
-                    <th>BB</th>
-                    <th>SAC</th>
-                    <th>SB</th>
-                    <th>GDP</th>
-                    <th>ER</th>
-                    <th>TB</th>
-                    <th>BB%</th>
-                    <th>IsoD</th>
-                    <th>IsoP</th>
-                    <th>BB/K</th>
-                    <th>P-S</th>
+                    <th><abbr title="出塁率+長打率">OPS</abbr></th>
+                    <th><abbr title="長打率：塁打/打数">SLG</abbr></th>
+                    <th><abbr title="打率：安打/打数">AVG</abbr></th>
+                    <th><abbr title="出塁率：(安打+四死球)/(打数+四死球)※犠飛を除外">OBP</abbr></th>
+                    <th><abbr title="(出塁率*1.8+長打率)/4">GPA</abbr></th>
+                    <th><abbr title="打数">AB</abbr></th>
+                    <th><abbr title="得点">R</abbr></th>
+                    <th><abbr title="安打">H</abbr></th>
+                    <th><abbr title="二塁打">2B</abbr></th>
+                    <th><abbr title="三塁打">3B</abbr></th>
+                    <th><abbr title="本塁打">HR</abbr></th>
+                    <th><abbr title="打点">RBI</abbr></th>
+                    <th><abbr title="三振">SO</abbr></th>
+                    <th><abbr title="四死球">BB</abbr></th>
+                    <th><abbr title="犠打">SAC</abbr></th>
+                    <th><abbr title="盗塁">SB</abbr></th>
+                    <th><abbr title="併殺打">GDP</abbr></th>
+                    <th><abbr title="エラー">ER</abbr></th>
+                    <th><abbr title="塁打">TB</abbr></th>
+                    <th><abbr title="四死球取得率：四死球/(打数+四死球+犠打)※犠飛を除外">BB%</abbr></th>
+                    <th><abbr title="出塁率-打率">IsoD</abbr></th>
+                    <th><abbr title="長打率-打率">IsoP</abbr></th>
+                    <th><abbr title="1つ三振するまでに得た四死球：四死球/三振">BB/K</abbr></th>
+                    <th><abbr title="(本塁打*盗塁*2)/(本塁打+盗塁)">P-S</abbr></th>
                 </tr>
             </thead>
             <tbody class="text-right">
@@ -130,30 +130,30 @@
                 <tr>
                     <th>Player</th>
                     <th>備考</th>
-                    <th>G</th>
-                    <th>GS</th>
-                    <th>PI</th>
-                    <th>NP</th>
-                    <th>TBF</th>
-                    <th>H</th>
-                    <th>SO</th>
-                    <th>BBHP</th>
-                    <th>R</th>
-                    <th>ER</th>
-                    <th>WP</th>
-                    <th>HR</th>
-                    <th>ERA</th>
-                    <th>URA</th>
-                    <th>WHIP</th>
-                    <th>K/BB</th>
-                    <th>k/9</th>
-                    <th>K%</th>
-                    <th>BB/9</th>
-                    <th>BB%</th>
-                    <th>HR/9</th>
-                    <th>HR%</th>
-                    <th>LOB%</th>
-                    <th>P/IP</th>
+                    <th><abbr title="登板数">G</abbr></th>
+                    <th><abbr title="先発数">GS</abbr></th>
+                    <th><abbr title="投球回数">PI</abbr></th>
+                    <th><abbr title="投球数">NP</abbr></th>
+                    <th><abbr title="対戦打者">TBF</abbr></th>
+                    <th><abbr title="被安打">H</abbr></th>
+                    <th><abbr title="奪三振">SO</abbr></th>
+                    <th><abbr title="与四死球">BBHP</abbr></th>
+                    <th><abbr title="失点">R</abbr></th>
+                    <th><abbr title="自責点">ER</abbr></th>
+                    <th><abbr title="暴投">WP</abbr></th>
+                    <th><abbr title="被本塁打">HR</abbr></th>
+                    <th><abbr title="防御率：(自責点*9*3)/(投球回*3)">ERA</abbr></th>
+                    <th><abbr title="失点率：(失点*9*3)/(投球回*3)">URA</abbr></th>
+                    <th><abbr title="1イニングあたりに出した走者：(被安打+与四死球)*3/(投球回*3)">WHIP</abbr></th>
+                    <th><abbr title="1つ四球を出すまでにいくつ三振を取れるか：奪三振/与四死球">K/BB</abbr></th>
+                    <th><abbr title="奪三振率：(奪三振*9*3)/(投球回*3)">K/9</abbr></th>
+                    <th><abbr title="打者と対戦し奪三振を取る確率：奪三振/対戦打者">K%</abbr></th>
+                    <th><abbr title="与四死球率：(与四死球*9*3)/(投球回*3)">BB/9</abbr></th>
+                    <th><abbr title="打者と対戦し四死球を与える確率：四死球/対戦打者">BB%</abbr></th>
+                    <th><abbr title="被本塁打率：(被本塁打*9*3)/(投球回*3)">HR/9</abbr></th>
+                    <th><abbr title="打者と対戦し本塁打を与える確率：被本塁打/対戦打者">HR%</abbr></th>
+                    <th><abbr title="出塁した走者に得点を許さなかった割合：(安打+四死球-失点)/(安打+四死球-1.4*本塁打)">LOB%</abbr></th>
+                    <th><abbr title="1イニングあたりの投球数：(球数*3)/(投球回*3)">P/IP</abbr></th>
                 </tr>
             </thead>
             <tbody class="text-right">
@@ -204,7 +204,7 @@
         </table>
     {% else %}
         <div class="text-center">
-            <h4>（登録データが）ないです</h4>
+            <h4>(登録データが)ないです</h4>
             <p><a href="{% url 'admin:index' %}">管理画面</a>からデータを登録してください。</p>
         </div>
     {% endif %}

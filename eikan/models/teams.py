@@ -4,8 +4,14 @@ from django.db import models
 
 # Create your models here.
 def default_year():
-    return Teams.objects.latest('pk').year \
-           if Teams.objects.all() else 1941
+
+    if Teams.objects.all():
+        period = Teams.objects.latest('pk').period
+        this_year = Teams.objects.latest('pk').year
+        return this_year if period == 1 \
+                         else this_year + 1
+   
+    return 1941
 
 def default_period():
     return 1 if not Teams.objects.all()\

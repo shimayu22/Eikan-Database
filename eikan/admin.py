@@ -42,7 +42,7 @@ class PitcherResultsInline(admin.TabularInline):
 
 class GamesAdmin(admin.ModelAdmin):
     fields = ('team_id', ('competition_type', 'competiton_round'), \
-                    ('result', 'score', 'run'), 'rank')
+                    ('score', 'run'), 'rank')
     list_display = ('team_id', 'competition_type', 'competiton_round', \
                     'result', 'score', 'run', 'rank')
     #inlines = [FielderResultsInline, PitcherResultsInline]

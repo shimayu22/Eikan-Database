@@ -68,6 +68,7 @@ class Games(models.Model):
         verbose_name="勝敗",
         choices=RESULT_CHOICES,
         default=0,
+        editable=False,
     )
 
     score = models.PositiveSmallIntegerField(
@@ -95,6 +96,15 @@ class Games(models.Model):
         verbose_name="更新日",
         auto_now=True,
     )
+
+    def save(self, *args, **kwargs):
+        if self.score > self.run:
+            self.result = 1
+        elif self.score < self.run:
+            self.result = 2
+        else:
+            self.result = 3
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f'{self.team_id}'

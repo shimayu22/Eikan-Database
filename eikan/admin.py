@@ -45,7 +45,7 @@ class GamesAdmin(admin.ModelAdmin):
                     ('score', 'run'), 'rank')
     list_display = ('team_id', 'competition_type', 'competiton_round', \
                     'result', 'score', 'run', 'rank')
-    #inlines = [FielderResultsInline, PitcherResultsInline]
+    inlines = [FielderResultsInline, PitcherResultsInline]
 
 class TeamTotalResultsAdmin(admin.ModelAdmin):
     list_display = ('team_id', 'total_win', 'total_lose', 'total_draw', 'score', \

@@ -73,7 +73,7 @@ admin.site.register(TeamTotalResults, TeamTotalResultsAdmin)
 
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from eikan import calculate_sabr as c
+from eikan import save_sabr as s
 
 # チームを登録したらTeamTotalResultsも対応するレコードを登録する
 @receiver(post_save, sender=Teams)
@@ -96,20 +96,20 @@ def update_teams_total_results_updated_at(sender,instance, created, **kwargs):
     if created:
         TeamTotalResults.objects.get(team_id=instance.team_id).save()
     else:
-        cts = c.CalculateTeamSabr(instance.team_id)
-        cts.update_total_results()
+        sts = s.SaveTeamSabr(instance.team_id)
+        sts.update_total_results()
 
 # 野手成績の更新
 @receiver(post_save, sender=FielderResults)
 def update_cal_fielder_results(sender, instance, **kwargs):
-    cfs = c.CalculateFielderSabr(instance.player_id)
-    cfs.update_total_results()
+    sfs = s.SaveFielderSabr(instance.player_id)
+    sfs.update_total_results()
     
 # 投手成績の更新
 @receiver(post_save, sender=PitcherResults)
 def update_cal_pitcher_results(sender, instance, **kwargs):
-    cps = c.CalculatePitcherSabr(instance.player_id)
-    cps.update_total_results()
+    sps = s.SavePitcherSabr(instance.player_id)
+    sps.update_total_results()
 
 # チーム総合成績の更新
 @receiver(post_save, sender=PitcherTotalResults)
@@ -119,5 +119,5 @@ def update_cal_team_results(sender, instance, created, **kwargs):
         pass
     else:
         team_id = TeamTotalResults.objects.latest('updated_at').team_id
-        cts = c.CalculateTeamSabr(team_id)
-        cts.update_total_results()
+        sts = s.SaveTeamSabr(team_id)
+        sts.update_total_results()

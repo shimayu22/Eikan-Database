@@ -11,46 +11,57 @@ class SaveFielderSabr:
     def __init__(self, player_id):
         self.player_id = player_id
         self.fielder_results = FielderResults.objects.filter(player_id=self.player_id)
-        self.total_at_bat = self.fielder_results.aggregate(models.Sum('at_bat'))['at_bat__sum']
-        self.total_run = self.fielder_results.aggregate(models.Sum('run'))['run__sum']
-        self.total_hit = self.fielder_results.aggregate(models.Sum('hit'))['hit__sum']
-        self.total_two_base = self.fielder_results.aggregate(models.Sum('two_base'))['two_base__sum']
-        self.total_three_base = self.fielder_results.aggregate(models.Sum('three_base'))['three_base__sum']
-        self.total_home_run = self.fielder_results.aggregate(models.Sum('home_run'))['home_run__sum']
-        self.total_rbi = self.fielder_results.aggregate(models.Sum('run_batted_in'))['run_batted_in__sum']
-        self.total_k = self.fielder_results.aggregate(models.Sum('strike_out'))['strike_out__sum']
-        self.total_bb_hbp = self.fielder_results.aggregate(models.Sum('bb_hbp'))['bb_hbp__sum']
-        self.total_sacrifice_bunt = self.fielder_results.aggregate(models.Sum('sacrifice_bunt'))['sacrifice_bunt__sum']
-        self.total_strike_out = self.fielder_results.aggregate(models.Sum('strike_out'))['strike_out__sum']
-        self.total_stolen_base = self.fielder_results.aggregate(models.Sum('stolen_base'))['stolen_base__sum']
-        self.total_gibp = self.fielder_results.aggregate(models.Sum('grounded_into_double_play'))['grounded_into_double_play__sum']
-        self.total_error = self.fielder_results.aggregate(models.Sum('error'))['error__sum']
+        self.at_bat = self.fielder_results.aggregate(models.Sum('at_bat'))['at_bat__sum']
+        self.run = self.fielder_results.aggregate(models.Sum('run'))['run__sum']
+        self.hit = self.fielder_results.aggregate(models.Sum('hit'))['hit__sum']
+        self.two_base = self.fielder_results.aggregate(models.Sum('two_base'))['two_base__sum']
+        self.three_base = self.fielder_results.aggregate(models.Sum('three_base'))['three_base__sum']
+        self.home_run = self.fielder_results.aggregate(models.Sum('home_run'))['home_run__sum']
+        self.rbi = self.fielder_results.aggregate(models.Sum('run_batted_in'))['run_batted_in__sum']
+        self.k = self.fielder_results.aggregate(models.Sum('strike_out'))['strike_out__sum']
+        self.bb_hbp = self.fielder_results.aggregate(models.Sum('bb_hbp'))['bb_hbp__sum']
+        self.sacrifice_bunt = self.fielder_results.aggregate(models.Sum('sacrifice_bunt'))['sacrifice_bunt__sum']
+        self.strike_out = self.fielder_results.aggregate(models.Sum('strike_out'))['strike_out__sum']
+        self.stolen_base = self.fielder_results.aggregate(models.Sum('stolen_base'))['stolen_base__sum']
+        self.gibp = self.fielder_results.aggregate(models.Sum('grounded_into_double_play'))['grounded_into_double_play__sum']
+        self.error = self.fielder_results.aggregate(models.Sum('error'))['error__sum']
+        self.tb = f.total_bases(self.hit, self.two_base, self.three_base, self.home_run)
+        self.obp = f.on_base_percentage(self.at_bat, self.bb_hbp, self.hit)
+        self.slg = f.slugging_percentage(self.at_bat, self.tb)
+        self.ops = f.on_base_plus_slugging(self.obp, self.slg)
+        self.gpa = f.gross_production_average(self.obp, self.slg)
+        self.ba = f.batting_average(self.at_bat, self.hit)
+        self.bbhp_percent = f.bb_hp_percentage(self.at_bat, self.bb_hbp, self.sacrifice_bunt)
+        self.isod = f.isolated_discipline(self.obp, self.tb)
+        self.isop = f.isolated_power(self.slg, self.total_bases)
+        self.bbhp_k = f.bb_hbp_per_so(self.total_strike_out, self.total_bb_hbp)
+        self.p_s = f.power_speed_number(self.home_run, self.stolen_base)
 
     def update_total_results(self):
         fielder_total_results = FielderTotalResults.objects.get(player_id=self.player_id)
-        fielder_total_results.at_bat = self.total_at_bat
-        fielder_total_results.run = self.total_run
-        fielder_total_results.hit = self.total_hit
-        fielder_total_results.two_base = self.total_two_base
-        fielder_total_results.three_base = self.total_three_base
-        fielder_total_results.home_run = self.total_home_run
-        fielder_total_results.run_batted_in = self.total_rbi
-        fielder_total_results.strike_out = self.total_strike_out
-        fielder_total_results.sacrifice_bunt = self.total_sacrifice_bunt
-        fielder_total_results.stolen_base = self.total_stolen_base
-        fielder_total_results.grounded_into_double_play = self.total_gibp
-        fielder_total_results.error = self.total_error
-        fielder_total_results.total_bases = f.total_bases(self.total_hit, self.total_two_base, self.total_three_base, self.total_home_run)
-        fielder_total_results.slg = f.slugging_percentage(self.total_at_bat, fielder_total_results.total_bases)
-        fielder_total_results.obp = f.on_base_percentage(self.total_at_bat, self.total_bb_hbp, self.total_hit)
-        fielder_total_results.ops = f.on_base_plus_slugging(fielder_total_results.obp, fielder_total_results.slg)
-        fielder_total_results.gpa = f.gross_production_average(fielder_total_results.obp, fielder_total_results.slg)
-        fielder_total_results.batting_average = f.batting_average(self.total_at_bat, self.total_hit)
-        fielder_total_results.bbhp_percent = f.bb_hp_percentage(self.total_at_bat, self.total_bb_hbp, self.total_sacrifice_bunt)
-        fielder_total_results.isod = f.isolated_discipline(fielder_total_results.obp, fielder_total_results.total_bases)
-        fielder_total_results.isop = f.isolated_power(fielder_total_results.slg, fielder_total_results.total_bases)
-        fielder_total_results.bbhp_k = f.bb_hbp_per_so(self.total_strike_out, self.total_bb_hbp)
-        fielder_total_results.p_s = f.power_speed_number(self.total_home_run, self.total_stolen_base)
+        fielder_total_results.at_bat = self.at_bat
+        fielder_total_results.run = self.run
+        fielder_total_results.hit = self.hit
+        fielder_total_results.two_base = self.two_base
+        fielder_total_results.three_base = self.three_base
+        fielder_total_results.home_run = self.home_run
+        fielder_total_results.run_batted_in = self.rbi
+        fielder_total_results.strike_out = self.strike_out
+        fielder_total_results.sacrifice_bunt = self.sacrifice_bunt
+        fielder_total_results.stolen_base = self.stolen_base
+        fielder_total_results.grounded_into_double_play = self.gibp
+        fielder_total_results.error = self.error
+        fielder_total_results.total_bases = self.total_bases
+        fielder_total_results.obp = self.obp
+        fielder_total_results.slg = self.slg
+        fielder_total_results.ops = self.ops
+        fielder_total_results.gpa = self.gpa
+        fielder_total_results.batting_average = self.ba
+        fielder_total_results.bbhp_percent = self.bbhp_percent
+        fielder_total_results.isod = self.isod
+        fielder_total_results.isop = self.isod
+        fielder_total_results.bbhp_k = self.bbhp_k
+        fielder_total_results.p_s = self.p_s
         # 以上をupdateする
         fielder_total_results.save()
     

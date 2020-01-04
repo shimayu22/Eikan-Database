@@ -60,98 +60,83 @@ class CalculateFielderSabr:
         return (shome_run * stolen_base * 2) / a
 
 class CalculatePitcherSabr:
-    def earned_runs_average(self):
-        if self.total_sum_innings_pitched == 0:
+    def earned_runs_average(sum_innings_pitched, earned_run):
+        if sum_innings_pitched == 0:
             return 0
 
-        era = (self.total_earned_run * 9 * 3) / self.total_sum_innings_pitched
-        return era
+        return (earned_run * 9 * 3) / sum_innings_pitched
 
-    def runs_average(self):
-        if self.total_sum_innings_pitched == 0:
+    def runs_average(sum_innings_pitched, run):
+        if sum_innings_pitched == 0:
             return 0
 
-        ra = (self.total_run * 9 * 3) / self.total_sum_innings_pitched
-        return ra
+        return (run * 9 * 3) / sum_innings_pitched
 
-    def walks_plus_hits_per_inning_pitched(self):
-        if self.total_sum_innings_pitched == 0:
+    def walks_plus_hits_per_inning_pitched(sum_innings_pitched, hit, bb_hbp):
+        if sum_innings_pitched == 0:
             return 0
 
-        whip = (self.total_hit + self.total_bb_hbp) * 3 / self.total_sum_innings_pitched
-        return whip
+        return (hit + bb_hbp) * 3 / sum_innings_pitched
 
-    def strike_out_per_bbhp(self):
-        if self.total_bb_hbp == 0:
+    def strike_out_per_bbhp(bb_hbp, strike_out):
+        if bb_hbp == 0:
             return 0
 
-        k_per_bbhp = self.total_strike_out / self.total_bb_hbp
-        return k_per_bbhp
+        return strike_out / bb_hbp
     
-    def strike_out_per_game(self):
-        if self.total_sum_innings_pitched == 0:
+    def strike_out_per_game(sum_innings_pitched, strike_out):
+        if sum_innings_pitched == 0:
             return 0
 
-        k_per_game = (self.total_strike_out * 9 * 3) / self.total_sum_innings_pitched
-        return k_per_game
+        return (strike_out * 9 * 3) / sum_innings_pitched
     
-    def strike_out_percentage(self):
-        if self.total_batters_faced == 0:
+    def strike_out_percentage(batters_faced, strike_out):
+        if batters_faced == 0:
             return 0
 
-        k_percentage = self.total_strike_out / self.total_batters_faced
-        return k_percentage
+        return strike_out / batters_faced
     
-    def bbhp_per_game(self):
-        if self.total_sum_innings_pitched == 0:
+    def bbhp_per_game(sum_innings_pitched, bb_hbp):
+        if sum_innings_pitched == 0:
             return 0
 
-        bbhp_per_game = (self.total_bb_hbp * 9 * 3) / self.total_sum_innings_pitched
-        return bbhp_per_game
+        return (bb_hbp * 9 * 3) / sum_innings_pitched
     
-    def bbhp_percentage(self):
-        if self.total_batters_faced == 0:
+    def bbhp_percentage(batters_faced, bb_hbp):
+        if batters_faced == 0:
             return 0
         
-        bbhp_percentage = self.total_bb_hbp / self.total_batters_faced
-        return bbhp_percentage
+        return bb_hbp / batters_faced
     
-    def home_run_per_game(self):
-        if self.total_sum_innings_pitched == 0:
+    def home_run_per_game(sum_innings_pitched, home_run):
+        if sum_innings_pitched == 0:
             return 0
 
-        hr_per_game = (self.total_home_run * 9 * 3) / self.total_sum_innings_pitched
-        return hr_per_game
+        return (home_run * 9 * 3) / sum_innings_pitched
     
-    def home_run_percentage(self):
-        if self.total_batters_faced == 0:
+    def home_run_percentage(batters_faced, home_run):
+        if batters_faced == 0:
             return 0
                 
-        hr_percentage = self.total_home_run / self.total_batters_faced
-        return hr_percentage
+        return home_run / batters_faced
     
-    def left_on_base_percentage(self):
-        a = self.total_hit + self.total_bb_hbp - self.total_home_run * 1.4
+    def left_on_base_percentage(hit, bb_hbp, home_run, run):
+        a = hit + bb_hbp - home_run * 1.4
         if a == 0.0:
             return 0.0
 
-        lob = (self.total_hit + self.total_bb_hbp - self.total_run) / a
-        return lob
+        return (hit + bb_hbp - run) / a
     
-    def pitch_per_inning(self):
-        if self.total_sum_innings_pitched == 0:
+    def pitch_per_inning(sum_innings_pitched, number_of_pitch):
+        if sum_innings_pitched == 0:
             return 0
 
-        p_per_ip = (self.total_number_of_pitch * 3) / self.total_sum_innings_pitched
-        return p_per_ip
+        return (number_of_pitch * 3) / sum_innings_pitched
     
 class CalculateTeamSabr:
-    def team_der(self):
-        a = self.team_total_batters_faced - self.team_suffer_hit - \
-            self.team_bb_hbp - self.team_strike_out - self.team_error
-        
-        b = self.team_total_batters_faced - self.team_suffer_home_run - \
-            self.team_bb_hbp - self.team_strike_out
+    def team_der(batters_faced, suffer_hit, suffer_home_run, bb_hbp, strike_out, error):
+        a = batters_faced - suffer_hit - bb_hbp - strike_out - error
+        b = batters_faced - suffer_home_run - bb_hbp - strike_out
 
         if b == 0:
             return 0

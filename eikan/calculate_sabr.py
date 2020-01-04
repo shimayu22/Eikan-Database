@@ -10,7 +10,7 @@ class CalculateFielderSabr:
         if at_bat == 0:
             return 0
         
-        return float(tb / at_bat)
+        return tb / at_bat
 
     def on_base_percentage(at_bat, bb_hbp, h):
         # (安打数 + 四死球) / (打数 + 四死球)
@@ -19,26 +19,26 @@ class CalculateFielderSabr:
         if a == 0:
             return 0
 
-        return float((h + bb_hbp) / a)
+        return (h + bb_hbp) / a
 
     def on_base_plus_slugging(obp, slg):
         return obp + slg
 
     def gross_production_average(obp, slg):
-        return float((obp * 1.8 + slg) / 4)
+        return (obp * 1.8 + slg) / 4
     
     def batting_average(at_bat, h):
         if at_bat == 0:
             return 0
 
-        return float(h / at_bat)
+        return h / at_bat
     
     def bb_hp_percentage(at_bat, bb_hbp, bunt):
         a = at_bat + bb_hbp + bunt
         if a == 0:
             return 0
 
-        return float(bb_hbp / a)
+        return bb_hbp / a
 
     def isolated_discipline(obp, ba):
         return obp - ba
@@ -50,14 +50,14 @@ class CalculateFielderSabr:
         if strike_out == 0:
             return 0
 
-        return float(bb_hbp / strike_out)
+        return bb_hbp / strike_out
     
     def power_speed_number(home_run, stolen_base):
         a = home_run + stolen_base
         if a == 0:
             return 0
 
-        return float((home_run * stolen_base * 2) / a)
+        return (home_run * stolen_base * 2) / a
 
 class CalculatePitcherSabr:
     def earned_runs_average(sum_innings_pitched, earned_run):

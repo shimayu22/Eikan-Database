@@ -32,9 +32,9 @@ class SaveFielderSabr:
         self.gpa = f.gross_production_average(self.obp, self.slg)
         self.ba = f.batting_average(self.at_bat, self.hit)
         self.bbhp_percent = f.bb_hp_percentage(self.at_bat, self.bb_hbp, self.sacrifice_bunt)
-        self.isod = f.isolated_discipline(self.obp, self.tb)
-        self.isop = f.isolated_power(self.slg, self.total_bases)
-        self.bbhp_k = f.bb_hbp_per_so(self.total_strike_out, self.total_bb_hbp)
+        self.isod = f.isolated_discipline(self.obp, self.ba)
+        self.isop = f.isolated_power(self.slg, self.ba)
+        self.bbhp_k = f.bb_hbp_per_so(self.strike_out, self.bb_hbp)
         self.p_s = f.power_speed_number(self.home_run, self.stolen_base)
 
     def update_total_results(self):
@@ -59,7 +59,7 @@ class SaveFielderSabr:
         fielder_total_results.batting_average = self.ba
         fielder_total_results.bbhp_percent = self.bbhp_percent
         fielder_total_results.isod = self.isod
-        fielder_total_results.isop = self.isod
+        fielder_total_results.isop = self.isop
         fielder_total_results.bbhp_k = self.bbhp_k
         fielder_total_results.p_s = self.p_s
         # 以上をupdateする
@@ -84,7 +84,7 @@ class SavePitcherSabr:
         self.home_run = self.pitcher_results.aggregate(models.Sum('home_run'))['home_run__sum']
         self.sum_innings_pitched = (self.innings_pitched + (self.innings_pitched_fraction / 3)) * 3
         self.innings = float(self.innings_pitched + self.innings_pitched_fraction // 3)
-        self.outcount = self.total_innings_pitched_fraction % 3
+        self.outcount = self.innings % 3
         if self.outcount == 1:
             self.innings += 0.1
         elif self.outcount == 2:

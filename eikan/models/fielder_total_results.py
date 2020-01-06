@@ -1,6 +1,7 @@
 from django.db import models
 from eikan.models import Players
 
+
 class FielderTotalResults(models.Model):
 
     player_id = models.ForeignKey(
@@ -91,7 +92,7 @@ class FielderTotalResults(models.Model):
     total_bases = models.PositiveIntegerField(
         verbose_name="塁打",
         default=0,
-        editable=False,   
+        editable=False,
     )
 
     slg = models.DecimalField(
@@ -116,7 +117,7 @@ class FielderTotalResults(models.Model):
         decimal_places=3,
         default=0.000,
         editable=False,
-    )    
+    )
 
     gpa = models.DecimalField(
         verbose_name="GPA",

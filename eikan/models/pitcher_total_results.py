@@ -1,6 +1,7 @@
 from django.db import models
 from eikan.models import Players
 
+
 class PitcherTotalResults(models.Model):
 
     player_id = models.ForeignKey(
@@ -33,7 +34,7 @@ class PitcherTotalResults(models.Model):
         default=0,
         editable=False,
     )
-    
+
     total_batters_faced = models.PositiveSmallIntegerField(
         verbose_name="対戦打者",
         default=0,

@@ -3,9 +3,11 @@ from django.urls import reverse
 from django.views.generic import TemplateView, ListView, DetailView
 
 from .models import Teams, Players, TeamTotalResults, \
-                    FielderTotalResults, PitcherTotalResults
+    FielderTotalResults, PitcherTotalResults
 
 # Create your views here.
+
+
 class IndexView(TemplateView):
     template_name = 'eikan/index.html'
 
@@ -16,14 +18,25 @@ class IndexView(TemplateView):
 
         ctx = super().get_context_data(**kwargs)
         ctx['teams'] = Teams.objects.latest('pk')
-        ctx['team_total_result'] = TeamTotalResults.objects.get(team_id=ctx['teams'].pk)
-        start_year = (ctx['teams'].year - 2) if ctx['teams'].period == 1 else (ctx['teams'].year - 1)
-        players = Players.objects.filter(admission_year__gte=start_year, admission_year__lte=ctx['teams'].year)
-        pitchers = Players.objects.filter(admission_year__gte=start_year, admission_year__lte=ctx['teams'].year, is_pitcher=True)
-        ctx['fielder_total_results'] = FielderTotalResults.objects.filter(player_id__in=players).order_by('-ops', '-slg', 'player_id')
-        ctx['pitcher_total_results'] = PitcherTotalResults.objects.filter(player_id__in=pitchers).order_by('player_id')
+        ctx['team_total_result'] = TeamTotalResults.objects.get(
+            team_id=ctx['teams'].pk)
+        start_year = (
+            ctx['teams'].year - 2) if ctx['teams'].period == 1 else (
+            ctx['teams'].year - 1)
+        players = Players.objects.filter(
+            admission_year__gte=start_year,
+            admission_year__lte=ctx['teams'].year)
+        pitchers = Players.objects.filter(
+            admission_year__gte=start_year,
+            admission_year__lte=ctx['teams'].year,
+            is_pitcher=True)
+        ctx['fielder_total_results'] = FielderTotalResults.objects.filter(
+            player_id__in=players).order_by('-ops', '-slg', 'player_id')
+        ctx['pitcher_total_results'] = PitcherTotalResults.objects.filter(
+            player_id__in=pitchers).order_by('player_id')
 
         return ctx
+
 
 class TeamView(ListView):
     model = TeamTotalResults
@@ -35,15 +48,18 @@ class TeamDetailView(DetailView):
     model = Teams
     template_name = 'eikan/team_detail.html'
 
+
 class FielderView(ListView):
     model = FielderTotalResults
     template_name = 'eikan/fielders.html'
     context_object_name = 'fielder_total_results'
 
+
 class PitcherView(ListView):
     model = PitcherTotalResults
     template_name = 'eikan/pitchers.html'
     context_object_name = 'pitcher_total_results'
+
 
 class PlayerDetailView(DetailView):
     model = Players
@@ -51,10 +67,12 @@ class PlayerDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         player_id = kwargs['object']
-        
+
         ctx = super().get_context_data(**kwargs)
-        ctx['fielder_total_results'] = FielderTotalResults.objects.get(player_id=player_id)
+        ctx['fielder_total_results'] = FielderTotalResults.objects.get(
+            player_id=player_id)
         if player_id.is_pitcher:
-            ctx['pitcher_total_results'] = PitcherTotalResults.objects.get(player_id=player_id)
-        
+            ctx['pitcher_total_results'] = PitcherTotalResults.objects.get(
+                player_id=player_id)
+
         return ctx

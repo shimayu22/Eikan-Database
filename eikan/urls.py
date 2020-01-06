@@ -15,5 +15,8 @@ urlpatterns = [
     path('pitchers', views.PitcherView.as_view(), name='pitchers'),
     # 選手詳細 /eikan/player/id
     # 投手、野手のリンクからどちらもここに遷移する
-    path('player/<int:pk>/', views.PlayerDetailView.as_view(), name='player_detail'),
+    path(
+        'player/<int:pk>/',
+        views.PlayerDetailView.as_view(),
+        name='player_detail'),
 ]

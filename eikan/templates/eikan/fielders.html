@@ -35,7 +35,7 @@
         <tbody class="text-right">
             {% for ftr in fielder_total_results %}
             <tr>
-                <th>{{ ftr.player_id }}</th>
+                <th><a href="{% url 'eikan:player_detail' ftr.player_id.pk %}">{{ ftr.player_id }}</a></th>
                 <td class="text-left">
                     {% if ftr.player_id.is_ob %}
                         OB 

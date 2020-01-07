@@ -1,4 +1,4 @@
-from eikan import save_sabr as s
+from eikan import sabr_manager as s
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.contrib import admin
@@ -150,14 +150,14 @@ admin.site.register(TeamTotalResults, TeamTotalResultsAdmin)
 
 # チームを登録したらTeamTotalResultsも対応するレコードを登録する
 @receiver(post_save, sender=Teams)
-def insert_new_team_total_results(sender, instance, created, **kwargs):
+def new_team_total_results(sender, instance, created, **kwargs):
     if created:
         TeamTotalResults.objects.create(team_id=instance,)
 
 # 選手を登録したらFielderTotalResults,
 # PitcherTotalResultsも対応するレコードを登録する
 @receiver(post_save, sender=Players)
-def insert_new_player_results(sender, instance, created, **kwargs):
+def new_player_results(sender, instance, created, **kwargs):
     if created:
         FielderTotalResults.objects.create(player_id=instance)
     if instance.is_pitcher:
@@ -169,20 +169,26 @@ def update_teams_total_results_updated_at(sender, instance, created, **kwargs):
     if created:
         TeamTotalResults.objects.get(team_id=instance.team_id).save()
     else:
-        sts = s.SaveTeamSabr(instance.team_id)
-        sts.update_total_results()
+        sts = s.TeamSabrManager(instance.team_id)
+        sts.update_results()
 
 # 野手成績の更新
 @receiver(post_save, sender=FielderResults)
 def update_cal_fielder_results(sender, instance, **kwargs):
-    sfs = s.SaveFielderSabr(instance.player_id)
-    sfs.update_total_results()
+    player_id = instance.player_id
+    fielder_results = FielderResults.objects.filter(
+        player_id=player_id)
+    sfs = s.FielderSabrManager(player_id, fielder_results)
+    sfs.update_results()
 
 # 投手成績の更新
 @receiver(post_save, sender=PitcherResults)
 def update_cal_pitcher_results(sender, instance, **kwargs):
-    sps = s.SavePitcherSabr(instance.player_id)
-    sps.update_total_results()
+    player_id = instance.player_id
+    pitcher_results = PitcherResults.objects.filter(
+        player_id=player_id)
+    sps = s.PitcherSabrManager(player_id, pitcher_results)
+    sps.update_results()
 
 # チーム総合成績の更新
 @receiver(post_save, sender=PitcherTotalResults)
@@ -192,5 +198,5 @@ def update_cal_team_results(sender, instance, created, **kwargs):
         pass
     else:
         team_id = TeamTotalResults.objects.latest('updated_at').team_id
-        sts = s.SaveTeamSabr(team_id)
-        sts.update_total_results()
+        sts = s.TeamSabrManager(team_id)
+        sts.update_results()

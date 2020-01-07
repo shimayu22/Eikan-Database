@@ -8,38 +8,36 @@ from eikan.calculate_sabr import CalculatePitcherSabr as p
 from eikan.calculate_sabr import CalculateTeamSabr as t
 
 
-class SaveFielderSabr:
-    def __init__(self, player_id):
+class FielderSabrManager:
+    def __init__(self, player_id, fielder_results):
         self.player_id = player_id
-        self.fielder_results = FielderResults.objects.filter(
-            player_id=self.player_id)
-        self.at_bat = self.fielder_results.aggregate(
+        self.at_bat = fielder_results.aggregate(
             models.Sum('at_bat'))['at_bat__sum']
-        self.run = self.fielder_results.aggregate(
+        self.run = fielder_results.aggregate(
             models.Sum('run'))['run__sum']
-        self.hit = self.fielder_results.aggregate(
+        self.hit = fielder_results.aggregate(
             models.Sum('hit'))['hit__sum']
-        self.two_base = self.fielder_results.aggregate(
+        self.two_base = fielder_results.aggregate(
             models.Sum('two_base'))['two_base__sum']
-        self.three_base = self.fielder_results.aggregate(
+        self.three_base = fielder_results.aggregate(
             models.Sum('three_base'))['three_base__sum']
-        self.home_run = self.fielder_results.aggregate(
+        self.home_run = fielder_results.aggregate(
             models.Sum('home_run'))['home_run__sum']
-        self.rbi = self.fielder_results.aggregate(
+        self.rbi = fielder_results.aggregate(
             models.Sum('run_batted_in'))['run_batted_in__sum']
-        self.k = self.fielder_results.aggregate(
+        self.k = fielder_results.aggregate(
             models.Sum('strike_out'))['strike_out__sum']
-        self.bb_hbp = self.fielder_results.aggregate(
+        self.bb_hbp = fielder_results.aggregate(
             models.Sum('bb_hbp'))['bb_hbp__sum']
-        self.sacrifice_bunt = self.fielder_results.aggregate(
+        self.sacrifice_bunt = fielder_results.aggregate(
             models.Sum('sacrifice_bunt'))['sacrifice_bunt__sum']
-        self.strike_out = self.fielder_results.aggregate(
+        self.strike_out = fielder_results.aggregate(
             models.Sum('strike_out'))['strike_out__sum']
-        self.stolen_base = self.fielder_results.aggregate(
+        self.stolen_base = fielder_results.aggregate(
             models.Sum('stolen_base'))['stolen_base__sum']
-        self.gibp = self.fielder_results.aggregate(
+        self.gibp = fielder_results.aggregate(
             models.Sum('grounded_into_double_play'))['grounded_into_double_play__sum']
-        self.error = self.fielder_results.aggregate(
+        self.error = fielder_results.aggregate(
             models.Sum('error'))['error__sum']
         self.tb = f.total_bases(
             self,
@@ -60,7 +58,7 @@ class SaveFielderSabr:
         self.bbhp_k = f.bb_hbp_per_so(self, self.strike_out, self.bb_hbp)
         self.p_s = f.power_speed_number(self, self.home_run, self.stolen_base)
 
-    def update_total_results(self):
+    def create_sabr_from_results(self):
         fielder_total_results = FielderTotalResults.objects.get(
             player_id=self.player_id)
         fielder_total_results.at_bat = self.at_bat
@@ -86,39 +84,41 @@ class SaveFielderSabr:
         fielder_total_results.isop = self.isop
         fielder_total_results.bbhp_k = self.bbhp_k
         fielder_total_results.p_s = self.p_s
-        # 以上をupdateする
-        fielder_total_results.save()
+
+        return fielder_total_results
+
+    def update_results(self):
+        f = self.create_sabr_from_results()
+        f.save()
 
 
-class SavePitcherSabr:
-    def __init__(self, player_id):
+class PitcherSabrManager:
+    def __init__(self, player_id, pitcher_results):
         self.player_id = player_id
-        self.pitcher_results = PitcherResults.objects.filter(
-            player_id=self.player_id)
-        self.game_count = self.pitcher_results.count()
-        self.games_started_count = PitcherResults.objects.filter(
-            player_id=self.player_id, games_started=True).count()
-        self.innings_pitched = self.pitcher_results.aggregate(
+        self.game_count = pitcher_results.count()
+        self.games_started_count = pitcher_results.filter(
+            games_started=True).count()
+        self.innings_pitched = pitcher_results.aggregate(
             models.Sum('innings_pitched'))['innings_pitched__sum']
-        self.innings_pitched_fraction = self.pitcher_results.aggregate(
+        self.innings_pitched_fraction = pitcher_results.aggregate(
             models.Sum('innings_pitched_fraction'))['innings_pitched_fraction__sum']
-        self.batters_faced = self.pitcher_results.aggregate(
+        self.batters_faced = pitcher_results.aggregate(
             models.Sum('total_batters_faced'))['total_batters_faced__sum']
-        self.number_of_pitch = self.pitcher_results.aggregate(
+        self.number_of_pitch = pitcher_results.aggregate(
             models.Sum('number_of_pitch'))['number_of_pitch__sum']
-        self.hit = self.pitcher_results.aggregate(
+        self.hit = pitcher_results.aggregate(
             models.Sum('hit'))['hit__sum']
-        self.strike_out = self.pitcher_results.aggregate(
+        self.strike_out = pitcher_results.aggregate(
             models.Sum('strike_out'))['strike_out__sum']
-        self.bb_hbp = self.pitcher_results.aggregate(
+        self.bb_hbp = pitcher_results.aggregate(
             models.Sum('bb_hbp'))['bb_hbp__sum']
-        self.run = self.pitcher_results.aggregate(
+        self.run = pitcher_results.aggregate(
             models.Sum('run'))['run__sum']
-        self.earned_run = self.pitcher_results.aggregate(
+        self.earned_run = pitcher_results.aggregate(
             models.Sum('earned_run'))['earned_run__sum']
-        self.wild_pitch = self.pitcher_results.aggregate(
+        self.wild_pitch = pitcher_results.aggregate(
             models.Sum('wild_pitch'))['wild_pitch__sum']
-        self.home_run = self.pitcher_results.aggregate(
+        self.home_run = pitcher_results.aggregate(
             models.Sum('home_run'))['home_run__sum']
         self.sum_innings_pitched = (
             self.innings_pitched + (self.innings_pitched_fraction / 3)) * 3
@@ -154,7 +154,7 @@ class SavePitcherSabr:
         self.p_ip = p.pitch_per_inning(
             self, self.sum_innings_pitched, self.number_of_pitch)
 
-    def update_total_results(self):
+    def create_sabr_from_results(self):
         pitcher_total_results = PitcherTotalResults.objects.get(
             player_id=self.player_id)
         pitcher_total_results.games = self.game_count
@@ -181,11 +181,15 @@ class SavePitcherSabr:
         pitcher_total_results.hr_percent = self.hr_percent
         pitcher_total_results.lob_percent = self.lob_percent
         pitcher_total_results.p_ip = self.p_ip
-        # 上記をupdateする
-        pitcher_total_results.save()
+
+        return pitcher_total_results
+
+    def update_results(self):
+        p = self.create_sabr_from_results()
+        p.save()
 
 
-class SaveTeamSabr:
+class TeamSabrManager:
     def __init__(self, team_id):
         self.team_id = team_id
         # Games
@@ -268,7 +272,7 @@ class SaveTeamSabr:
             self.team_strike_out,
             self.team_error)
 
-    def update_total_results(self):
+    def create_sabr_from_results(self):
         # Teamsのランクを更新する
         self.game.team_id.rank = self.update_rank
         self.game.team_id.save()
@@ -285,5 +289,9 @@ class SaveTeamSabr:
         team_total_results.hr = self.team_home_run
         team_total_results.era = self.team_era
         team_total_results.der = self.team_der
-        # 以上をupdateする
-        team_total_results.save()
+
+        return team_total_results
+
+    def update_results(self):
+        t = self.create_sabr_from_results()
+        t.save()

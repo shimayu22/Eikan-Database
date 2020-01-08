@@ -36,7 +36,7 @@
         <tbody class="text-right">
             {% for ptr in pitcher_total_results %}
             <tr>
-                <th>{{ ptr.player_id }}</th>
+                <th><a href="{% url 'eikan:player_detail' ptr.player_id.pk %}">{{ ptr.player_id }}</a></th>
                 <td class="text-center">
                     {% if ptr.player_id.is_ob %}
                         OB 

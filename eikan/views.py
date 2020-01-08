@@ -102,7 +102,7 @@ class PlayerDetailView(DetailView):
                 ctx[key] = []
                 year = player.admission_year + i
                 p = pitcher_results.filter(game_id__team_id__year=year)
-                if f.exists():
+                if p.exists():
                     sfs = s.PitcherSabrManager(player, p)
                     ctx[key] = sfs.create_sabr_from_results()
 

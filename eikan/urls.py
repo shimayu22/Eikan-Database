@@ -8,7 +8,10 @@ urlpatterns = [
     # チーム一覧 /eikan/team
     path('teams', views.TeamView.as_view(), name='teams'),
     # チーム詳細 /eikan/team/id/
-    path('team/<int:pk>/', views.TeamDetailView.as_view(), name='team_detail'),
+    path(
+        'teams/<int:pk>/',
+        views.TeamDetailView.as_view(),
+        name='team_detail'),
     # 野手（成績）一覧 /eikan/fielders
     path('fielders', views.FielderView.as_view(), name='fielders'),
     # 投手（成績）一覧 /eikan/pitchers
@@ -16,7 +19,7 @@ urlpatterns = [
     # 選手詳細 /eikan/player/id
     # 投手、野手のリンクからどちらもここに遷移する
     path(
-        'player/<int:pk>/',
+        'players/<int:pk>/',
         views.PlayerDetailView.as_view(),
         name='player_detail'),
 ]

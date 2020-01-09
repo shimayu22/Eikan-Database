@@ -58,27 +58,33 @@ class TeamDetailView(DetailView):
         # このチームで行った試合結果を取得する
         ctx['fielder_results'] = []
         # 取得したい選手のリストを作る
-        fielder_results = FielderResults.objects.filter(game_id__team_id=teams)
+        fielder_results = FielderResults.objects.filter(
+            game_id__team_id=teams).order_by('player_id')
         player_list = fielder_results.values('player_id').distinct()
         # <QuerySet [{'player_id': 1}, {'player_id': 2}, {'player_id': 3}, {'player_id': 4}]>
         # 選手ごとにこのチームだった時の指標を計算する
+        print(player_list)
         if fielder_results.exists():
             for f in player_list:
                 sfs = s.FielderSabrManager(
                     f['player_id'], fielder_results.filter(
                         player_id=f['player_id']))
                 ctx['fielder_results'].append(sfs.create_sabr_from_results())
+        print(ctx['fielder_results'])
 
         # 投手編
         ctx['pitcher_results'] = []
-        pitcher_results = PitcherResults.objects.filter(game_id__team_id=teams)
+        pitcher_results = PitcherResults.objects.filter(
+            game_id__team_id=teams).order_by('player_id')
         pitcher_list = pitcher_results.values('player_id').distinct()
+        print(pitcher_list)
         if pitcher_results.exists():
             for p in pitcher_list:
                 sfs = s.PitcherSabrManager(
-                    f['player_id'], pitcher_results.filter(
-                        player_id=f['player_id']))
+                    p['player_id'], pitcher_results.filter(
+                        player_id=p['player_id']))
                 ctx['pitcher_results'].append(sfs.create_sabr_from_results())
+        print(ctx['pitcher_results'])
 
         return ctx
 

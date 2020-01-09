@@ -27,7 +27,7 @@
             <tbody class="text-right">
                 {% for ttr in team_total_results %}
                     <tr>
-                        <th class="text-center">{{ ttr.team_id }}</th>
+                        <th class="text-center"><a href="{% url 'eikan:team_detail' ttr.team_id.pk %}">{{ ttr.team_id }}</a></th>
                         <td>{{ ttr.total_win }}</td>
                         <td>{{ ttr.total_lose }}</td>
                         <td>{{ ttr.total_draw }}</td>

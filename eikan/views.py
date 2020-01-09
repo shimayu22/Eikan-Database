@@ -50,6 +50,38 @@ class TeamDetailView(DetailView):
     model = Teams
     template_name = 'eikan/team_detail.html'
 
+    def get_context_data(self, **kwargs):
+        teams = kwargs['object']
+
+        ctx = super().get_context_data(**kwargs)
+        ctx['games'] = Games.objects.filter(team_id=teams).order_by('-pk')
+        # このチームで行った試合結果を取得する
+        ctx['fielder_results'] = []
+        # 取得したい選手のリストを作る
+        fielder_results = FielderResults.objects.filter(game_id__team_id=teams)
+        player_list = fielder_results.values('player_id').distinct()
+        # <QuerySet [{'player_id': 1}, {'player_id': 2}, {'player_id': 3}, {'player_id': 4}]>
+        # 選手ごとにこのチームだった時の指標を計算する
+        if fielder_results.exists():
+            for f in player_list:
+                sfs = s.FielderSabrManager(
+                    f['player_id'], fielder_results.filter(
+                        player_id=f['player_id']))
+                ctx['fielder_results'].append(sfs.create_sabr_from_results())
+
+        # 投手編
+        ctx['pitcher_results'] = []
+        pitcher_results = PitcherResults.objects.filter(game_id__team_id=teams)
+        pitcher_list = pitcher_results.values('player_id').distinct()
+        if pitcher_results.exists():
+            for p in pitcher_list:
+                sfs = s.PitcherSabrManager(
+                    f['player_id'], pitcher_results.filter(
+                        player_id=f['player_id']))
+                ctx['pitcher_results'].append(sfs.create_sabr_from_results())
+
+        return ctx
+
 
 class FielderView(ListView):
     model = FielderTotalResults

@@ -39,7 +39,7 @@
     <tbody class="text-right">
         {% for g in games %}
         <tr>
-            <td class="text-center">{{ g.get_competition_type_display }}{{ g.get_competiton_round_display|cut:"練習試合"}}</td>
+            <td class="text-center"><a href="{% url 'eikan:game_detail' g.pk %}">{{ g.get_competition_type_display }}{{ g.get_competiton_round_display|cut:"練習試合"}}</a></td>
             <td class="text-center">{{ g.get_result_display }}</td>
             <td class="text-center">{{ g.score }} - {{ g.run }}</td>
             <td class="text-center">{{ g.get_rank_display }}</td>

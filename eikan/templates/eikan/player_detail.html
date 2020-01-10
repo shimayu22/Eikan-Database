@@ -191,8 +191,8 @@
         <tbody class="text-right">
             {% for p in pitcher_results %}
             <tr>
-                <td class="text-center">{{ p.game_id }}</td>
-                <td class="text-center">{{ p.game_id.get_competition_type_display }}{{ p.game_id.get_competiton_round_display|cut:"練習試合"}}</td>
+                <td class="text-center"><a href="{% url 'eikan:team_detail' p.game_id.team_id.pk %}">{{ p.game_id }}</a></td>
+                <td class="text-center"><a href="{% url 'eikan:game_detail' p.game_id.pk %}">{{ p.game_id.get_competition_type_display }}{{ p.game_id.get_competiton_round_display|cut:"練習試合"}}</a></td>
                 <td class="text-center">
                 {% if p.games_started %}
                     先発
@@ -384,8 +384,8 @@
     <tbody class="text-right">
         {% for f in fielder_results %}
         <tr>
-            <td class="text-center">{{ f.game_id }}</td>
-            <td class="text-center">{{ f.game_id.get_competition_type_display }}{{ f.game_id.get_competiton_round_display|cut:"練習試合"}}</td>
+            <td class="text-center"><a href="{% url 'eikan:team_detail' f.game_id.team_id.pk %}">{{ f.game_id }}</a></td>
+            <td class="text-center"><a href="{% url 'eikan:game_detail' f.game_id.pk %}">{{ f.game_id.get_competition_type_display }}{{ p.game_id.get_competiton_round_display|cut:"練習試合"}}</a></td>
             <td>{{ f.at_bat }}</td>
             <td>{{ f.run }}</td>
             <td>{{ f.hit }}</td>

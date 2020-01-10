@@ -141,3 +141,25 @@ class PlayerDetailView(DetailView):
                     ctx[key] = sfs.create_sabr_from_results()
 
         return ctx
+
+
+class GameView(ListView):
+    model = Games
+    template_name = 'eikan/games.html'
+    context_object_name = 'games'
+
+
+class GameDetailView(DetailView):
+    model = Games
+    template_name = 'eikan/game_detail.html'
+
+    def get_context_data(self, **kwargs):
+        game = kwargs['object']
+
+        ctx = super().get_context_data(**kwargs)
+        ctx['fielder_results'] = FielderResults.objects.filter(
+            game_id=game).order_by('pk')
+        ctx['pitcher_results'] = PitcherResults.objects.filter(
+            game_id=game).order_by('pk')
+
+        return ctx

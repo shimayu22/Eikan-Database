@@ -52,11 +52,11 @@ class TeamDetailView(DetailView):
         teams = kwargs['object']
 
         ctx = super().get_context_data(**kwargs)
-        ctx['games'] = Games.objects.filter(team_id=teams).order_by('-pk')
+        ctx['games'] = Games.objects.select_related('team_id').filter(team_id=teams).order_by('-pk')
         # このチームで行った試合結果を取得する
         ctx['fielder_results'] = []
         # 取得したい選手のリストを作る
-        fielder_results = FielderResults.objects.filter(
+        fielder_results = FielderResults.objects.select_related('player_id').filter(
             game_id__team_id=teams).order_by('player_id')
         player_list = fielder_results.values('player_id').distinct()
         # <QuerySet [{'player_id': 1}, {'player_id': 2}, {'player_id': 3}, {'player_id': 4}]>
@@ -70,7 +70,7 @@ class TeamDetailView(DetailView):
 
         # 投手編
         ctx['pitcher_results'] = []
-        pitcher_results = PitcherResults.objects.filter(
+        pitcher_results = PitcherResults.objects.select_related('player_id').filter(
             game_id__team_id=teams).order_by('player_id')
         pitcher_list = pitcher_results.values('player_id').distinct()
         if pitcher_results.exists():

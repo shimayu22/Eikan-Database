@@ -18,22 +18,21 @@ class IndexView(TemplateView):
         get_list_or_404(Players)
 
         ctx = super().get_context_data(**kwargs)
-        ctx['teams'] = Teams.objects.latest('pk')
-        ctx['team_total_result'] = TeamTotalResults.objects.get(
-            team_id=ctx['teams'].pk)
+        # ctx['teams'] = Teams.objects.latest('pk')
+        ctx['team_total_result'] = TeamTotalResults.objects.select_related('team_id').latest('pk')
         start_year = (
-            ctx['teams'].year - 2) if ctx['teams'].period == 1 else (
-            ctx['teams'].year - 1)
+            ctx['team_total_result'].team_id.year - 2) if ctx['team_total_result'].team_id.period == 1 else (
+            ctx['team_total_result'].team_id.year - 1)
         players = Players.objects.filter(
             admission_year__gte=start_year,
-            admission_year__lte=ctx['teams'].year)
+            admission_year__lte=ctx['team_total_result'].team_id.year)
         pitchers = Players.objects.filter(
             admission_year__gte=start_year,
-            admission_year__lte=ctx['teams'].year,
+            admission_year__lte=ctx['team_total_result'].team_id.year,
             is_pitcher=True)
-        ctx['fielder_total_results'] = FielderTotalResults.objects.filter(
+        ctx['fielder_total_results'] = FielderTotalResults.objects.select_related('player_id').filter(
             player_id__in=players).order_by('-ops', '-slg', 'player_id')
-        ctx['pitcher_total_results'] = PitcherTotalResults.objects.filter(
+        ctx['pitcher_total_results'] = PitcherTotalResults.objects.select_related('player_id').filter(
             player_id__in=pitchers).order_by('player_id')
 
         return ctx

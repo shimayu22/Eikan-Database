@@ -19,10 +19,13 @@ class IndexView(TemplateView):
 
         ctx = super().get_context_data(**kwargs)
         # ctx['teams'] = Teams.objects.latest('pk')
-        ctx['team_total_result'] = TeamTotalResults.objects.select_related('team_id').latest('pk')
+        ctx['team_total_result'] = TeamTotalResults.objects.select_related(
+            'team_id').latest('pk')
         start_year = (
-            ctx['team_total_result'].team_id.year - 2) if ctx['team_total_result'].team_id.period == 1 else (
-            ctx['team_total_result'].team_id.year - 1)
+            ctx['team_total_result'].team_id.year -
+            2) if ctx['team_total_result'].team_id.period == 1 else (
+            ctx['team_total_result'].team_id.year -
+            1)
         players = Players.objects.filter(
             admission_year__gte=start_year,
             admission_year__lte=ctx['team_total_result'].team_id.year)
@@ -30,10 +33,10 @@ class IndexView(TemplateView):
             admission_year__gte=start_year,
             admission_year__lte=ctx['team_total_result'].team_id.year,
             is_pitcher=True)
-        ctx['fielder_total_results'] = FielderTotalResults.objects.select_related('player_id').filter(
-            player_id__in=players).order_by('-ops', '-slg', 'player_id')
-        ctx['pitcher_total_results'] = PitcherTotalResults.objects.select_related('player_id').filter(
-            player_id__in=pitchers).order_by('player_id')
+        ctx['fielder_total_results'] = FielderTotalResults.objects.select_related(
+            'player_id').filter(player_id__in=players).order_by('-ops', '-slg', 'player_id')
+        ctx['pitcher_total_results'] = PitcherTotalResults.objects.select_related(
+            'player_id').filter(player_id__in=pitchers).order_by('player_id')
 
         return ctx
 
@@ -52,12 +55,13 @@ class TeamDetailView(DetailView):
         teams = kwargs['object']
 
         ctx = super().get_context_data(**kwargs)
-        ctx['games'] = Games.objects.select_related('team_id').filter(team_id=teams).order_by('-pk')
+        ctx['games'] = Games.objects.select_related(
+            'team_id').filter(team_id=teams).order_by('-pk')
         # このチームで行った試合結果を取得する
         ctx['fielder_results'] = []
         # 取得したい選手のリストを作る
-        fielder_results = FielderResults.objects.select_related('player_id').filter(
-            game_id__team_id=teams).order_by('player_id')
+        fielder_results = FielderResults.objects.select_related(
+            'player_id').filter(game_id__team_id=teams).order_by('player_id')
         player_list = fielder_results.values('player_id').distinct()
         # <QuerySet [{'player_id': 1}, {'player_id': 2}, {'player_id': 3}, {'player_id': 4}]>
         # 選手ごとにこのチームだった時の指標を計算する
@@ -70,8 +74,8 @@ class TeamDetailView(DetailView):
 
         # 投手編
         ctx['pitcher_results'] = []
-        pitcher_results = PitcherResults.objects.select_related('player_id').filter(
-            game_id__team_id=teams).order_by('player_id')
+        pitcher_results = PitcherResults.objects.select_related(
+            'player_id').filter(game_id__team_id=teams).order_by('player_id')
         pitcher_list = pitcher_results.values('player_id').distinct()
         if pitcher_results.exists():
             for p in pitcher_list:
@@ -104,36 +108,31 @@ class PlayerDetailView(DetailView):
 
         ctx = super().get_context_data(**kwargs)
         # 打者総合成績を取得（投手野手共通）
-        fielder_total_results = FielderTotalResults.objects.get(
-            player_id=player)
-        ctx['fielder_total_results'] = fielder_total_results
+        ctx['fielder_total_results'] = FielderTotalResults.objects.get(player_id=player)
         # 1年生時の西暦から、3年夏までの試合結果を取得する
-        fielder_results = FielderResults.objects.filter(
-            player_id=player)
-        ctx['fielder_results'] = fielder_results
+        ctx['fielder_results'] = FielderResults.objects.select_related(
+            'game_id__team_id').filter(player_id=player)
         # ctx["fielder_results_n"] n=1～3
         for i in range(0, 3):
             key = "fielder_results_" + str(i + 1)
             ctx[key] = []
             year = player.admission_year + i
-            f = fielder_results.filter(game_id__team_id__year=year)
+            f = ctx['fielder_results'].filter(game_id__team_id__year=year)
             if f.exists():
                 sfs = s.FielderSabrManager(player, f)
                 ctx[key] = sfs.create_sabr_from_results()
 
         # 投手のみ以下の処理を行う
         if player.is_pitcher:
-            pitcher_total_results = PitcherTotalResults.objects.get(
+            ctx['pitcher_total_results'] = PitcherTotalResults.objects.get(
                 player_id=player)
-            ctx['pitcher_total_results'] = pitcher_total_results
-            pitcher_results = PitcherResults.objects.filter(
-                player_id=player)
-            ctx['pitcher_results'] = pitcher_results
+            ctx['pitcher_results'] = PitcherResults.objects.select_related(
+                'game_id__team_id').filter(player_id=player)
             for i in range(0, 3):
                 key = "pitcher_results_" + str(i + 1)
                 ctx[key] = []
                 year = player.admission_year + i
-                p = pitcher_results.filter(game_id__team_id__year=year)
+                p = ctx['pitcher_results'].filter(game_id__team_id__year=year)
                 if p.exists():
                     sfs = s.PitcherSabrManager(player, p)
                     ctx[key] = sfs.create_sabr_from_results()

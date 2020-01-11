@@ -108,7 +108,8 @@ class PlayerDetailView(DetailView):
 
         ctx = super().get_context_data(**kwargs)
         # 打者総合成績を取得（投手野手共通）
-        ctx['fielder_total_results'] = FielderTotalResults.objects.get(player_id=player)
+        ctx['fielder_total_results'] = FielderTotalResults.objects.get(
+            player_id=player)
         # 1年生時の西暦から、3年夏までの試合結果を取得する
         ctx['fielder_results'] = FielderResults.objects.select_related(
             'game_id__team_id').filter(player_id=player)
@@ -154,9 +155,9 @@ class GameDetailView(DetailView):
         game = kwargs['object']
 
         ctx = super().get_context_data(**kwargs)
-        ctx['fielder_results'] = FielderResults.objects.filter(
-            game_id=game).order_by('pk')
-        ctx['pitcher_results'] = PitcherResults.objects.filter(
-            game_id=game).order_by('pk')
+        ctx['fielder_results'] = FielderResults.objects.select_related(
+            'player_id').filter(game_id=game).order_by('pk')
+        ctx['pitcher_results'] = PitcherResults.objects.select_related(
+            'player_id').filter(game_id=game).order_by('pk')
 
         return ctx

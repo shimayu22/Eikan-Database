@@ -1,6 +1,3 @@
-from django.db import models
-
-
 class CalculateFielderSabr:
     def total_bases(self, h, twobase, threebase, homerun):
         # 安打 + 二塁打 + 三塁打 * 2 + 本塁打 * 3

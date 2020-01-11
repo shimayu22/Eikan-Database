@@ -1,5 +1,5 @@
 from django.db import models
-from eikan.models import Teams, Players, Games, \
+from eikan.models import Games, \
     FielderResults, PitcherResults, \
     FielderTotalResults, PitcherTotalResults, \
     TeamTotalResults

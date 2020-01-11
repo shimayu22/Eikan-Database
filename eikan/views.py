@@ -1,5 +1,4 @@
-from django.shortcuts import get_list_or_404, render
-from django.urls import reverse
+from django.shortcuts import get_list_or_404
 from django.views.generic import TemplateView, ListView, DetailView
 from eikan import sabr_manager as s
 

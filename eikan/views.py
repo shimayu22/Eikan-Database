@@ -67,6 +67,9 @@ class TeamDetailView(DetailView):
         # 取得したい選手のリストを作る
         fielder_results = FielderResults.objects.select_related(
             'player_id').filter(game_id__team_id=teams).order_by('player_id')
+
+
+
         player_list = fielder_results.values('player_id').distinct()
         # <QuerySet [{'player_id': 1}, {'player_id': 2}, {'player_id': 3}, {'player_id': 4}]>
         # 選手ごとにこのチームだった時の指標を計算する
@@ -125,14 +128,9 @@ class PlayerDetailView(DetailView):
         ctx['fielder_results'] = FielderResults.objects.select_related(
             'game_id__team_id', 'game_id', 'player_id').filter(player_id=player)
         # ctx["fielder_results_n"] n=1～3
-        for i in range(0, 3):
-            key = "fielder_results_" + str(i + 1)
-            ctx[key] = []
-            year = player.admission_year + i
-            f = ctx['fielder_results'].filter(game_id__team_id__year=year)
-            if f.exists():
-                sfs = s.FielderSabrManager(player, f)
-                ctx[key] = sfs.create_sabr_from_results()
+        sfs = s.FielderByYearSabrManager(player)
+        ctx['fielder_by_year_results'] = sfs.create_sabr_from_results()
+        print(ctx['fielder_by_year_results'])
 
         # 投手のみ以下の処理を行う
         if player.is_pitcher:

@@ -6,17 +6,16 @@ from eikan.calculate_sabr import CalculateFielderSabr as f
 from eikan.calculate_sabr import CalculatePitcherSabr as p
 
 
-class FielderByYearSabrManager:
-    def __init__(self, player_id):
-        self.player_id = player_id
+class FielderByTeamSabrManager:
+    def __init__(self, team_id):
+        self.team_id = team_id
 
     def create_sabr_from_results(self):
         fielder_results = FielderResults.objects.select_related(
             'game_id__team_id',
-            'game_id',
             'player_id').filter(
-            player_id=self.player_id).values(
-            'game_id__team_id__year').annotate(
+            game_id__team_id=self.team_id).values(
+            'player_id').annotate(
             at_bat__sum=models.Sum('at_bat'),
             run__sum=models.Sum('run'),
             hit__sum=models.Sum('hit'),
@@ -28,14 +27,15 @@ class FielderByYearSabrManager:
             bb_hbp__sum=models.Sum('bb_hbp'),
             sacrifice_bunt__sum=models.Sum('sacrifice_bunt'),
             stolen_base__sum=models.Sum('stolen_base'),
-            grounded_into_double_play__sum=models.Sum('grounded_into_double_play'),
-            error__sum=models.Sum('error'))
+            grounded_into_double_play__sum=models.Sum(
+                'grounded_into_double_play'),
+            error__sum=models.Sum('error')).order_by('player_id')
 
         fielder_total_results_list = []
 
         for result in fielder_results:
             fielder_total_results = FielderTotalResults.objects.select_related(
-                'player_id').get(player_id=self.player_id)
+                'player_id').get(player_id=result['player_id'])
             fielder_total_results.at_bat = result['at_bat__sum']
             fielder_total_results.run = result['run__sum']
             fielder_total_results.hit = result['hit__sum']
@@ -97,26 +97,25 @@ class FielderByYearSabrManager:
                 self,
                 result['home_run__sum'],
                 result['stolen_base__sum'])
-            fielder_total_results_list.append(
-                [result['game_id__team_id__year'], fielder_total_results])
+            fielder_total_results_list.append(fielder_total_results)
 
         return fielder_total_results_list
 
 
-class PitcherByYearSabrManager:
-    def __init__(self, player_id):
-        self.player_id = player_id
+class PitcherByTeamSabrManager:
+    def __init__(self, team_id):
+        self.team_id = team_id
 
     def create_sabr_from_results(self):
         pitcher_results = PitcherResults.objects.select_related(
             'game_id__team_id',
-            'game_id',
             'player_id').filter(
-            player_id=self.player_id).values(
-            'game_id__team_id__year').annotate(
+            game_id__team_id=self.team_id).values(
+            'player_id').annotate(
             games__count=models.Count('pk'),
             innings_pitched__sum=models.Sum('innings_pitched'),
-            innings_pitched_fraction__sum=models.Sum('innings_pitched_fraction'),
+            innings_pitched_fraction__sum=models.Sum(
+                'innings_pitched_fraction'),
             total_batters_faced__sum=models.Sum('total_batters_faced'),
             number_of_pitch__sum=models.Sum('number_of_pitch'),
             hit__sum=models.Sum('hit'),
@@ -128,13 +127,14 @@ class PitcherByYearSabrManager:
             home_run__sum=models.Sum('home_run'))
 
         pitcher_total_results_list = []
+
         for result in pitcher_results:
             pitcher_total_results = PitcherTotalResults.objects.select_related(
-                'player_id').get(player_id=self.player_id)
+                'player_id').get(player_id=result['player_id'])
             pitcher_total_results.games = result['games__count']
             pitcher_total_results.games_started = PitcherResults.objects.filter(
-                player_id=self.player_id,
-                game_id__team_id__year=result['game_id__team_id__year'],
+                player_id=result['player_id'],
+                game_id__team_id=self.team_id,
                 games_started=True).count()
             sum_innings_pitched = (
                 result['innings_pitched__sum'] + (result['innings_pitched_fraction__sum'] / 3)) * 3
@@ -207,7 +207,6 @@ class PitcherByYearSabrManager:
                 sum_innings_pitched,
                 result['number_of_pitch__sum'])
 
-            pitcher_total_results_list.append(
-                [result['game_id__team_id__year'], pitcher_total_results])
+            pitcher_total_results_list.append(pitcher_total_results)
 
         return pitcher_total_results_list

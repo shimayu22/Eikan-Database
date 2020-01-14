@@ -2,6 +2,7 @@ from django.shortcuts import get_list_or_404
 from django.views.generic import TemplateView, DetailView
 from eikan import sabr_manager as s
 from eikan import sabr_manager_for_player as p
+from eikan import sabr_manager_for_team as t
 
 from .models import Teams, Players, Games, \
     FielderResults, PitcherResults, \
@@ -64,30 +65,11 @@ class TeamDetailView(DetailView):
         ctx['games'] = Games.objects.select_related(
             'team_id').filter(team_id=teams).order_by('-pk')
         # このチームで行った試合結果を取得する
-        ctx['fielder_results'] = []
-        # 取得したい選手のリストを作る
-        fielder_results = FielderResults.objects.select_related(
-            'player_id').filter(game_id__team_id=teams).order_by('player_id')
-
-        player_list = fielder_results.values('player_id').distinct()
-        # <QuerySet [{'player_id': 1}, {'player_id': 2}, {'player_id': 3}, {'player_id': 4}]>
-        # 選手ごとにこのチームだった時の指標を計算する
-        for f in player_list:
-            sfs = s.FielderSabrManager(
-                f['player_id'], fielder_results.filter(
-                    player_id=f['player_id']))
-            ctx['fielder_results'].append(sfs.create_sabr_from_results())
-
+        tft = t.FielderByTeamSabrManager(teams)
+        ctx['fielder_results'] = tft.create_sabr_from_results()
         # 投手編
-        ctx['pitcher_results'] = []
-        pitcher_results = PitcherResults.objects.select_related(
-            'player_id').filter(game_id__team_id=teams).order_by('player_id')
-        pitcher_list = pitcher_results.values('player_id').distinct()
-        for p in pitcher_list:
-            sfs = s.PitcherSabrManager(
-                p['player_id'], pitcher_results.filter(
-                    player_id=p['player_id']))
-            ctx['pitcher_results'].append(sfs.create_sabr_from_results())
+        tpt = t.PitcherByTeamSabrManager(teams)
+        ctx['pitcher_results'] = tpt.create_sabr_from_results()
 
         return ctx
 

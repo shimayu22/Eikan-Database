@@ -1,21 +1,24 @@
 from django.db import models
 from eikan.models import Games, Players, Teams
 
+
 def set_select_players():
     teams = Teams.objects.latest('pk')
     count = Teams.objects.count()
     condition_dict = {}
-    
+
     if count > 0:
         condition_dict["admission_year__gte"] = \
             (teams.year - 2) if teams.period == 1 \
-                             else (teams.year - 1)
-        
+            else (teams.year - 1)
+
         condition_dict["admission_year__lte"] = teams.year
-    
+
     return condition_dict
 
 # Create your models here.
+
+
 class FielderResults(models.Model):
 
     game_id = models.ForeignKey(

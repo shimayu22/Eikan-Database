@@ -2,21 +2,24 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from eikan.models import Games, Players, Teams
 
+
 def set_select_pitchers():
     teams = Teams.objects.latest('pk')
     count = Teams.objects.count()
-    condition_dict = {"position":1}
-    
+    condition_dict = {"position": 1}
+
     if count > 0:
         condition_dict["admission_year__gte"] = \
             (teams.year - 2) if teams.period == 1 \
-                             else (teams.year - 1)
-        
+            else (teams.year - 1)
+
         condition_dict["admission_year__lte"] = teams.year
-    
+
     return condition_dict
 
 # Create your models here.
+
+
 class PitcherResults(models.Model):
 
     game_id = models.ForeignKey(
@@ -38,16 +41,16 @@ class PitcherResults(models.Model):
 
     innings_pitched = models.PositiveSmallIntegerField(
         verbose_name="イニング",
-        validators=[MinValueValidator(0),MaxValueValidator(15)],
+        validators=[MinValueValidator(0), MaxValueValidator(15)],
         default=0,
     )
 
     innings_pitched_fraction = models.PositiveSmallIntegerField(
         verbose_name="/3",
-        validators=[MinValueValidator(0),MaxValueValidator(2)],
+        validators=[MinValueValidator(0), MaxValueValidator(2)],
         default=0,
     )
-    
+
     number_of_pitch = models.PositiveSmallIntegerField(
         verbose_name="投球数",
         default=0,

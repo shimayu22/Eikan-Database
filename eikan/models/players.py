@@ -2,21 +2,23 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from eikan.models import Teams
 
+
 def default_year():
     return Teams.objects.latest('pk').year \
-                 if Teams.objects.count() > 0 else 1939
+        if Teams.objects.count() > 0 else 1939
+
 
 class Players(models.Model):
 
     POSITION_CHOICES = (
-        ('','選択'),
-        (1,'投'),
-        (2,'捕'),
-        (3,'一'),
-        (4,'二'),
-        (5,'三'),
-        (6,'遊'),
-        (7,'外'),
+        ('', '選択'),
+        (1, '投'),
+        (2, '捕'),
+        (3, '一'),
+        (4, '二'),
+        (5, '三'),
+        (6, '遊'),
+        (7, '外'),
     )
 
     admission_year = models.PositiveSmallIntegerField(

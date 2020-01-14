@@ -53,9 +53,9 @@
                     <th>備考</th>
                     <th><abbr title="出塁率+長打率">OPS</abbr></th>
                     <th><abbr title="長打率：塁打/打数">SLG</abbr></th>
-                    <th><abbr title="打率：安打/打数">AVG</abbr></th>
                     <th><abbr title="出塁率：(安打+四死球)/(打数+四死球)※犠飛を除外">OBP</abbr></th>
                     <th><abbr title="(出塁率*1.8+長打率)/4">GPA</abbr></th>
+                    <th><abbr title="打率：安打/打数">AVG</abbr></th>
                     <th><abbr title="打数">AB</abbr></th>
                     <th><abbr title="得点">R</abbr></th>
                     <th><abbr title="安打">H</abbr></th>
@@ -70,17 +70,17 @@
                     <th><abbr title="併殺打">GDP</abbr></th>
                     <th><abbr title="エラー">ER</abbr></th>
                     <th><abbr title="塁打">TB</abbr></th>
+                    <th><abbr title="1つ三振するまでに得た四死球：四死球/三振">BB/K</abbr></th>
                     <th><abbr title="四死球取得率：四死球/(打数+四死球+犠打)※犠飛を除外">BB%</abbr></th>
                     <th><abbr title="出塁率-打率">IsoD</abbr></th>
                     <th><abbr title="長打率-打率">IsoP</abbr></th>
-                    <th><abbr title="1つ三振するまでに得た四死球：四死球/三振">BB/K</abbr></th>
                     <th><abbr title="(本塁打*盗塁*2)/(本塁打+盗塁)">P-S</abbr></th>
                 </tr>
             </thead>
             <tbody class="text-right">
                 {% for ftr in fielder_total_results %}
                 <tr>
-                    <th>{{ ftr.player_id }}</th>
+                    <th><a href="{% url 'eikan:player_detail' ftr.player_id.pk %}">{{ ftr.player_id }}</a></th>
                     <td class="text-left">
                         {% if ftr.player_id.is_ob %}
                             OB 
@@ -97,9 +97,9 @@
                     </td>
                     <td>{{ ftr.ops }}</td>
                     <td>{{ ftr.slg }}</td>
-                    <td>{{ ftr.batting_average }}</td>
                     <td>{{ ftr.obp }}</td>
                     <td>{{ ftr.gpa }}</td>
+                    <td>{{ ftr.batting_average }}</td>
                     <td>{{ ftr.at_bat }}</td>
                     <td>{{ ftr.run }}</td>
                     <td>{{ ftr.hit }}</td>
@@ -114,10 +114,10 @@
                     <td>{{ ftr.grounded_into_double_play }}</td>
                     <td>{{ ftr.error }}</td>
                     <td>{{ ftr.total_bases }}</td>
+                    <td>{{ ftr.bbhp_k }}</td>
                     <td>{{ ftr.bbhp_percent }}</td>
                     <td>{{ ftr.isod }}</td>
                     <td>{{ ftr.isop }}</td>
-                    <td>{{ ftr.bbhp_k }}</td>
                     <td>{{ ftr.p_s }}</td>
                 </tr>
                 {% endfor %}
@@ -159,7 +159,7 @@
             <tbody class="text-right">
                 {% for ptr in pitcher_total_results %}
                 <tr>
-                    <th>{{ ptr.player_id }}</th>
+                    <th><a href="{% url 'eikan:player_detail' ptr.player_id.pk %}">{{ ptr.player_id }}</a></th>
                     <td class="text-center">
                         {% if ptr.player_id.is_ob %}
                             OB 

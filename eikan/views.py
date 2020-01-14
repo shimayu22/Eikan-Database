@@ -1,6 +1,7 @@
 from django.shortcuts import get_list_or_404
 from django.views.generic import TemplateView, DetailView
 from eikan import sabr_manager as s
+from eikan import sabr_manager_for_player as p
 
 from .models import Teams, Players, Games, \
     FielderResults, PitcherResults, \
@@ -127,9 +128,8 @@ class PlayerDetailView(DetailView):
         # 1年生時の西暦から、3年夏までの試合結果を取得する
         ctx['fielder_results'] = FielderResults.objects.select_related(
             'game_id__team_id', 'game_id', 'player_id').filter(player_id=player)
-        # ctx["fielder_results_n"] n=1～3
-        sfs = s.FielderByYearSabrManager(player)
-        ctx['fielder_by_year_results'] = sfs.create_sabr_from_results()
+        pfs = p.FielderByYearSabrManager(player)
+        ctx['fielder_by_year_results'] = pfs.create_sabr_from_results()
 
         # 投手のみ以下の処理を行う
         if player.is_pitcher:
@@ -137,9 +137,8 @@ class PlayerDetailView(DetailView):
                 'player_id').get(player_id=player)
             ctx['pitcher_results'] = PitcherResults.objects.select_related(
                 'game_id__team_id', 'game_id', 'player_id').filter(player_id=player)
-            sps = s.PitcherByYearSabrManager(player)
-            ctx['pitcher_by_year_results'] = sps.create_sabr_from_results()
-            print(ctx['pitcher_by_year_results'])
+            pps = p.PitcherByYearSabrManager(player)
+            ctx['pitcher_by_year_results'] = pps.create_sabr_from_results()
 
         return ctx
 

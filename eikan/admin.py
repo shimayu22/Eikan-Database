@@ -175,19 +175,13 @@ def update_teams_total_results_updated_at(sender, instance, created, **kwargs):
 # 野手成績の更新
 @receiver(post_save, sender=FielderResults)
 def update_cal_fielder_results(sender, instance, **kwargs):
-    player_id = instance.player_id
-    fielder_results = FielderResults.objects.filter(
-        player_id=player_id)
-    sfs = s.FielderSabrManager(player_id, fielder_results)
+    sfs = s.FielderTotalSabrManager(instance.player_id)
     sfs.update_results()
 
 # 投手成績の更新
 @receiver(post_save, sender=PitcherResults)
 def update_cal_pitcher_results(sender, instance, **kwargs):
-    player_id = instance.player_id
-    pitcher_results = PitcherResults.objects.filter(
-        player_id=player_id)
-    sps = s.PitcherSabrManager(player_id, pitcher_results)
+    sps = s.PitcherTotalSabrManager(instance.player_id)
     sps.update_results()
 
 # チーム総合成績の更新

@@ -211,6 +211,22 @@
                 <td>{{ p.wild_pitch }}</td>
                 <td>{{ p.home_run }}</td>
             </tr>
+            {% empty %}
+            <tr>
+                <td class="text-center">データなし</td> 
+                <td class="text-center">-</td>
+                <td class="text-center">-</td>
+                <td class="text-center">-</td>
+                <td class="text-center">-</td>
+                <td class="text-center">-</td>
+                <td class="text-center">-</td>
+                <td class="text-center">-</td>
+                <td class="text-center">-</td>
+                <td class="text-center">-</td>
+                <td class="text-center">-</td>
+                <td class="text-center">-</td>
+                <td class="text-center">-</td>        
+            </tr>
             {% endfor %}           
         </tbody>
     </table>
@@ -385,7 +401,7 @@
         {% for f in fielder_results %}
         <tr>
             <td class="text-center"><a href="{% url 'eikan:team_detail' f.game_id.team_id.pk %}">{{ f.game_id }}</a></td>
-            <td class="text-center"><a href="{% url 'eikan:game_detail' f.game_id.pk %}">{{ f.game_id.get_competition_type_display }}{{ p.game_id.get_competiton_round_display|cut:"練習試合"}}</a></td>
+            <td class="text-center"><a href="{% url 'eikan:game_detail' f.game_id.pk %}">{{ f.game_id.get_competition_type_display }}{{ f.game_id.get_competiton_round_display|cut:"練習試合"}}</a></td>
             <td>{{ f.at_bat }}</td>
             <td>{{ f.run }}</td>
             <td>{{ f.hit }}</td>
@@ -399,6 +415,24 @@
             <td>{{ f.stolen_base }}</td>
             <td>{{ f.grounded_into_double_play }}</td>
             <td>{{ f.error }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td class="text-center">データなし</td> 
+            <td class="text-center">-</td>
+            <td class="text-center">-</td>
+            <td class="text-center">-</td>
+            <td class="text-center">-</td>
+            <td class="text-center">-</td>
+            <td class="text-center">-</td>
+            <td class="text-center">-</td>
+            <td class="text-center">-</td>
+            <td class="text-center">-</td>
+            <td class="text-center">-</td>
+            <td class="text-center">-</td>
+            <td class="text-center">-</td>
+            <td class="text-center">-</td>
+            <td class="text-center">-</td>          
         </tr>
         {% endfor %}
     </tbody>

@@ -85,87 +85,43 @@
                 <td>{{ pitcher_total_results.lob_percent }}</td>
                 <td>{{ pitcher_total_results.p_ip }}</td>
             </tr>
-            <tr>
-                <td>3年</td>
-                <td>{{ pitcher_results_3.games|default:"0" }}</td>
-                <td>{{ pitcher_results_3.games_started|default:"0" }}</td>
-                <td>{{ pitcher_results_3.innings_pitched|default:"0" }}</td>
-                <td>{{ pitcher_results_3.number_of_pitch|default:"0" }}</td>
-                <td>{{ pitcher_results_3.total_batters_faced|default:"0" }}</td>
-                <td>{{ pitcher_results_3.hit|default:"0" }}</td>
-                <td>{{ pitcher_results_3.strike_out|default:"0" }}</td>
-                <td>{{ pitcher_results_3.bb_hbp|default:"0" }}</td>
-                <td>{{ pitcher_results_3.run|default:"0" }}</td>
-                <td>{{ pitcher_results_3.earned_run|default:"0" }}</td>
-                <td>{{ pitcher_results_3.wild_pitch|default:"0" }}</td>
-                <td>{{ pitcher_results_3.home_run|default:"0" }}</td>
-                <td>{{ pitcher_results_3.era|floatformat:"2"|default:"0.00" }}</td>
-                <td>{{ pitcher_results_3.ura|floatformat:"2"|default:"0.00" }}</td>
-                <td>{{ pitcher_results_3.whip|floatformat:"2"|default:"0.00" }}</td>
-                <td>{{ pitcher_results_3.k_bbhp|floatformat:"2"|default:"0.00" }}</td>
-                <td>{{ pitcher_results_3.k_9|floatformat:"2"|default:"0.00" }}</td>
-                <td>{{ pitcher_results_3.k_percent|floatformat:"2"|default:"0.00" }}</td>
-                <td>{{ pitcher_results_3.bbhp_9|floatformat:"2"|default:"0.00" }}</td>
-                <td>{{ pitcher_results_3.p_bbhp_percent|floatformat:"2"|default:"0.00" }}</td>
-                <td>{{ pitcher_results_3.hr_9|floatformat:"2"|default:"0.00" }}</td>
-                <td>{{ pitcher_results_3.hr_percent|floatformat:"2"|default:"0.00" }}</td>
-                <td>{{ pitcher_results_3.lob_percent|floatformat:"2"|default:"0.00" }}</td>
-                <td>{{ pitcher_results_3.p_ip|floatformat:"2"|default:"0.00" }}</td>
-            </tr>
-            <tr>
-                <td>2年</td>
-                <td>{{ pitcher_results_2.games|default:"0" }}</td>
-                <td>{{ pitcher_results_2.games_started|default:"0" }}</td>
-                <td>{{ pitcher_results_2.innings_pitched|default:"0" }}</td>
-                <td>{{ pitcher_results_2.number_of_pitch|default:"0" }}</td>
-                <td>{{ pitcher_results_2.total_batters_faced|default:"0" }}</td>
-                <td>{{ pitcher_results_2.hit|default:"0" }}</td>
-                <td>{{ pitcher_results_2.strike_out|default:"0" }}</td>
-                <td>{{ pitcher_results_2.bb_hbp|default:"0" }}</td>
-                <td>{{ pitcher_results_2.run|default:"0" }}</td>
-                <td>{{ pitcher_results_2.earned_run|default:"0" }}</td>
-                <td>{{ pitcher_results_2.wild_pitch|default:"0" }}</td>
-                <td>{{ pitcher_results_2.home_run|default:"0" }}</td>
-                <td>{{ pitcher_results_2.era|floatformat:"2"|default:"0.00" }}</td>
-                <td>{{ pitcher_results_2.ura|floatformat:"2"|default:"0.00" }}</td>
-                <td>{{ pitcher_results_2.whip|floatformat:"2"|default:"0.00" }}</td>
-                <td>{{ pitcher_results_2.k_bbhp|floatformat:"2"|default:"0.00" }}</td>
-                <td>{{ pitcher_results_2.k_9|floatformat:"2"|default:"0.00" }}</td>
-                <td>{{ pitcher_results_2.k_percent|floatformat:"2"|default:"0.00" }}</td>
-                <td>{{ pitcher_results_2.bbhp_9|floatformat:"2"|default:"0.00" }}</td>
-                <td>{{ pitcher_results_2.p_bbhp_percent|floatformat:"2"|default:"0.00" }}</td>
-                <td>{{ pitcher_results_2.hr_9|floatformat:"2"|default:"0.00" }}</td>
-                <td>{{ pitcher_results_2.hr_percent|floatformat:"2"|default:"0.00" }}</td>
-                <td>{{ pitcher_results_2.lob_percent|floatformat:"2"|default:"0.00" }}</td>
-                <td>{{ pitcher_results_2.p_ip|floatformat:"2"|default:"0.00" }}</td>
-            </tr>
-            <tr>
-                <td>1年</td>
-                <td>{{ pitcher_results_1.games|default:"0" }}</td>
-                <td>{{ pitcher_results_1.games_started|default:"0" }}</td>
-                <td>{{ pitcher_results_1.innings_pitched|default:"0" }}</td>
-                <td>{{ pitcher_results_1.number_of_pitch|default:"0" }}</td>
-                <td>{{ pitcher_results_1.total_batters_faced|default:"0" }}</td>
-                <td>{{ pitcher_results_1.hit|default:"0" }}</td>
-                <td>{{ pitcher_results_1.strike_out|default:"0" }}</td>
-                <td>{{ pitcher_results_1.bb_hbp|default:"0" }}</td>
-                <td>{{ pitcher_results_1.run|default:"0" }}</td>
-                <td>{{ pitcher_results_1.earned_run|default:"0" }}</td>
-                <td>{{ pitcher_results_1.wild_pitch|default:"0" }}</td>
-                <td>{{ pitcher_results_1.home_run|default:"0" }}</td>
-                <td>{{ pitcher_results_1.era|floatformat:"2"|default:"0.00" }}</td>
-                <td>{{ pitcher_results_1.ura|floatformat:"2"|default:"0.00" }}</td>
-                <td>{{ pitcher_results_1.whip|floatformat:"2"|default:"0.00" }}</td>
-                <td>{{ pitcher_results_1.k_bbhp|floatformat:"2"|default:"0.00" }}</td>
-                <td>{{ pitcher_results_1.k_9|floatformat:"2"|default:"0.00" }}</td>
-                <td>{{ pitcher_results_1.k_percent|floatformat:"2"|default:"0.00" }}</td>
-                <td>{{ pitcher_results_1.bbhp_9|floatformat:"2"|default:"0.00" }}</td>
-                <td>{{ pitcher_results_1.p_bbhp_percent|floatformat:"2"|default:"0.00" }}</td>
-                <td>{{ pitcher_results_1.hr_9|floatformat:"2"|default:"0.00" }}</td>
-                <td>{{ pitcher_results_1.hr_percent|floatformat:"2"|default:"0.00" }}</td>
-                <td>{{ pitcher_results_1.lob_percent|floatformat:"2"|default:"0.00" }}</td>
-                <td>{{ pitcher_results_1.p_ip|floatformat:"2"|default:"0.00" }}</td>
-            </tr>
+            {% for y, pitcher_result in pitcher_by_year_results %}
+                <tr>
+                    <td>
+                    {% if pitcher_result.player_id.admission_year == y %}
+                    1年
+                    {% elif pitcher_result.player_id.admission_year|add:1 == y %}
+                    2年
+                    {% else %}
+                    3年
+                    {% endif %}
+                    </td>
+                    <td>{{ pitcher_result.games|default:"0" }}</td>
+                    <td>{{ pitcher_result.games_started|default:"0" }}</td>
+                    <td>{{ pitcher_result.innings_pitched|default:"0" }}</td>
+                    <td>{{ pitcher_result.number_of_pitch|default:"0" }}</td>
+                    <td>{{ pitcher_result.total_batters_faced|default:"0" }}</td>
+                    <td>{{ pitcher_result.hit|default:"0" }}</td>
+                    <td>{{ pitcher_result.strike_out|default:"0" }}</td>
+                    <td>{{ pitcher_result.bb_hbp|default:"0" }}</td>
+                    <td>{{ pitcher_result.run|default:"0" }}</td>
+                    <td>{{ pitcher_result.earned_run|default:"0" }}</td>
+                    <td>{{ pitcher_result.wild_pitch|default:"0" }}</td>
+                    <td>{{ pitcher_result.home_run|default:"0" }}</td>
+                    <td>{{ pitcher_result.era|floatformat:"2"|default:"0.00" }}</td>
+                    <td>{{ pitcher_result.ura|floatformat:"2"|default:"0.00" }}</td>
+                    <td>{{ pitcher_result.whip|floatformat:"2"|default:"0.00" }}</td>
+                    <td>{{ pitcher_result.k_bbhp|floatformat:"2"|default:"0.00" }}</td>
+                    <td>{{ pitcher_result.k_9|floatformat:"2"|default:"0.00" }}</td>
+                    <td>{{ pitcher_result.k_percent|floatformat:"2"|default:"0.00" }}</td>
+                    <td>{{ pitcher_result.bbhp_9|floatformat:"2"|default:"0.00" }}</td>
+                    <td>{{ pitcher_result.p_bbhp_percent|floatformat:"2"|default:"0.00" }}</td>
+                    <td>{{ pitcher_result.hr_9|floatformat:"2"|default:"0.00" }}</td>
+                    <td>{{ pitcher_result.hr_percent|floatformat:"2"|default:"0.00" }}</td>
+                    <td>{{ pitcher_result.lob_percent|floatformat:"2"|default:"0.00" }}</td>
+                    <td>{{ pitcher_result.p_ip|floatformat:"2"|default:"0.00" }}</td>
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
     <hr class="mt-5 mb-5">
@@ -276,87 +232,43 @@
             <td>{{ fielder_total_results.isop }}</td>
             <td>{{ fielder_total_results.p_s }}</td>
         </tr>
+        {% for y, fielder_result in fielder_by_year_results %}
         <tr>
-            <td>3年</td>
-            <td>{{ fielder_results_3.at_bat|default:"0" }}</td>
-            <td>{{ fielder_results_3.run|default:"0" }}</td>
-            <td>{{ fielder_results_3.hit|default:"0" }}</td>
-            <td>{{ fielder_results_3.two_base|default:"0" }}</td>
-            <td>{{ fielder_results_3.three_base|default:"0" }}</td>
-            <td>{{ fielder_results_3.home_run|default:"0" }}</td>
-            <td>{{ fielder_results_3.run_batted_in|default:"0" }}</td>
-            <td>{{ fielder_results_3.strike_out|default:"0" }}</td>
-            <td>{{ fielder_results_3.bb_hbp|default:"0" }}</td>
-            <td>{{ fielder_results_3.sacrifice_bunt|default:"0" }}</td>
-            <td>{{ fielder_results_3.stolen_base|default:"0" }}</td>
-            <td>{{ fielder_results_3.grounded_into_double_play|default:"0" }}</td>
-            <td>{{ fielder_results_3.error|default:"0" }}</td>
-            <td>{{ fielder_results_3.total_bases|default:"0" }}</td>
-            <td>{{ fielder_results_3.ops|floatformat:"3"|default:"0.000" }}</td>
-            <td>{{ fielder_results_3.slg|floatformat:"3"|default:"0.000" }}</td>
-            <td>{{ fielder_results_3.obp|floatformat:"3"|default:"0.000" }}</td>
-            <td>{{ fielder_results_3.gpa|floatformat:"3"|default:"0.000" }}</td>
-            <td>{{ fielder_results_3.batting_average|floatformat:"3"|default:"0.000" }}</td>
-            <td>{{ fielder_results_3.bbhp_k|floatformat:"3"|default:"0.000" }}</td>
-            <td>{{ fielder_results_3.bbhp_percent|floatformat:"3"|default:"0.000" }}</td>
-            <td>{{ fielder_results_3.isod|floatformat:"3"|default:"0.000" }}</td>
-            <td>{{ fielder_results_3.isop|floatformat:"3"|default:"0.000" }}</td>
-            <td>{{ fielder_results_3.p_s|floatformat:"3"|default:"0.000" }}</td>
+            <td>
+            {% if fielder_result.player_id.admission_year == y %}
+            1年
+            {% elif fielder_result.player_id.admission_year|add:1 == y %}
+            2年
+            {% else %}
+            3年
+            {% endif %}
+            </td>
+            <td>{{ fielder_result.at_bat|default:"0" }}</td>
+            <td>{{ fielder_result.run|default:"0" }}</td>
+            <td>{{ fielder_result.hit|default:"0" }}</td>
+            <td>{{ fielder_result.two_base|default:"0" }}</td>
+            <td>{{ fielder_result.three_base|default:"0" }}</td>
+            <td>{{ fielder_result.home_run|default:"0" }}</td>
+            <td>{{ fielder_result.run_batted_in|default:"0" }}</td>
+            <td>{{ fielder_result.strike_out|default:"0" }}</td>
+            <td>{{ fielder_result.bb_hbp|default:"0" }}</td>
+            <td>{{ fielder_result.sacrifice_bunt|default:"0" }}</td>
+            <td>{{ fielder_result.stolen_base|default:"0" }}</td>
+            <td>{{ fielder_result.grounded_into_double_play|default:"0" }}</td>
+            <td>{{ fielder_result.error|default:"0" }}</td>
+            <td>{{ fielder_result.total_bases|default:"0" }}</td>
+            <td>{{ fielder_result.ops|floatformat:"3"|default:"0.000" }}</td>
+            <td>{{ fielder_result.slg|floatformat:"3"|default:"0.000" }}</td>
+            <td>{{ fielder_result.obp|floatformat:"3"|default:"0.000" }}</td>
+            <td>{{ fielder_result.gpa|floatformat:"3"|default:"0.000" }}</td>
+            <td>{{ fielder_result.batting_average|floatformat:"3"|default:"0.000" }}</td>
+            <td>{{ fielder_result.bbhp_k|floatformat:"3"|default:"0.000" }}</td>
+            <td>{{ fielder_result.bbhp_percent|floatformat:"3"|default:"0.000" }}</td>
+            <td>{{ fielder_result.isod|floatformat:"3"|default:"0.000" }}</td>
+            <td>{{ fielder_result.isop|floatformat:"3"|default:"0.000" }}</td>
+            <td>{{ fielder_result.p_s|floatformat:"3"|default:"0.000" }}</td>
         </tr>
-        <tr>
-            <td>2年</td>
-            <td>{{ fielder_results_2.at_bat|default:"0" }}</td>
-            <td>{{ fielder_results_2.run|default:"0" }}</td>
-            <td>{{ fielder_results_2.hit|default:"0" }}</td>
-            <td>{{ fielder_results_2.two_base|default:"0" }}</td>
-            <td>{{ fielder_results_2.three_base|default:"0" }}</td>
-            <td>{{ fielder_results_2.home_run|default:"0" }}</td>
-            <td>{{ fielder_results_2.run_batted_in|default:"0" }}</td>
-            <td>{{ fielder_results_2.strike_out|default:"0" }}</td>
-            <td>{{ fielder_results_2.bb_hbp|default:"0" }}</td>
-            <td>{{ fielder_results_2.sacrifice_bunt|default:"0" }}</td>
-            <td>{{ fielder_results_2.stolen_base|default:"0" }}</td>
-            <td>{{ fielder_results_2.grounded_into_double_play|default:"0" }}</td>
-            <td>{{ fielder_results_2.error|default:"0" }}</td>
-            <td>{{ fielder_results_2.total_bases|default:"0" }}</td>
-            <td>{{ fielder_results_2.ops|floatformat:"3"|default:"0.000" }}</td>
-            <td>{{ fielder_results_2.slg|floatformat:"3"|default:"0.000" }}</td>
-            <td>{{ fielder_results_2.obp|floatformat:"3"|default:"0.000" }}</td>
-            <td>{{ fielder_results_2.gpa|floatformat:"3"|default:"0.000" }}</td>
-            <td>{{ fielder_results_2.batting_average|floatformat:"3"|default:"0.000" }}</td>
-            <td>{{ fielder_results_2.bbhp_k|floatformat:"3"|default:"0.000" }}</td>
-            <td>{{ fielder_results_2.bbhp_percent|floatformat:"3"|default:"0.000" }}</td>
-            <td>{{ fielder_results_2.isod|floatformat:"3"|default:"0.000" }}</td>
-            <td>{{ fielder_results_2.isop|floatformat:"3"|default:"0.000" }}</td>
-            <td>{{ fielder_results_2.p_s|floatformat:"3"|default:"0.000" }}</td>
-        </tr>
-        <tr>
-            <td>1年</td>
-            <td>{{ fielder_results_1.at_bat|default:"0" }}</td>
-            <td>{{ fielder_results_1.run|default:"0" }}</td>
-            <td>{{ fielder_results_1.hit|default:"0" }}</td>
-            <td>{{ fielder_results_1.two_base|default:"0" }}</td>
-            <td>{{ fielder_results_1.three_base|default:"0" }}</td>
-            <td>{{ fielder_results_1.home_run|default:"0" }}</td>
-            <td>{{ fielder_results_1.run_batted_in|default:"0" }}</td>
-            <td>{{ fielder_results_1.strike_out|default:"0" }}</td>
-            <td>{{ fielder_results_1.bb_hbp|default:"0" }}</td>
-            <td>{{ fielder_results_1.sacrifice_bunt|default:"0" }}</td>
-            <td>{{ fielder_results_1.stolen_base|default:"0" }}</td>
-            <td>{{ fielder_results_1.grounded_into_double_play|default:"0" }}</td>
-            <td>{{ fielder_results_1.error|default:"0" }}</td>
-            <td>{{ fielder_results_1.total_bases|default:"0" }}</td>
-            <td>{{ fielder_results_1.ops|floatformat:"3"|default:"0.000" }}</td>
-            <td>{{ fielder_results_1.slg|floatformat:"3"|default:"0.000" }}</td>
-            <td>{{ fielder_results_1.obp|floatformat:"3"|default:"0.000" }}</td>
-            <td>{{ fielder_results_1.gpa|floatformat:"3"|default:"0.000" }}</td>
-            <td>{{ fielder_results_1.batting_average|floatformat:"3"|default:"0.000" }}</td>
-            <td>{{ fielder_results_1.bbhp_k|floatformat:"3"|default:"0.000" }}</td>
-            <td>{{ fielder_results_1.bbhp_percent|floatformat:"3"|default:"0.000" }}</td>
-            <td>{{ fielder_results_1.isod|floatformat:"3"|default:"0.000" }}</td>
-            <td>{{ fielder_results_1.isop|floatformat:"3"|default:"0.000" }}</td>
-            <td>{{ fielder_results_1.p_s|floatformat:"3"|default:"0.000" }}</td>
-        </tr>
+                {% endfor %}
     </tbody>
 </table>
 <hr class="mt-5 mb-5">

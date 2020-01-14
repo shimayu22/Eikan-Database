@@ -68,14 +68,13 @@ class TeamDetailView(DetailView):
         fielder_results = FielderResults.objects.select_related(
             'player_id').filter(game_id__team_id=teams).order_by('player_id')
 
-
-
         player_list = fielder_results.values('player_id').distinct()
         # <QuerySet [{'player_id': 1}, {'player_id': 2}, {'player_id': 3}, {'player_id': 4}]>
         # 選手ごとにこのチームだった時の指標を計算する
         for f in player_list:
             sfs = s.FielderSabrManager(
-                f['player_id'], fielder_results.filter(player_id=f['player_id']))
+                f['player_id'], fielder_results.filter(
+                    player_id=f['player_id']))
             ctx['fielder_results'].append(sfs.create_sabr_from_results())
 
         # 投手編
@@ -85,7 +84,8 @@ class TeamDetailView(DetailView):
         pitcher_list = pitcher_results.values('player_id').distinct()
         for p in pitcher_list:
             sfs = s.PitcherSabrManager(
-                p['player_id'], pitcher_results.filter(player_id=p['player_id']))
+                p['player_id'], pitcher_results.filter(
+                    player_id=p['player_id']))
             ctx['pitcher_results'].append(sfs.create_sabr_from_results())
 
         return ctx
@@ -130,7 +130,6 @@ class PlayerDetailView(DetailView):
         # ctx["fielder_results_n"] n=1～3
         sfs = s.FielderByYearSabrManager(player)
         ctx['fielder_by_year_results'] = sfs.create_sabr_from_results()
-        print(ctx['fielder_by_year_results'])
 
         # 投手のみ以下の処理を行う
         if player.is_pitcher:
@@ -138,14 +137,9 @@ class PlayerDetailView(DetailView):
                 'player_id').get(player_id=player)
             ctx['pitcher_results'] = PitcherResults.objects.select_related(
                 'game_id__team_id', 'game_id', 'player_id').filter(player_id=player)
-            for i in range(0, 3):
-                key = "pitcher_results_" + str(i + 1)
-                ctx[key] = []
-                year = player.admission_year + i
-                p = ctx['pitcher_results'].filter(game_id__team_id__year=year)
-                if p.exists():
-                    sfs = s.PitcherSabrManager(player, p)
-                    ctx[key] = sfs.create_sabr_from_results()
+            sps = s.PitcherByYearSabrManager(player)
+            ctx['pitcher_by_year_results'] = sps.create_sabr_from_results()
+            print(ctx['pitcher_by_year_results'])
 
         return ctx
 

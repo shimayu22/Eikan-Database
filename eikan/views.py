@@ -62,6 +62,8 @@ class TeamDetailView(DetailView):
         teams = kwargs['object']
 
         ctx = super().get_context_data(**kwargs)
+        ctx['team_total_result'] = TeamTotalResults.objects.select_related(
+            'team_id').get(team_id=teams)
         ctx['games'] = Games.objects.select_related(
             'team_id').filter(team_id=teams).order_by('-pk')
         # このチームで行った試合結果を取得する

@@ -1,6 +1,5 @@
 from django.shortcuts import get_list_or_404
 from django.views.generic import TemplateView, DetailView
-from eikan import sabr_manager as s
 from eikan import sabr_manager_for_player as p
 from eikan import sabr_manager_for_team as t
 

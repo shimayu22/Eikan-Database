@@ -291,6 +291,13 @@ class TeamSabrManager:
         team_total_results.era = self.team_era
         team_total_results.der = self.team_der
 
+        if team_total_results.is_to_win:
+            pass
+        else:
+            g = self.games.latest('pk')
+            if g.competition_type > 3 and g.competiton_round == 8 and g.result == 1:
+                team_total_results.is_to_win = True
+
         return team_total_results
 
     def update_results(self):

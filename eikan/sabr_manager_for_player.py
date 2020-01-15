@@ -29,7 +29,7 @@ class FielderByYearSabrManager:
             sacrifice_bunt__sum=models.Sum('sacrifice_bunt'),
             stolen_base__sum=models.Sum('stolen_base'),
             grounded_into_double_play__sum=models.Sum('grounded_into_double_play'),
-            error__sum=models.Sum('error'))
+            error__sum=models.Sum('error')).order_by('-game_id__team_id__year')
 
         fielder_total_results_list = []
 
@@ -125,7 +125,7 @@ class PitcherByYearSabrManager:
             run__sum=models.Sum('run'),
             earned_run__sum=models.Sum('earned_run'),
             wild_pitch__sum=models.Sum('wild_pitch'),
-            home_run__sum=models.Sum('home_run'))
+            home_run__sum=models.Sum('home_run')).order_by('-game_id__team_id__year')
 
         pitcher_total_results_list = []
         for result in pitcher_results:

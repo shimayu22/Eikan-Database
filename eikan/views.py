@@ -1,6 +1,5 @@
 from django.shortcuts import get_list_or_404
 from django.views.generic import TemplateView, DetailView
-from eikan import sabr_manager as s
 from eikan import sabr_manager_for_player as p
 from eikan import sabr_manager_for_team as t
 
@@ -66,6 +65,10 @@ class TeamDetailView(DetailView):
             'team_id').get(team_id=teams)
         ctx['games'] = Games.objects.select_related(
             'team_id').filter(team_id=teams).order_by('-pk')
+        g = Games.objects.select_related(
+            'team_id').filter(team_id=teams, competition_type__gt=1)
+        if g.exists():
+            ctx['game_latest'] = g.latest('pk')
         # このチームで行った試合結果を取得する
         tft = t.FielderByTeamSabrManager(teams)
         ctx['fielder_results'] = tft.create_sabr_from_results()

@@ -277,10 +277,6 @@ class TeamSabrManager:
             self.fielder_results['error__sum'])
 
     def create_sabr_from_results(self):
-        # Teamsのランクを更新する
-        team = Teams.objects.latest('pk')
-        team.runk = self.update_rank
-        team.save()
         # TeamTotalResultsを更新する
         team_total_results = TeamTotalResults.objects.get(team_id=self.team_id)
         team_total_results.total_win = self.total_win
@@ -295,8 +291,20 @@ class TeamSabrManager:
         team_total_results.era = self.team_era
         team_total_results.der = self.team_der
 
+        if team_total_results.is_to_win:
+            pass
+        else:
+            g = self.games.latest('pk')
+            if g.competition_type > 3 and g.competiton_round == 8 and g.result == 1:
+                team_total_results.is_to_win = True
+
         return team_total_results
 
     def update_results(self):
+        # Teamsのランクを更新する
+        team = Teams.objects.latest('pk')
+        team.rank = self.update_rank
+        team.save()
+        # TeamsTotalResultsを更新する
         t = self.create_sabr_from_results()
         t.save()

@@ -2,30 +2,72 @@
 {% block content %}
 <hr class="mt-5">
 <div class="row h4 text-nowrap">
-    <div class="col text-right">年度：</div>
-    <div class="col">{{ teams.year }}年</div>
-    <div class="col text-right">期間：</div>
-    <div class="col">{{ teams.get_period_display }}</div>
-    <div class="col text-right">地区：</div>
-    <div class="col">{{ teams.get_prefecture_display }}</div>
-    <div class="col text-right">方針：</div>
-    <div class="col">{{ teams.get_training_policy_display }}</div>
-    <div class="col text-right">ランク：</div>
-    <div class="col">{{ teams.rank }}</div>
-    <div class="col text-right">指名：</div>
-    <div class="col">{{ teams.draft_nomination }}人</div>
-</div>
-<div class="row h4 text-nowrap">
-    <div class="col-1 text-right">戦績：</div>
-    <div class="col-2">TODO</div>
-    <div class="col-1 text-right">備考：</div>
-    <div class="col">
+    <div class="col">年度：{{ teams.year }}年</div>
+    <div class="col">期間：{{ teams.get_period_display }}</div>
+    <div class="col">地区：{{ teams.get_prefecture_display }}</div>
+    <div class="col">方針：{{ teams.get_training_policy_display }}</div>
+    <div class="col">ランク：{{ teams.rank|default:"未" }}</div>
+    <div class="col">指名：{{ teams.draft_nomination }}人</div>
+    <div class="col">戦績：
+    {% if game_latest.competition_type > 3 and game_latest.competiton_round == 8 and game_latest.result == 1 %}
+    {{ game_latest.get_competition_type_display}}優勝
+    {% else %}
+    {{ game_latest.get_competition_type_display|default:"なし" }}{{ game_latest.get_competiton_round_display }}
+    {% endif %}
+    </div>
+    
+    <div class="col">備考：
         {% if players.remark %}
             {{ players.remark }}
         {% endif %}
     </div>
 </div>
 <hr class="mb-5">
+<h3 class="mt-2">チーム成績</h3>
+<table class="table table-bordered table-hover table-sm table-responsive-lg text-nowrap">
+    <thead class="thead-light text-center">
+        <tr>
+            <th>年度:期間:地区</th>
+            <th>勝</th>
+            <th>負</th>
+            <th>分</th>
+            <th>得点</th>
+            <th>失点</th>
+            <th>得失</th>
+            <th>ランク</th>
+            <th>打率</th>
+            <th>OPS</th>
+            <th>HR</th>
+            <th>防御率</th>
+            <th><abbr title="(対戦打者-被安打-与四死球-奪三振-失策)/(対戦打者-被本塁打-与四死球-奪三振)">DER</abbr></th>
+            <th>備考</th>
+        </tr>
+    </thead>
+    <tbody class="text-right">
+        <tr>
+            <th class="text-center">{{ team_total_result.team_id }}</th>
+            <td>{{ team_total_result.total_win }}</td>
+            <td>{{ team_total_result.total_lose }}</td>
+            <td>{{ team_total_result.total_draw }}</td>
+            <td>{{ team_total_result.score }}</td>
+            <td>{{ team_total_result.run }}</td>
+            <td>{{ team_total_result.score_difference }}</td>
+            <td>{{ team_total_result.team_id.rank }}</td>
+            <td>{{ team_total_result.batting_average }}</td>
+            <td>{{ team_total_result.ops }}</td>
+            <td>{{ team_total_result.hr }}</td>
+            <td>{{ team_total_result.era }}</td>
+            <td>{{ team_total_result.der }}</td>
+            <td class="text-left">
+            {% if team_total_result.team_id.remark %}
+                {{ team_total_result.team_id.remark }}    
+            {% endif %}
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<hr class="mt-5 mb-5">
 <h3 class="mt-2">試合結果</h3>
 <table class="table table-bordered table-hover table-sm table-responsive-lg text-nowrap">
     <thead class="thead-light text-center">

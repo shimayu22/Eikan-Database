@@ -85,6 +85,12 @@ class TeamTotalResults(models.Model):
         editable=False,
     )
 
+    is_to_win = models.BooleanField(
+        verbose_name="優勝",
+        default=False,
+        editable=False,
+    )
+
     created_at = models.DateTimeField(
         verbose_name="登録日",
         auto_now_add=True,

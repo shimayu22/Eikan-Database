@@ -124,7 +124,7 @@ class PitcherByTeamSabrManager:
             run__sum=models.Sum('run'),
             earned_run__sum=models.Sum('earned_run'),
             wild_pitch__sum=models.Sum('wild_pitch'),
-            home_run__sum=models.Sum('home_run'))
+            home_run__sum=models.Sum('home_run')).order_by('player_id')
 
         pitcher_total_results_list = []
 

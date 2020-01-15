@@ -1,6 +1,5 @@
 from django.shortcuts import get_list_or_404
 from django.views.generic import TemplateView, DetailView
-from eikan import sabr_manager as s
 from eikan import sabr_manager_for_player as p
 from eikan import sabr_manager_for_team as t
 
@@ -62,8 +61,14 @@ class TeamDetailView(DetailView):
         teams = kwargs['object']
 
         ctx = super().get_context_data(**kwargs)
+        ctx['team_total_result'] = TeamTotalResults.objects.select_related(
+            'team_id').get(team_id=teams)
         ctx['games'] = Games.objects.select_related(
             'team_id').filter(team_id=teams).order_by('-pk')
+        g = Games.objects.select_related(
+            'team_id').filter(team_id=teams, competition_type__gt=1)
+        if g.exists():
+            ctx['game_latest'] = g.latest('pk')
         # このチームで行った試合結果を取得する
         tft = t.FielderByTeamSabrManager(teams)
         ctx['fielder_results'] = tft.create_sabr_from_results()
@@ -80,7 +85,7 @@ class FielderView(TemplateView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx['fielder_total_results'] = FielderTotalResults.objects.select_related(
-            'player_id').all().order_by('player_id')
+            'player_id').all().order_by('-player_id')
 
         return ctx
 
@@ -91,7 +96,7 @@ class PitcherView(TemplateView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx['pitcher_total_results'] = PitcherTotalResults.objects.select_related(
-            'player_id').all().order_by('player_id')
+            'player_id').all().order_by('-player_id')
 
         return ctx
 
@@ -109,7 +114,8 @@ class PlayerDetailView(DetailView):
             'player_id').get(player_id=player)
         # 1年生時の西暦から、3年夏までの試合結果を取得する
         ctx['fielder_results'] = FielderResults.objects.select_related(
-            'game_id__team_id', 'game_id', 'player_id').filter(player_id=player)
+            'game_id__team_id', 'game_id', 'player_id').filter(
+            player_id=player).order_by('-pk')
         pfs = p.FielderByYearSabrManager(player)
         ctx['fielder_by_year_results'] = pfs.create_sabr_from_results()
 
@@ -118,7 +124,8 @@ class PlayerDetailView(DetailView):
             ctx['pitcher_total_results'] = PitcherTotalResults.objects.select_related(
                 'player_id').get(player_id=player)
             ctx['pitcher_results'] = PitcherResults.objects.select_related(
-                'game_id__team_id', 'game_id', 'player_id').filter(player_id=player)
+                'game_id__team_id', 'game_id', 'player_id').filter(
+                player_id=player).order_by('-pk')
             pps = p.PitcherByYearSabrManager(player)
             ctx['pitcher_by_year_results'] = pps.create_sabr_from_results()
 
@@ -131,7 +138,7 @@ class GameView(TemplateView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx['games'] = Games.objects.select_related(
-            'team_id').all().order_by('team_id')
+            'team_id').all().order_by('-pk')
 
         return ctx
 

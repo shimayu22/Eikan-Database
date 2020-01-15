@@ -277,10 +277,6 @@ class TeamSabrManager:
             self.fielder_results['error__sum'])
 
     def create_sabr_from_results(self):
-        # Teamsのランクを更新する
-        team = Teams.objects.latest('pk')
-        team.runk = self.update_rank
-        team.save()
         # TeamTotalResultsを更新する
         team_total_results = TeamTotalResults.objects.get(team_id=self.team_id)
         team_total_results.total_win = self.total_win
@@ -298,5 +294,10 @@ class TeamSabrManager:
         return team_total_results
 
     def update_results(self):
+        # Teamsのランクを更新する
+        team = Teams.objects.latest('pk')
+        team.rank = self.update_rank
+        team.save()
+        # TeamsTotalResultsを更新する
         t = self.create_sabr_from_results()
         t.save()

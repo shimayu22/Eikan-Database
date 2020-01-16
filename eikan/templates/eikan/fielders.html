@@ -10,6 +10,8 @@
                 <th><abbr title="出塁率+長打率">OPS</abbr></th>
                 <th><abbr title="長打率：塁打/打数">SLG</abbr></th>
                 <th><abbr title="出塁率：(安打+四死球)/(打数+四死球)※犠飛を除外">OBP</abbr></th>
+                <th><abbr title="打撃得点：0.44*(安打-二塁打-三塁打-本塁打)+0.77*二塁打+1.12*三塁打+1.41*本塁打+0.29*四死球-0.25*(打数-安打)※盗塁を除外">BR</abbr></th>
+                <th><abbr title="加重出塁率：(安打+四死球)/(打数+四死球)※犠飛を除外">wOBA</abbr></th>
                 <th><abbr title="(出塁率*1.8+長打率)/4">GPA</abbr></th>
                 <th><abbr title="打率：安打/打数">AVG</abbr></th>
                 <th><abbr title="打数">AB</abbr></th>
@@ -55,6 +57,8 @@
                 <td>{{ ftr.slg }}</td>
                 <td>{{ ftr.batting_average }}</td>
                 <td>{{ ftr.obp }}</td>
+                <td>{{ ftr.br }}</td>
+                <td>{{ ftr.woba }}</td>
                 <td>{{ ftr.gpa }}</td>
                 <td>{{ ftr.at_bat }}</td>
                 <td>{{ ftr.run }}</td>

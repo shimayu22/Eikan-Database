@@ -63,6 +63,21 @@ class FielderTotalSabrManager:
             self,
             fielder_total_results.obp,
             fielder_total_results.slg)
+        fielder_total_results.br = f.batting_runs(
+            self,
+            fielder_results['hit__sum'],
+            fielder_results['two_base__sum'],
+            fielder_results['three_base__sum'],
+            fielder_results['home_run__sum'],
+            fielder_results['bb_hbp__sum'],
+            fielder_results['at_bat__sum']
+        )
+        fielder_total_results.woba = f.weighted_on_base_average(
+            self,
+            fielder_results['hit__sum'],
+            fielder_results['bb_hbp__sum'],
+            fielder_results['at_bat__sum']
+        )
         fielder_total_results.gpa = f.gross_production_average(
             self,
             fielder_total_results.obp,

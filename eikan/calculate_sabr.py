@@ -22,6 +22,20 @@ class CalculateFielderSabr:
     def on_base_plus_slugging(self, obp, slg):
         return obp + slg
 
+    def batting_runs(self, h, twobase, threebase, homerun, bb_hbp, at_bat):
+        # 0.44 * (安打 - 二塁打 - 三塁打 - 本塁打) + 0.77 * 二塁打 + 1.12 * 三塁打 + 1.41 * 本塁打 + 0.29 * 四死球 - 0.25 * (打数 - 安打)
+        # 栄冠ナインの仕様上、盗塁、盗塁刺を除外
+        return 0.44 * (h - twobase - threebase - homerun) + 0.77 * twobase + \
+            1.12 * threebase + 1.41 * homerun * 0.29 * bb_hbp - 0.25 * (at_bat - h)
+
+    def weighted_on_base_average(self, h, bb_hbp, at_bat):
+        # (安打 + 四死球) / (打数 + 四死球)
+        a = at_bat + bb_hbp
+        if a == 0:
+            return 0
+
+        return (h + bb_hbp) / a
+
     def gross_production_average(self, obp, slg):
         return (obp * 1.8 + slg) / 4
 

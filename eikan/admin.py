@@ -86,6 +86,8 @@ class FielderTotalResultsAdmin(admin.ModelAdmin):
         'ops',
         'slg',
         'obp',
+        'br',
+        'woba',
         'gpa',
         'batting_average',
         'at_bat',

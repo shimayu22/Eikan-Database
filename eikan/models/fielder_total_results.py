@@ -119,6 +119,22 @@ class FielderTotalResults(models.Model):
         editable=False,
     )
 
+    br = models.DecimalField(
+        verbose_name="BR",
+        max_digits=4,
+        decimal_places=1,
+        default=0.0,
+        editable=False,
+    )
+
+    woba = models.DecimalField(
+        verbose_name="wOBA",
+        max_digits=4,
+        decimal_places=3,
+        default=0.000,
+        editable=False,
+    )
+
     gpa = models.DecimalField(
         verbose_name="GPA",
         max_digits=4,

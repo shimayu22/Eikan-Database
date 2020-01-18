@@ -1,6 +1,5 @@
 from django.db import models
-from eikan.models import Teams, Games, \
-    FielderResults, PitcherResults, \
+from eikan.models import FielderResults, PitcherResults, \
     FielderTotalResults, PitcherTotalResults
 from eikan.calculate_sabr import CalculateFielderSabr as f
 from eikan.calculate_sabr import CalculatePitcherSabr as p
@@ -80,6 +79,9 @@ class FielderByTeamSabrManager:
             fielder_total_results.woba = f.weighted_on_base_average(
                 self,
                 result['hit__sum'],
+                result['two_base__sum'],
+                result['three_base__sum'],
+                result['home_run__sum'],
                 result['bb_hbp__sum'],
                 result['at_bat__sum']
             )

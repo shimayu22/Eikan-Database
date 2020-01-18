@@ -75,6 +75,9 @@ class FielderTotalSabrManager:
         fielder_total_results.woba = f.weighted_on_base_average(
             self,
             fielder_results['hit__sum'],
+            fielder_results['two_base__sum'],
+            fielder_results['three_base__sum'],
+            fielder_results['home_run__sum'],
             fielder_results['bb_hbp__sum'],
             fielder_results['at_bat__sum']
         )

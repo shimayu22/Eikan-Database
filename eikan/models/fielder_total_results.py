@@ -122,8 +122,8 @@ class FielderTotalResults(models.Model):
     br = models.DecimalField(
         verbose_name="BR",
         max_digits=4,
-        decimal_places=3,
-        default=0.000,
+        decimal_places=1,
+        default=0.0,
         editable=False,
     )
 

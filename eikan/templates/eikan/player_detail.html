@@ -211,6 +211,8 @@
             <th><abbr title="出塁率+長打率">OPS</abbr></th>
             <th><abbr title="長打率：塁打/打数">SLG</abbr></th>
             <th><abbr title="出塁率：(安打+四死球)/(打数+四死球)※犠飛を除外">OBP</abbr></th>
+            <th><abbr title="打撃得点：0.44*(安打-二塁打-三塁打-本塁打)+0.77*二塁打+1.12*三塁打+1.41*本塁打+0.29*四死球-0.25*(打数-安打)※盗塁を除外">BR</abbr></th>
+            <th><abbr title="加重出塁率：(0.7*四死球+0.9*単打+1.3*二塁打+1.6*三塁打+2.0*本塁打)/(打数+四死球)※犠飛を除外">wOBA</abbr></th>
             <th><abbr title="(出塁率*1.8+長打率)/4">GPA</abbr></th>
             <th><abbr title="打率：安打/打数">AVG</abbr></th>
             <th><abbr title="1つ三振するまでに得た四死球：四死球/三振">BB/K</abbr></th>
@@ -240,6 +242,8 @@
             <td>{{ fielder_total_results.ops }}</td>
             <td>{{ fielder_total_results.slg }}</td>
             <td>{{ fielder_total_results.obp }}</td>
+            <td>{{ fielder_total_results.br }}</td>
+            <td>{{ fielder_total_results.woba }}</td>
             <td>{{ fielder_total_results.gpa }}</td>
             <td>{{ fielder_total_results.batting_average }}</td>
             <td>{{ fielder_total_results.bbhp_k }}</td>
@@ -276,6 +280,8 @@
             <td>{{ fielder_result.ops|floatformat:"3"|default:"0.000" }}</td>
             <td>{{ fielder_result.slg|floatformat:"3"|default:"0.000" }}</td>
             <td>{{ fielder_result.obp|floatformat:"3"|default:"0.000" }}</td>
+            <td>{{ fielder_result.br|floatformat:"1"|default:"0.0" }}</td>
+            <td>{{ fielder_result.woba|floatformat:"3"|default:"0.000" }}</td>
             <td>{{ fielder_result.gpa|floatformat:"3"|default:"0.000" }}</td>
             <td>{{ fielder_result.batting_average|floatformat:"3"|default:"0.000" }}</td>
             <td>{{ fielder_result.bbhp_k|floatformat:"3"|default:"0.000" }}</td>

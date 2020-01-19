@@ -3,11 +3,16 @@ from eikan.models import Games, Players, Teams
 
 
 def set_select_players():
+    from eikan.models import ModelSettings
+
     teams = Teams.objects.latest('pk')
     count = Teams.objects.count()
+    is_filter = False
+    if ModelSettings.objects.count() > 0:
+        is_filter = ModelSettings.objects.latest('pk').is_used_limit_choices_to
     condition_dict = {}
 
-    if count > 0:
+    if count > 0 and not is_filter:
         condition_dict["admission_year__gte"] = \
             (teams.year - 2) if teams.period == 1 \
             else (teams.year - 1)

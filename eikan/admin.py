@@ -9,9 +9,14 @@ from django.forms import NumberInput
 from .models import Teams, Players, Games, \
     FielderResults, PitcherResults, \
     FielderTotalResults, PitcherTotalResults, \
-    TeamTotalResults
+    TeamTotalResults, ModelSettings
 
 admin.site.site_header = '栄冠ナインデータベース 管理画面'
+
+
+class ModelSettingsAdmin(admin.ModelAdmin):
+    list_display = ('pk', 'is_used_limit_choices_to',)
+    list_editable = ('is_used_limit_choices_to',)
 
 
 class TeamsAdmin(admin.ModelAdmin):
@@ -148,6 +153,7 @@ admin.site.register(Games, GamesAdmin)
 admin.site.register(FielderTotalResults, FielderTotalResultsAdmin)
 admin.site.register(PitcherTotalResults, PitcherTotalResultsAdmin)
 admin.site.register(TeamTotalResults, TeamTotalResultsAdmin)
+admin.site.register(ModelSettings, ModelSettingsAdmin)
 
 
 # チームを登録したらTeamTotalResultsも対応するレコードを登録する

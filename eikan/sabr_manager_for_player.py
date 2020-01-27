@@ -10,6 +10,7 @@ class FielderByYearSabrManager:
         self.player_id = player_id
 
     def create_sabr_from_results(self):
+
         fielder_results = FielderResults.objects.select_related(
             'game_id__team_id',
             'game_id',
@@ -33,8 +34,8 @@ class FielderByYearSabrManager:
         fielder_total_results_list = []
 
         for result in fielder_results:
-            fielder_total_results = FielderTotalResults.objects.select_related(
-                'player_id').get(player_id=self.player_id)
+
+            fielder_total_results = FielderTotalResults.objects
             fielder_total_results.at_bat = result['at_bat__sum']
             fielder_total_results.run = result['run__sum']
             fielder_total_results.hit = result['hit__sum']
@@ -146,8 +147,7 @@ class PitcherByYearSabrManager:
 
         pitcher_total_results_list = []
         for result in pitcher_results:
-            pitcher_total_results = PitcherTotalResults.objects.select_related(
-                'player_id').get(player_id=self.player_id)
+            pitcher_total_results = PitcherTotalResults.objects
             pitcher_total_results.games = result['games__count']
             pitcher_total_results.games_started = PitcherResults.objects.filter(
                 player_id=self.player_id,

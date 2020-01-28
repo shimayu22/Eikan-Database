@@ -34,41 +34,41 @@ class FielderByYearSabrManager:
         fielder_total_results_list = []
 
         for result in fielder_results:
-
-            fielder_total_results = FielderTotalResults.objects
-            fielder_total_results.at_bat = result['at_bat__sum']
-            fielder_total_results.run = result['run__sum']
-            fielder_total_results.hit = result['hit__sum']
-            fielder_total_results.two_base = result['two_base__sum']
-            fielder_total_results.three_base = result['three_base__sum']
-            fielder_total_results.home_run = result['home_run__sum']
-            fielder_total_results.run_batted_in = result['run_batted_in__sum']
-            fielder_total_results.strike_out = result['strike_out__sum']
-            fielder_total_results.sacrifice_bunt = result['sacrifice_bunt__sum']
-            fielder_total_results.stolen_base = result['stolen_base__sum']
-            fielder_total_results.grounded_into_double_play = result[
+            fielder_total_results = {}
+            fielder_total_results['year'] = result['game_id__team_id__year']
+            fielder_total_results['at_bat'] = result['at_bat__sum']
+            fielder_total_results['run'] = result['run__sum']
+            fielder_total_results['hit'] = result['hit__sum']
+            fielder_total_results['two_base'] = result['two_base__sum']
+            fielder_total_results['three_base'] = result['three_base__sum']
+            fielder_total_results['home_run'] = result['home_run__sum']
+            fielder_total_results['run_batted_in'] = result['run_batted_in__sum']
+            fielder_total_results['strike_out'] = result['strike_out__sum']
+            fielder_total_results['sacrifice_bunt'] = result['sacrifice_bunt__sum']
+            fielder_total_results['stolen_base'] = result['stolen_base__sum']
+            fielder_total_results['grounded_into_double_play'] = result[
                 'grounded_into_double_play__sum']
-            fielder_total_results.error = result['error__sum']
-            fielder_total_results.total_bases = f.total_bases(
+            fielder_total_results['error'] = result['error__sum']
+            fielder_total_results['total_bases'] = f.total_bases(
                 self,
                 result['hit__sum'],
                 result['two_base__sum'],
                 result['three_base__sum'],
                 result['home_run__sum'])
-            fielder_total_results.obp = f.on_base_percentage(
+            fielder_total_results['obp'] = f.on_base_percentage(
                 self,
                 result['at_bat__sum'],
                 result['bb_hbp__sum'],
                 result['hit__sum'])
-            fielder_total_results.slg = f.slugging_percentage(
+            fielder_total_results['slg'] = f.slugging_percentage(
                 self,
                 result['at_bat__sum'],
-                fielder_total_results.total_bases)
-            fielder_total_results.ops = f.on_base_plus_slugging(
+                fielder_total_results['total_bases'])
+            fielder_total_results['ops'] = f.on_base_plus_slugging(
                 self,
-                fielder_total_results.obp,
-                fielder_total_results.slg)
-            fielder_total_results.br = f.batting_runs(
+                fielder_total_results['obp'],
+                fielder_total_results['slg'])
+            fielder_total_results['br'] = f.batting_runs(
                 self,
                 result['hit__sum'],
                 result['two_base__sum'],
@@ -77,7 +77,7 @@ class FielderByYearSabrManager:
                 result['bb_hbp__sum'],
                 result['at_bat__sum']
             )
-            fielder_total_results.woba = f.weighted_on_base_average(
+            fielder_total_results['woba'] = f.weighted_on_base_average(
                 self,
                 result['hit__sum'],
                 result['two_base__sum'],
@@ -86,37 +86,37 @@ class FielderByYearSabrManager:
                 result['bb_hbp__sum'],
                 result['at_bat__sum']
             )
-            fielder_total_results.gpa = f.gross_production_average(
+            fielder_total_results['gpa'] = f.gross_production_average(
                 self,
-                fielder_total_results.obp,
-                fielder_total_results.slg)
-            fielder_total_results.batting_average = f.batting_average(
+                fielder_total_results['obp'],
+                fielder_total_results['slg'])
+            fielder_total_results['batting_average'] = f.batting_average(
                 self,
                 result['at_bat__sum'],
                 result['hit__sum'])
-            fielder_total_results.bbhp_percent = f.bb_hp_percentage(
+            fielder_total_results['bbhp_percent'] = f.bb_hp_percentage(
                 self,
                 result['at_bat__sum'],
                 result['bb_hbp__sum'],
                 result['sacrifice_bunt__sum'])
-            fielder_total_results.isod = f.isolated_discipline(
+            fielder_total_results['isod'] = f.isolated_discipline(
                 self,
-                fielder_total_results.obp,
-                fielder_total_results.batting_average)
-            fielder_total_results.isop = f.isolated_power(
+                fielder_total_results['obp'],
+                fielder_total_results['batting_average'])
+            fielder_total_results['isop'] = f.isolated_power(
                 self,
-                fielder_total_results.slg,
-                fielder_total_results.batting_average)
-            fielder_total_results.bbhp_k = f.bb_hbp_per_so(
+                fielder_total_results['slg'],
+                fielder_total_results['batting_average'])
+            fielder_total_results['bbhp_k'] = f.bb_hbp_per_so(
                 self,
                 result['strike_out__sum'],
                 result['bb_hbp__sum'])
-            fielder_total_results.p_s = f.power_speed_number(
+            fielder_total_results['p_s'] = f.power_speed_number(
                 self,
                 result['home_run__sum'],
                 result['stolen_base__sum'])
-            fielder_total_results_list.append(
-                [result['game_id__team_id__year'], fielder_total_results])
+
+            fielder_total_results_list.append(fielder_total_results)
 
         return fielder_total_results_list
 
@@ -147,9 +147,10 @@ class PitcherByYearSabrManager:
 
         pitcher_total_results_list = []
         for result in pitcher_results:
-            pitcher_total_results = PitcherTotalResults.objects
-            pitcher_total_results.games = result['games__count']
-            pitcher_total_results.games_started = PitcherResults.objects.filter(
+            pitcher_total_results = {}
+            pitcher_total_results['year'] = result['game_id__team_id__year']
+            pitcher_total_results['games'] = result['games__count']
+            pitcher_total_results['games_started'] = PitcherResults.objects.filter(
                 player_id=self.player_id,
                 game_id__team_id__year=result['game_id__team_id__year'],
                 games_started=True).count()
@@ -162,69 +163,68 @@ class PitcherByYearSabrManager:
                 innings += 0.1
             elif outcount == 2:
                 innings += 0.2
-            pitcher_total_results.innings_pitched = innings
-            pitcher_total_results.number_of_pitch = result['number_of_pitch__sum']
-            pitcher_total_results.total_batters_faced = result['total_batters_faced__sum']
-            pitcher_total_results.hit = result['hit__sum']
-            pitcher_total_results.strike_out = result['strike_out__sum']
-            pitcher_total_results.bb_hbp = result['bb_hbp__sum']
-            pitcher_total_results.run = result['run__sum']
-            pitcher_total_results.earned_run = result['earned_run__sum']
-            pitcher_total_results.wild_pitch = result['wild_pitch__sum']
-            pitcher_total_results.home_run = result['home_run__sum']
-            pitcher_total_results.era = p.earned_runs_average(
+            pitcher_total_results['innings_pitched'] = innings
+            pitcher_total_results['number_of_pitch'] = result['number_of_pitch__sum']
+            pitcher_total_results['total_batters_faced'] = result['total_batters_faced__sum']
+            pitcher_total_results['hit'] = result['hit__sum']
+            pitcher_total_results['strike_out'] = result['strike_out__sum']
+            pitcher_total_results['bb_hbp'] = result['bb_hbp__sum']
+            pitcher_total_results['run'] = result['run__sum']
+            pitcher_total_results['earned_run'] = result['earned_run__sum']
+            pitcher_total_results['wild_pitch'] = result['wild_pitch__sum']
+            pitcher_total_results['home_run'] = result['home_run__sum']
+            pitcher_total_results['era'] = p.earned_runs_average(
                 self,
                 sum_innings_pitched,
                 result['earned_run__sum'])
-            pitcher_total_results.ura = p.runs_average(
+            pitcher_total_results['ura'] = p.runs_average(
                 self,
                 sum_innings_pitched,
                 result['run__sum'])
-            pitcher_total_results.whip = p.walks_plus_hits_per_inning_pitched(
+            pitcher_total_results['whip'] = p.walks_plus_hits_per_inning_pitched(
                 self,
                 sum_innings_pitched,
                 result['hit__sum'],
                 result['bb_hbp__sum'])
-            pitcher_total_results.k_bbhp = p.strike_out_per_bbhp(
+            pitcher_total_results['k_bbhp'] = p.strike_out_per_bbhp(
                 self,
                 result['bb_hbp__sum'],
                 result['strike_out__sum'])
-            pitcher_total_results.k_9 = p.strike_out_per_game(
+            pitcher_total_results['k_9'] = p.strike_out_per_game(
                 self,
                 sum_innings_pitched,
                 result['strike_out__sum'])
-            pitcher_total_results.k_percent = p.strike_out_percentage(
+            pitcher_total_results['k_percent'] = p.strike_out_percentage(
                 self,
                 result['total_batters_faced__sum'],
                 result['strike_out__sum'])
-            pitcher_total_results.bbhp_9 = p.bbhp_per_game(
+            pitcher_total_results['bbhp_9'] = p.bbhp_per_game(
                 self,
                 sum_innings_pitched,
                 result['bb_hbp__sum'])
-            pitcher_total_results.p_bbhp_percent = p.bbhp_percentage(
+            pitcher_total_results['p_bbhp_percent'] = p.bbhp_percentage(
                 self,
                 result['total_batters_faced__sum'],
                 result['bb_hbp__sum'])
-            pitcher_total_results.hr_9 = p.home_run_per_game(
+            pitcher_total_results['hr_9'] = p.home_run_per_game(
                 self,
                 sum_innings_pitched,
                 result['home_run__sum'])
-            pitcher_total_results.hr_percent = p.home_run_percentage(
+            pitcher_total_results['hr_percent'] = p.home_run_percentage(
                 self,
                 result['total_batters_faced__sum'],
                 result['home_run__sum'])
-            pitcher_total_results.lob_percent = p.left_on_base_percentage(
+            pitcher_total_results['lob_percent'] = p.left_on_base_percentage(
                 self,
                 result['hit__sum'],
                 result['bb_hbp__sum'],
                 result['home_run__sum'],
                 result['run__sum'])
-            pitcher_total_results.p_ip = p.pitch_per_inning(
+            pitcher_total_results['p_ip'] = p.pitch_per_inning(
                 self,
                 sum_innings_pitched,
                 result['number_of_pitch__sum'])
 
-            pitcher_total_results_list.append(
-                [result['game_id__team_id__year'], pitcher_total_results])
+            pitcher_total_results_list.append(pitcher_total_results)
 
         return pitcher_total_results_list

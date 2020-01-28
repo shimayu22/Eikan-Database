@@ -89,13 +89,12 @@
                 <tr>
                     <td>
                     {% if players.admission_year == pitcher_result.year %}
-                    1年
+                    １年
                     {% elif players.admission_year|add:1 == pitcher_result.year %}
-                    2年
+                    ２年
                     {% else %}
-                    3年
+                    ３年
                     {% endif %}
-                    :{{ pitcher_result.year }}
                     </td>
                     <td>{{ pitcher_result.games|default:"0" }}</td>
                     <td>{{ pitcher_result.games_started|default:"0" }}</td>
@@ -257,13 +256,12 @@
         <tr>
             <td>
             {% if players.admission_year == fielder_result.year %}
-            1年
+            １年
             {% elif players.admission_year|add:1 == fielder_result.year %}
-            2年
+            ２年
             {% else %}
-            3年
+            ３年
             {% endif %}
-            :{{ fielder_result.year }}
             </td>
             <td>{{ fielder_result.at_bat|default:"0" }}</td>
             <td>{{ fielder_result.run|default:"0" }}</td>

@@ -85,15 +85,15 @@
                 <td>{{ pitcher_total_results.lob_percent }}</td>
                 <td>{{ pitcher_total_results.p_ip }}</td>
             </tr>
-            {% for y, pitcher_result in pitcher_by_year_results %}
+            {% for pitcher_result in pitcher_by_year_results %}
                 <tr>
                     <td>
-                    {% if pitcher_result.player_id.admission_year == y %}
-                    1年
-                    {% elif pitcher_result.player_id.admission_year|add:1 == y %}
-                    2年
+                    {% if players.admission_year == pitcher_result.year %}
+                    １年
+                    {% elif players.admission_year|add:1 == pitcher_result.year %}
+                    ２年
                     {% else %}
-                    3年
+                    ３年
                     {% endif %}
                     </td>
                     <td>{{ pitcher_result.games|default:"0" }}</td>
@@ -252,15 +252,15 @@
             <td>{{ fielder_total_results.isop }}</td>
             <td>{{ fielder_total_results.p_s }}</td>
         </tr>
-        {% for y, fielder_result in fielder_by_year_results %}
+        {% for fielder_result in fielder_by_year_results %}
         <tr>
             <td>
-            {% if fielder_result.player_id.admission_year == y %}
-            1年
-            {% elif fielder_result.player_id.admission_year|add:1 == y %}
-            2年
+            {% if players.admission_year == fielder_result.year %}
+            １年
+            {% elif players.admission_year|add:1 == fielder_result.year %}
+            ２年
             {% else %}
-            3年
+            ３年
             {% endif %}
             </td>
             <td>{{ fielder_result.at_bat|default:"0" }}</td>
@@ -290,7 +290,7 @@
             <td>{{ fielder_result.isop|floatformat:"3"|default:"0.000" }}</td>
             <td>{{ fielder_result.p_s|floatformat:"3"|default:"0.000" }}</td>
         </tr>
-                {% endfor %}
+        {% endfor %}
     </tbody>
 </table>
 <hr class="mt-5 mb-5">

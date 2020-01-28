@@ -107,7 +107,6 @@ class PlayerDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         player = kwargs['object']
-
         ctx = super().get_context_data(**kwargs)
         # 打者総合成績を取得（投手野手共通）
         ctx['fielder_total_results'] = FielderTotalResults.objects.select_related(

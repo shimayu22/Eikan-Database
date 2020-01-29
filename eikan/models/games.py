@@ -6,7 +6,12 @@ from eikan.models import Teams
 
 def default_team_id():
     return Teams.objects.latest('pk').id \
-        if Teams.objects.count() > 0 else 0
+        if Teams.objects.exists() else 0
+
+
+def default_team_rank():
+    return Games.objects.latest('pk').rank \
+        if Games.objects.exists() else 0
 
 
 class Games(models.Model):
@@ -87,7 +92,7 @@ class Games(models.Model):
     rank = models.PositiveSmallIntegerField(
         verbose_name="ランク",
         choices=RANK_CHOICES,
-        default=0,
+        default=default_team_rank,
     )
 
     created_at = models.DateTimeField(

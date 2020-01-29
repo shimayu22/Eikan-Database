@@ -5,7 +5,7 @@ from django.db import models
 # Create your models here.
 def default_year():
 
-    if Teams.objects.all():
+    if Teams.objects.exists():
         period = Teams.objects.latest('pk').period
         this_year = Teams.objects.latest('pk').year
         return this_year if period == 1 \
@@ -15,9 +15,13 @@ def default_year():
 
 
 def default_period():
-    return 1 if not Teams.objects.all()\
-                or Teams.objects.latest('pk').period == 2 \
-                else 2
+
+    if Teams.objects.exists():
+        period = Teams.objects.latest('pk').period
+        return 1 if Teams.objects.latest('pk').period == 2 \
+            else 2
+
+    return 1
 
 
 def default_prefecture():

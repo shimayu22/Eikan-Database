@@ -5,7 +5,7 @@ from eikan.models import Teams
 
 def default_year():
     return Teams.objects.latest('pk').year \
-        if Teams.objects.count() > 0 else 1939
+        if Teams.objects.exists() else 1939
 
 
 class Players(models.Model):

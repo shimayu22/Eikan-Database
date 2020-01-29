@@ -1,25 +1,29 @@
 from django.db import models
-from eikan.models import Games, Players, Teams
+from eikan.models import Games, Players, Teams, ModelSettings
 
 
 def set_select_players():
-    from eikan.models import ModelSettings
-
-    teams = Teams.objects.latest('pk')
-    count = Teams.objects.count()
-    is_filter = False
-    if ModelSettings.objects.count() > 0:
-        is_filter = ModelSettings.objects.latest('pk').is_used_limit_choices_to
     condition_dict = {}
 
-    if count > 0 and not is_filter:
-        condition_dict["admission_year__gte"] = \
-            (teams.year - 2) if teams.period == 1 \
-            else (teams.year - 1)
+    if not Teams.objects.exists():
+        return condition_dict
 
-        condition_dict["admission_year__lte"] = teams.year
+    teams = Teams.objects.latest('pk')
+    is_filter = False
 
+    if ModelSettings.objects.exists():
+        is_filter = ModelSettings.objects.latest('pk').is_used_limit_choices_to
+
+    if is_filter:
+        return condition_dict
+
+    condition_dict["admission_year__gte"] = \
+        (teams.year - 2) if teams.period == 1 \
+        else (teams.year - 1)
+
+    condition_dict["admission_year__lte"] = teams.year
     return condition_dict
+
 
 # Create your models here.
 

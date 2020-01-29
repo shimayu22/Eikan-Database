@@ -6,12 +6,12 @@ from eikan.models import Teams
 
 def default_team_id():
     return Teams.objects.latest('pk').id \
-        if Teams.objects.count() > 0 else 0
+        if Teams.objects.exists() else 0
 
 
 def default_team_rank():
     return Games.objects.latest('pk').rank \
-        if Games.objects.count() > 0 else 0
+        if Games.objects.exists() else 0
 
 
 class Games(models.Model):

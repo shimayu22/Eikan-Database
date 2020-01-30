@@ -23,7 +23,7 @@
 
 ### Mac版
     python3 -m venv env
-    source env\bin\activate
+    source env/bin/activate
     pip install -r requirements.txt
     mv config/local_settings.txt config/local_settings.py
     python config/get_random_secret_key.py >> config/local_settings.py

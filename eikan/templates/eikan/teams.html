@@ -7,13 +7,13 @@
             <thead class="thead-light text-center">
                 <tr>
                     <th>年度:期間:地区</th>
+                    <th>ランク</th>
                     <th>勝</th>
                     <th>負</th>
                     <th>分</th>
                     <th>得点</th>
                     <th>失点</th>
                     <th>得失</th>
-                    <th>ランク</th>
                     <th>打率</th>
                     <th>OPS</th>
                     <th>HR</th>
@@ -32,13 +32,13 @@
                     <tr>
                     {% endif %}
                         <th class="text-center"><a href="{% url 'eikan:team_detail' ttr.team_id.pk %}">{{ ttr.team_id }}</a></th>
+                        <td>{{ ttr.rank|default:"未" }}</td>
                         <td>{{ ttr.total_win }}</td>
                         <td>{{ ttr.total_lose }}</td>
                         <td>{{ ttr.total_draw }}</td>
                         <td>{{ ttr.score }}</td>
                         <td>{{ ttr.run }}</td>
                         <td>{{ ttr.score_difference }}</td>
-                        <td>{{ ttr.team_id.rank }}</td>
                         <td>{{ ttr.batting_average }}</td>
                         <td>{{ ttr.ops }}</td>
                         <td>{{ ttr.hr }}</td>

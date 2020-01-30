@@ -16,17 +16,17 @@
     env\Sctipts\activate
     pip install -r requirements.txt
     ren config\local_settings.txt local_settings.py
-    python get_random_secret_key.py >> local_settings.py
+    python config/get_random_secret_key.py >> config/local_settings.py
     manage.py migrate
     manage.py createsuperuser
     manage.py runserver
 
 ### Mac版
     python3 -m venv env
-    source env\bin\activate
+    source env/bin/activate
     pip install -r requirements.txt
     mv config/local_settings.txt config/local_settings.py
-    python config/get_random_secret_key.py >> local_settings.py
+    python config/get_random_secret_key.py >> config/local_settings.py
     python manage.py migrate
     python manage.py createsuperuser
     python manage.py runserver

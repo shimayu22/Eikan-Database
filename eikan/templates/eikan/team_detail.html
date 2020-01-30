@@ -6,7 +6,6 @@
     <div class="col">期間：{{ teams.get_period_display }}</div>
     <div class="col">地区：{{ teams.get_prefecture_display }}</div>
     <div class="col">方針：{{ teams.get_training_policy_display }}</div>
-    <div class="col">ランク：{{ teams.rank|default:"未" }}</div>
     <div class="col">指名：{{ teams.draft_nomination }}人</div>
     <div class="col">戦績：
     {% if game_latest.competition_type > 3 and game_latest.competiton_round == 8 and game_latest.result == 1 %}
@@ -28,13 +27,13 @@
     <thead class="thead-light text-center">
         <tr>
             <th>年度:期間:地区</th>
+            <th>ランク</th>
             <th>勝</th>
             <th>負</th>
             <th>分</th>
             <th>得点</th>
             <th>失点</th>
             <th>得失</th>
-            <th>ランク</th>
             <th>打率</th>
             <th>OPS</th>
             <th>HR</th>
@@ -46,13 +45,13 @@
     <tbody class="text-right">
         <tr>
             <th class="text-center">{{ team_total_result.team_id }}</th>
+            <td>{{ team_total_result.rank }}</td>
             <td>{{ team_total_result.total_win }}</td>
             <td>{{ team_total_result.total_lose }}</td>
             <td>{{ team_total_result.total_draw }}</td>
             <td>{{ team_total_result.score }}</td>
             <td>{{ team_total_result.run }}</td>
             <td>{{ team_total_result.score_difference }}</td>
-            <td>{{ team_total_result.team_id.rank }}</td>
             <td>{{ team_total_result.batting_average }}</td>
             <td>{{ team_total_result.ops }}</td>
             <td>{{ team_total_result.hr }}</td>

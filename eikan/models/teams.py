@@ -136,14 +136,6 @@ class Teams(models.Model):
         null=True,
     )
 
-    rank = models.CharField(
-        verbose_name="ランク",
-        max_length=4,
-        blank=True,
-        null=True,
-        editable=False,
-    )
-
     created_at = models.DateTimeField(
         verbose_name="登録日",
         auto_now_add=True,

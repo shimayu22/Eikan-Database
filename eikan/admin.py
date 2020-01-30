@@ -22,7 +22,7 @@ class ModelSettingsAdmin(admin.ModelAdmin):
 class TeamsAdmin(admin.ModelAdmin):
     fields = (('year', 'period', 'prefecture'), 'training_policy',
               'draft_nomination', 'remark')
-    list_display = ('year', 'period', 'prefecture', 'rank', 'training_policy',
+    list_display = ('year', 'period', 'prefecture', 'training_policy',
                     'draft_nomination', 'remark')
 
 
@@ -71,6 +71,7 @@ class GamesAdmin(admin.ModelAdmin):
 class TeamTotalResultsAdmin(admin.ModelAdmin):
     list_display = (
         'team_id',
+        'rank',
         'total_win',
         'total_lose',
         'total_draw',

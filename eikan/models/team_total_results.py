@@ -85,6 +85,14 @@ class TeamTotalResults(models.Model):
         editable=False,
     )
 
+    rank = models.CharField(
+        verbose_name="ランク",
+        max_length=4,
+        blank=True,
+        null=True,
+        editable=False,
+    )
+
     is_to_win = models.BooleanField(
         verbose_name="優勝",
         default=False,

@@ -25,8 +25,9 @@ class CalculateFielderSabr:
     def batting_runs(self, h, twobase, threebase, homerun, bb_hbp, at_bat):
         # 0.44 * (安打 - 二塁打 - 三塁打 - 本塁打) + 0.77 * 二塁打 + 1.12 * 三塁打 + 1.41 * 本塁打 + 0.29 * 四死球 - 0.25 * (打数 - 安打)
         # 栄冠ナインの仕様上、盗塁、盗塁刺を除外
+
         return 0.44 * (h - twobase - threebase - homerun) + 0.77 * twobase + \
-            1.12 * threebase + 1.41 * homerun * \
+            1.12 * threebase + 1.41 * homerun + \
             0.29 * bb_hbp - 0.25 * (at_bat - h)
 
     def weighted_on_base_average(
@@ -43,7 +44,7 @@ class CalculateFielderSabr:
         if a == 0:
             return 0
 
-        return (0.7 + bb_hbp + 0.9 * (h - twobase - threebase - homerun) +
+        return (0.7 * bb_hbp + 0.9 * (h - twobase - threebase - homerun) +
                 1.3 * twobase + 1.6 * threebase + 2.0 * homerun) / a
 
     def gross_production_average(self, obp, slg):
@@ -62,11 +63,11 @@ class CalculateFielderSabr:
 
         return bb_hbp / a
 
-    def isolated_discipline(self, obp, ba):
-        return obp - ba
+    def isolated_discipline(self, obp, avg):
+        return obp - avg
 
-    def isolated_power(self, slg, ba):
-        return slg - ba
+    def isolated_power(self, slg, avg):
+        return slg - avg
 
     def bb_hbp_per_so(self, strike_out, bb_hbp):
         if strike_out == 0:
@@ -76,7 +77,7 @@ class CalculateFielderSabr:
 
     def power_speed_number(self, home_run, stolen_base):
         a = home_run + stolen_base
-        if a == 0:
+        if home_run == 0 or stolen_base == 0:
             return 0
 
         return (home_run * stolen_base * 2) / a

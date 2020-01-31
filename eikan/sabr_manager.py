@@ -138,6 +138,7 @@ class PitcherTotalSabrManager:
             models.Sum('home_run'))
 
         sum_innings_pitched = p.innings_conversion_for_calculate(
+            self,
             pitcher_results['innings_pitched__sum'],
             pitcher_results['innings_pitched_fraction'])
 
@@ -157,6 +158,7 @@ class PitcherTotalSabrManager:
         pitcher_total_results.wild_pitch = pitcher_results['wild_pitch__sum']
         pitcher_total_results.home_run = pitcher_results['home_run__sum']
         pitcher_total_results.innings_pitched = p.innings_conversion_for_display(
+            self,
             pitcher_results['innings_pitched__sum'],
             pitcher_results['innings_pitched_fraction'])
         pitcher_total_results.era = p.earned_runs_average(

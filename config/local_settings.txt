@@ -10,3 +10,4 @@ DATABASES = {
 }
 
 DEBUG = True
+

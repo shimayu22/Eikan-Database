@@ -160,16 +160,10 @@ class PitcherByTeamSabrManager:
                 player_id=result['player_id'],
                 game_id__team_id=self.team_id,
                 games_started=True).count()
-            sum_innings_pitched = (
-                result['innings_pitched__sum'] + (result['innings_pitched_fraction__sum'] / 3)) * 3
-            innings = float(result['innings_pitched__sum'] +
-                            result['innings_pitched_fraction__sum'] // 3)
-            outcount = innings % 3
-            if outcount == 1:
-                innings += 0.1
-            elif outcount == 2:
-                innings += 0.2
-            total_results.innings_pitched = innings
+            sum_innings_pitched = p.innings_conversion_for_calculate(
+                result['innings_pitched__sum'], result['innings_pitched_fraction__sum'])
+            total_results.innings_pitched = p.innings_conversion_for_display(
+                result['innings_pitched__sum'], result['innings_pitched_fraction__sum'])
             total_results.number_of_pitch = result['number_of_pitch__sum']
             total_results.total_batters_faced = result['total_batters_faced__sum']
             total_results.hit = result['hit__sum']

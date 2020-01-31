@@ -25,8 +25,10 @@ class CalculateFielderSabr:
     def batting_runs(self, h, twobase, threebase, homerun, bb_hbp, at_bat):
         # 0.44 * (安打 - 二塁打 - 三塁打 - 本塁打) + 0.77 * 二塁打 + 1.12 * 三塁打 + 1.41 * 本塁打 + 0.29 * 四死球 - 0.25 * (打数 - 安打)
         # 栄冠ナインの仕様上、盗塁、盗塁刺を除外
+
         return 0.44 * (h - twobase - threebase - homerun) + 0.77 * twobase + \
-            1.12 * threebase + 1.41 * homerun * 0.29 * bb_hbp - 0.25 * (at_bat - h)
+            1.12 * threebase + 1.41 * homerun + \
+            0.29 * bb_hbp - 0.25 * (at_bat - h)
 
     def weighted_on_base_average(
             self,
@@ -42,7 +44,7 @@ class CalculateFielderSabr:
         if a == 0:
             return 0
 
-        return (0.7 + bb_hbp + 0.9 * (h - twobase - threebase - homerun) +
+        return (0.7 * bb_hbp + 0.9 * (h - twobase - threebase - homerun) +
                 1.3 * twobase + 1.6 * threebase + 2.0 * homerun) / a
 
     def gross_production_average(self, obp, slg):
@@ -61,11 +63,11 @@ class CalculateFielderSabr:
 
         return bb_hbp / a
 
-    def isolated_discipline(self, obp, ba):
-        return obp - ba
+    def isolated_discipline(self, obp, avg):
+        return obp - avg
 
-    def isolated_power(self, slg, ba):
-        return slg - ba
+    def isolated_power(self, slg, avg):
+        return slg - avg
 
     def bb_hbp_per_so(self, strike_out, bb_hbp):
         if strike_out == 0:
@@ -75,13 +77,34 @@ class CalculateFielderSabr:
 
     def power_speed_number(self, home_run, stolen_base):
         a = home_run + stolen_base
-        if a == 0:
+        if home_run == 0 or stolen_base == 0:
             return 0
 
         return (home_run * stolen_base * 2) / a
 
 
 class CalculatePitcherSabr:
+    def innings_conversion_for_display(
+            self, innings_pitched, innings_pitched_fraction):
+        # 表示用に178.2 という値に変換する(float)
+
+        innings = float(
+            innings_pitched +
+            innings_pitched_fraction // 3)
+        outcount = innings_pitched_fraction % 3
+        if outcount == 1:
+            innings += 0.1
+        elif outcount == 2:
+            innings += 0.2
+
+        return innings
+
+    def innings_conversion_for_calculate(
+            self, innings_pitched, innings_pitched_fraction):
+        # 計算用に178.666... という値に変換する(float)
+
+        return (innings_pitched + innings_pitched_fraction / 3) * 3
+
     def earned_runs_average(self, sum_innings_pitched, earned_run):
         if sum_innings_pitched == 0:
             return 0
@@ -99,7 +122,9 @@ class CalculatePitcherSabr:
         if sum_innings_pitched == 0:
             return 0
 
-        return (hit + bb_hbp) * 3 / sum_innings_pitched
+        a = (hit + bb_hbp) * 3
+
+        return a / sum_innings_pitched
 
     def strike_out_per_bbhp(self, bb_hbp, strike_out):
         if bb_hbp == 0:

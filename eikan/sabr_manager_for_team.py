@@ -161,9 +161,9 @@ class PitcherByTeamSabrManager:
                 game_id__team_id=self.team_id,
                 games_started=True).count()
             sum_innings_pitched = p.innings_conversion_for_calculate(
-                result['innings_pitched__sum'], result['innings_pitched_fraction__sum'])
+                self, result['innings_pitched__sum'], result['innings_pitched_fraction__sum'])
             total_results.innings_pitched = p.innings_conversion_for_display(
-                result['innings_pitched__sum'], result['innings_pitched_fraction__sum'])
+                self, result['innings_pitched__sum'], result['innings_pitched_fraction__sum'])
             total_results.number_of_pitch = result['number_of_pitch__sum']
             total_results.total_batters_faced = result['total_batters_faced__sum']
             total_results.hit = result['hit__sum']

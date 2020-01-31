@@ -140,7 +140,7 @@ class PitcherTotalSabrManager:
         sum_innings_pitched = p.innings_conversion_for_calculate(
             self,
             pitcher_results['innings_pitched__sum'],
-            pitcher_results['innings_pitched_fraction'])
+            pitcher_results['innings_pitched_fraction__sum'])
 
         pitcher_total_results = PitcherTotalResults.objects.get(
             player_id=self.player_id)
@@ -160,7 +160,7 @@ class PitcherTotalSabrManager:
         pitcher_total_results.innings_pitched = p.innings_conversion_for_display(
             self,
             pitcher_results['innings_pitched__sum'],
-            pitcher_results['innings_pitched_fraction'])
+            pitcher_results['innings_pitched_fraction__sum'])
         pitcher_total_results.era = p.earned_runs_average(
             self,
             sum_innings_pitched,

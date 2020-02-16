@@ -44,6 +44,7 @@ class FielderByYearSabrManager:
             fielder_total_results['home_run'] = result['home_run__sum']
             fielder_total_results['run_batted_in'] = result['run_batted_in__sum']
             fielder_total_results['strike_out'] = result['strike_out__sum']
+            fielder_total_results['bb_hbp'] = result['bb_hbp__sum']
             fielder_total_results['sacrifice_bunt'] = result['sacrifice_bunt__sum']
             fielder_total_results['stolen_base'] = result['stolen_base__sum']
             fielder_total_results['grounded_into_double_play'] = result[

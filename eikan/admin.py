@@ -128,6 +128,8 @@ class PitcherTotalResultsAdmin(admin.ModelAdmin):
         'k_percent',
         'bbhp_9',
         'p_bbhp_percent',
+        'h_9',
+        'h_percent',
         'hr_9',
         'hr_percent',
         'lob_percent',

@@ -1,5 +1,5 @@
 from django.db import models
-from eikan.models import Teams, Games, \
+from eikan.models import Games, \
     FielderResults, PitcherResults, \
     FielderTotalResults, PitcherTotalResults, \
     TeamTotalResults
@@ -39,6 +39,7 @@ class FielderTotalSabrManager:
         fielder_total_results.home_run = fielder_results['home_run__sum']
         fielder_total_results.run_batted_in = fielder_results['run_batted_in__sum']
         fielder_total_results.strike_out = fielder_results['strike_out__sum']
+        fielder_total_results.bb_hbp = fielder_results['bb_hbp__sum']
         fielder_total_results.sacrifice_bunt = fielder_results['sacrifice_bunt__sum']
         fielder_total_results.stolen_base = fielder_results['stolen_base__sum']
         fielder_total_results.grounded_into_double_play = fielder_results[

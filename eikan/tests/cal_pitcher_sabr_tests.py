@@ -142,3 +142,19 @@ class CalculatePitcherSabrTests(TestCase):
         self.assertAlmostEqual(
             cps.pitch_per_inning(self, 536.0, 2848), 15.940, 2
         )
+
+    def test_hit_per_game(self):
+        self.assertAlmostEqual(
+            cps.hit_per_game(self, 536.0, 140), 7.052, 2
+        )
+        self.assertEqual(
+            cps.hit_per_game(self, 0, 140), 0.0
+        )
+    
+    def test_hit_percentage(self):
+        self.assertAlmostEqual(
+            cps.hit_percentage(self, 731, 140), 0.1915, 3
+        )
+        self.assertEqual(
+            cps.hit_percentage(self, 0, 140), 0.0
+        )

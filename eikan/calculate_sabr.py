@@ -156,6 +156,18 @@ class CalculatePitcherSabr:
 
         return bb_hbp / batters_faced
 
+    def hit_per_game(self, sum_innings_pitched, hit):
+        if sum_innings_pitched == 0:
+            return 0
+        
+        return (hit * 9 * 3) / sum_innings_pitched
+
+    def hit_percentage(self, batters_faced, hit):
+        if batters_faced == 0:
+            return 0
+
+        return hit / batters_faced
+
     def home_run_per_game(self, sum_innings_pitched, home_run):
         if sum_innings_pitched == 0:
             return 0

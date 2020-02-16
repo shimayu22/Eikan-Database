@@ -147,6 +147,22 @@ class PitcherTotalResults(models.Model):
         editable=False,
     )
 
+    h_9 = models.DecimalField(
+        verbose_name="H/9",
+        max_digits=3,
+        decimal_places=2,
+        default=0.00,
+        editable=False,
+    )
+
+    h_percent = models.DecimalField(
+        verbose_name="H%",
+        max_digits=4,
+        decimal_places=2,
+        default=0.00,
+        editable=False,
+    )
+
     hr_9 = models.DecimalField(
         verbose_name="HR/9",
         max_digits=3,

@@ -51,6 +51,8 @@
                 <th><abbr title="打者と対戦し奪三振を取る確率：奪三振/対戦打者">K%</abbr></th>
                 <th><abbr title="与四死球率：(与四死球*9*3)/(投球回*3)">BB/9</abbr></th>
                 <th><abbr title="打者と対戦し四死球を与える確率：四死球/対戦打者">BB%</abbr></th>
+                <th><abbr title="被打率：(被安打*9*3)/(投球回*3)">H/9</abbr></th>
+                <th><abbr title="打者と対戦し安打を与える確率：被安打/対戦打者">H%</abbr></th>
                 <th><abbr title="被本塁打率：(被本塁打*9*3)/(投球回*3)">HR/9</abbr></th>
                 <th><abbr title="打者と対戦し本塁打を与える確率：被本塁打/対戦打者">HR%</abbr></th>
                 <th><abbr title="出塁した走者に得点を許さなかった割合：(安打+四死球-失点)/(安打+四死球-1.4*本塁打)">LOB%</abbr></th>
@@ -80,6 +82,8 @@
                 <td>{{ pitcher_total_results.k_percent }}</td>
                 <td>{{ pitcher_total_results.bbhp_9 }}</td>
                 <td>{{ pitcher_total_results.p_bbhp_percent }}</td>
+                <td>{{ pitcher_total_results.h_9 }}</td>
+                <td>{{ pitcher_total_results.h_percent }}</td>
                 <td>{{ pitcher_total_results.hr_9 }}</td>
                 <td>{{ pitcher_total_results.hr_percent }}</td>
                 <td>{{ pitcher_total_results.lob_percent }}</td>
@@ -116,6 +120,8 @@
                     <td>{{ pitcher_result.k_percent|floatformat:"2"|default:"0.00" }}</td>
                     <td>{{ pitcher_result.bbhp_9|floatformat:"2"|default:"0.00" }}</td>
                     <td>{{ pitcher_result.p_bbhp_percent|floatformat:"2"|default:"0.00" }}</td>
+                    <td>{{ pitcher_result.h_9|floatformat:"2"|default:"0.00" }}</td>
+                    <td>{{ pitcher_result.h_percent|floatformat:"2"|default:"0.00" }}</td>
                     <td>{{ pitcher_result.hr_9|floatformat:"2"|default:"0.00" }}</td>
                     <td>{{ pitcher_result.hr_percent|floatformat:"2"|default:"0.00" }}</td>
                     <td>{{ pitcher_result.lob_percent|floatformat:"2"|default:"0.00" }}</td>

@@ -207,6 +207,16 @@ class PitcherByTeamSabrManager:
                 self,
                 result['total_batters_faced__sum'],
                 result['bb_hbp__sum'])
+            total_results.h_9 = p.hit_per_game(
+                self,
+                sum_innings_pitched,
+                pitcher_results['hit__sum']
+            )
+            pitcher_results.h_percent = p.hit_percentage(
+                self,
+                pitcher_results['total_batters_faced__sum'],
+                pitcher_results['hit__sum']
+            )
             total_results.hr_9 = p.home_run_per_game(
                 self,
                 sum_innings_pitched,

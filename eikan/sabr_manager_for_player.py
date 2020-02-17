@@ -201,25 +201,35 @@ class PitcherByYearSabrManager:
                 self,
                 result['total_batters_faced__sum'],
                 result['bb_hbp__sum'])
-            pitcher_total_results['hr_9'] = p.home_run_per_game(
+            pitcher_total_results['h_9'] = p.hit_per_game(
                 self,
                 sum_innings_pitched,
-                result['home_run__sum'])
-            pitcher_total_results['hr_percent'] = p.home_run_percentage(
-                self,
-                result['total_batters_faced__sum'],
-                result['home_run__sum'])
-            pitcher_total_results['lob_percent'] = p.left_on_base_percentage(
-                self,
-                result['hit__sum'],
-                result['bb_hbp__sum'],
-                result['home_run__sum'],
-                result['run__sum'])
-            pitcher_total_results['p_ip'] = p.pitch_per_inning(
-                self,
-                sum_innings_pitched,
-                result['number_of_pitch__sum'])
+                pitcher_results['hit__sum']
+            )
+        pitcher_total_results['h_percent'] = p.hit_percentage(
+            self,
+            pitcher_results['total_batters_faced__sum'],
+            pitcher_results['hit__sum']
+        )
+        pitcher_total_results['hr_9'] = p.home_run_per_game(
+            self,
+            sum_innings_pitched,
+            result['home_run__sum'])
+        pitcher_total_results['hr_percent'] = p.home_run_percentage(
+            self,
+            result['total_batters_faced__sum'],
+            result['home_run__sum'])
+        pitcher_total_results['lob_percent'] = p.left_on_base_percentage(
+            self,
+            result['hit__sum'],
+            result['bb_hbp__sum'],
+            result['home_run__sum'],
+            result['run__sum'])
+        pitcher_total_results['p_ip'] = p.pitch_per_inning(
+            self,
+            sum_innings_pitched,
+            result['number_of_pitch__sum'])
 
-            pitcher_total_results_list.append(pitcher_total_results)
+        pitcher_total_results_list.append(pitcher_total_results)
 
         return pitcher_total_results_list

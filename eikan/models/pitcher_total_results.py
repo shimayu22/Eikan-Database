@@ -85,112 +85,112 @@ class PitcherTotalResults(models.Model):
 
     era = models.DecimalField(
         verbose_name="防御率",
-        max_digits=5,
-        decimal_places=2,
+        max_digits=6,
+        decimal_places=3,
         default=0.00,
         editable=False,
     )
 
     ura = models.DecimalField(
         verbose_name="失点率",
-        max_digits=5,
-        decimal_places=2,
+        max_digits=6,
+        decimal_places=3,
         default=0.00,
         editable=False,
     )
 
     whip = models.DecimalField(
         verbose_name="WHIP",
-        max_digits=3,
-        decimal_places=2,
+        max_digits=6,
+        decimal_places=3,
         default=0.00,
         editable=False,
     )
 
     k_bbhp = models.DecimalField(
         verbose_name="K/BBHP",
-        max_digits=4,
-        decimal_places=2,
+        max_digits=6,
+        decimal_places=3,
         default=0.00,
         editable=False,
     )
 
     k_9 = models.DecimalField(
         verbose_name="K/9",
-        max_digits=4,
-        decimal_places=2,
+        max_digits=6,
+        decimal_places=3,
         default=0.00,
         editable=False,
     )
 
     k_percent = models.DecimalField(
         verbose_name="K%",
-        max_digits=4,
-        decimal_places=2,
+        max_digits=6,
+        decimal_places=3,
         default=0.00,
         editable=False,
     )
 
     bbhp_9 = models.DecimalField(
         verbose_name="BBHP/9",
-        max_digits=4,
-        decimal_places=2,
+        max_digits=6,
+        decimal_places=3,
         default=0.00,
         editable=False,
     )
 
     p_bbhp_percent = models.DecimalField(
         verbose_name="BBHP%",
-        max_digits=4,
-        decimal_places=2,
+        max_digits=6,
+        decimal_places=3,
         default=0.00,
         editable=False,
     )
 
     h_9 = models.DecimalField(
         verbose_name="H/9",
-        max_digits=3,
-        decimal_places=2,
+        max_digits=6,
+        decimal_places=3,
         default=0.00,
         editable=False,
     )
 
     h_percent = models.DecimalField(
         verbose_name="H%",
-        max_digits=4,
-        decimal_places=2,
+        max_digits=6,
+        decimal_places=3,
         default=0.00,
         editable=False,
     )
 
     hr_9 = models.DecimalField(
         verbose_name="HR/9",
-        max_digits=3,
-        decimal_places=2,
+        max_digits=6,
+        decimal_places=3,
         default=0.00,
         editable=False,
     )
 
     hr_percent = models.DecimalField(
         verbose_name="HR%",
-        max_digits=4,
-        decimal_places=2,
+        max_digits=6,
+        decimal_places=3,
         default=0.00,
         editable=False,
     )
 
     lob_percent = models.DecimalField(
         verbose_name="LOB%",
-        max_digits=4,
-        decimal_places=2,
+        max_digits=6,
+        decimal_places=3,
         default=0.00,
         editable=False,
     )
 
     p_ip = models.DecimalField(
         verbose_name="P/IP",
-        max_digits=4,
-        decimal_places=2,
+        max_digits=6,
+        decimal_places=3,
         default=0.00,
         editable=False,
     )

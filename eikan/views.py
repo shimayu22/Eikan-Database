@@ -1,5 +1,5 @@
 from django.shortcuts import get_list_or_404
-from django.views.generic import TemplateView, DetailView
+from django.views.generic import TemplateView, DetailView, ListView
 from eikan import sabr_manager_for_player as p
 from eikan import sabr_manager_for_team as t
 
@@ -19,7 +19,6 @@ class IndexView(TemplateView):
         get_list_or_404(Players)
 
         ctx = super().get_context_data(**kwargs)
-        # ctx['teams'] = Teams.objects.latest('pk')
         ctx['team_total_result'] = TeamTotalResults.objects.select_related(
             'team_id').latest('pk')
         start_year = (
@@ -42,15 +41,12 @@ class IndexView(TemplateView):
         return ctx
 
 
-class TeamView(TemplateView):
+class TeamView(ListView):
     template_name = 'eikan/teams.html'
-
-    def get_context_data(self, **kwargs):
-        ctx = super().get_context_data(**kwargs)
-        ctx['team_total_results'] = TeamTotalResults.objects.select_related(
-            'team_id').all().order_by('team_id')
-
-        return ctx
+    queryset = TeamTotalResults.objects.select_related(
+        'team_id').all().order_by('team_id')
+    context_object_name = 'team_total_results'
+    paginate_by = 100
 
 
 class TeamDetailView(DetailView):
@@ -79,26 +75,20 @@ class TeamDetailView(DetailView):
         return ctx
 
 
-class FielderView(TemplateView):
+class FielderView(ListView):
     template_name = 'eikan/fielders.html'
-
-    def get_context_data(self, **kwargs):
-        ctx = super().get_context_data(**kwargs)
-        ctx['fielder_total_results'] = FielderTotalResults.objects.select_related(
-            'player_id').all().order_by('-player_id')
-
-        return ctx
+    queryset = FielderTotalResults.objects.select_related(
+        'player_id').all().order_by('-player_id')
+    context_object_name = 'fielder_total_results'
+    paginate_by = 100
 
 
-class PitcherView(TemplateView):
+class PitcherView(ListView):
     template_name = 'eikan/pitchers.html'
-
-    def get_context_data(self, **kwargs):
-        ctx = super().get_context_data(**kwargs)
-        ctx['pitcher_total_results'] = PitcherTotalResults.objects.select_related(
-            'player_id').all().order_by('-player_id')
-
-        return ctx
+    queryset = PitcherTotalResults.objects.select_related(
+        'player_id').all().order_by('-player_id')
+    context_object_name = 'pitcher_total_results'
+    paginate_by = 100
 
 
 class PlayerDetailView(DetailView):
@@ -131,15 +121,12 @@ class PlayerDetailView(DetailView):
         return ctx
 
 
-class GameView(TemplateView):
+class GameView(ListView):
     template_name = 'eikan/games.html'
-
-    def get_context_data(self, **kwargs):
-        ctx = super().get_context_data(**kwargs)
-        ctx['games'] = Games.objects.select_related(
-            'team_id').all().order_by('-pk')
-
-        return ctx
+    queryset = Games.objects.select_related(
+        'team_id').all().order_by('-pk')
+    context_object_name = 'games'
+    paginate_by = 100
 
 
 class GameDetailView(DetailView):

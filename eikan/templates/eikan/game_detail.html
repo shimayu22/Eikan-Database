@@ -38,19 +38,20 @@
     <tbody class="text-right">
         {% for fr in fielder_results %}
         <tr>
-            <th class="text-center"><a href="{% url 'eikan:player_detail' fr.player_id.pk %}">{{ fr.player_id }}</a></th>
+            <th class="text-center"><a href="{% url 'eikan:player_detail' fr.player_id.pk %}">{{ fr.player_id }}</a>
+            </th>
             <td class="text-left">
                 {% if fr.player_id.is_ob %}
-                    OB 
-                {% endif %} 
+                OB
+                {% endif %}
                 {% if fr.player_id.is_active %}
-                    現役 
-                {% endif %} 
+                現役
+                {% endif %}
                 {% if fr.player_id.is_genius %}
-                    天才 
-                {% endif %} 
+                天才
+                {% endif %}
                 {% if fr.player_id.remark %}
-                    {{ fr.player_id.remark }}
+                {{ fr.player_id.remark }}
                 {% endif %}
             </td>
             <td>{{ fr.at_bat }}</td>
@@ -93,27 +94,28 @@
     <tbody class="text-right">
         {% for pr in pitcher_results %}
         <tr>
-            <th class="text-center"><a href="{% url 'eikan:player_detail' pr.player_id.pk %}">{{ pr.player_id }}</a></th>
+            <th class="text-center"><a href="{% url 'eikan:player_detail' pr.player_id.pk %}">{{ pr.player_id }}</a>
+            </th>
             <td class="text-center">
                 {% if pr.player_id.is_ob %}
-                    OB 
-                {% endif %} 
+                OB
+                {% endif %}
                 {% if pr.player_id.is_active %}
-                    現役 
-                {% endif %} 
+                現役
+                {% endif %}
                 {% if pr.player_id.is_genius %}
-                    天才 
-                {% endif %} 
+                天才
+                {% endif %}
                 {% if pr.player_id.remark %}
-                    {{ pr.player_id.remark }}
+                {{ pr.player_id.remark }}
                 {% endif %}
             </td>
             <td class="text-center">
-            {% if pr.games_started %}
-            先発
-            {% else %}
-            リリーフ
-            {% endif %}
+                {% if pr.games_started %}
+                先発
+                {% else %}
+                リリーフ
+                {% endif %}
             </td>
             <td class="text-center">{{ pr.innings_pitched }}回</td>
             <td class="text-center">{{ pr.number_of_pitch }}球</td>

@@ -65,20 +65,20 @@
                 <td>{{ ptr.earned_run }}</td>
                 <td>{{ ptr.wild_pitch }}</td>
                 <td>{{ ptr.home_run }}</td>
-                <td>{{ ptr.era }}</td>
-                <td>{{ ptr.ura }}</td>
-                <td>{{ ptr.whip }}</td>
-                <td>{{ ptr.k_bbhp }}</td>
-                <td>{{ ptr.k_9 }}</td>
-                <td>{{ ptr.k_percent }}</td>
-                <td>{{ ptr.bbhp_9 }}</td>
-                <td>{{ ptr.p_bbhp_percent }}</td>
-                <td>{{ ptr.h_9 }}</td>
-                <td>{{ ptr.h_percent }}</td>
-                <td>{{ ptr.hr_9 }}</td>
-                <td>{{ ptr.hr_percent }}</td>
-                <td>{{ ptr.lob_percent }}</td>
-                <td>{{ ptr.p_ip }}</td>
+                <td>{{ ptr.era|floatformat:2 }}</td>
+                <td>{{ ptr.ura|floatformat:2 }}</td>
+                <td>{{ ptr.whip|floatformat:2 }}</td>
+                <td>{{ ptr.k_bbhp|floatformat:2 }}</td>
+                <td>{{ ptr.k_9|floatformat:2 }}</td>
+                <td>{{ ptr.k_percent|floatformat:2 }}</td>
+                <td>{{ ptr.bbhp_9|floatformat:2 }}</td>
+                <td>{{ ptr.p_bbhp_percent|floatformat:2 }}</td>
+                <td>{{ ptr.h_9|floatformat:2 }}</td>
+                <td>{{ ptr.h_percent|floatformat:2 }}</td>
+                <td>{{ ptr.hr_9|floatformat:2 }}</td>
+                <td>{{ ptr.hr_percent|floatformat:2 }}</td>
+                <td>{{ ptr.lob_percent|floatformat:2 }}</td>
+                <td>{{ ptr.p_ip|floatformat:2 }}</td>
             </tr>
             {% endfor %}
         </tbody>

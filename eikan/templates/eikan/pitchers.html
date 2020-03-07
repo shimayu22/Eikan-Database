@@ -2,88 +2,88 @@
 {% block content %}
 <h3 class="mt-2">投手成績一覧</h3>
 {% if pitcher_total_results %}
-    <table class="table table-bordered table-hover table-sm table-responsive-lg text-nowrap">
-        <thead class="thead-light text-center">
-            <tr>
-                <th>Player</th>
-                <th>備考</th>
-                <th><abbr title="登板数">G</abbr></th>
-                <th><abbr title="先発数">GS</abbr></th>
-                <th><abbr title="投球回数">PI</abbr></th>
-                <th><abbr title="投球数">NP</abbr></th>
-                <th><abbr title="対戦打者">TBF</abbr></th>
-                <th><abbr title="被安打">H</abbr></th>
-                <th><abbr title="奪三振">SO</abbr></th>
-                <th><abbr title="与四死球">BBHP</abbr></th>
-                <th><abbr title="失点">R</abbr></th>
-                <th><abbr title="自責点">ER</abbr></th>
-                <th><abbr title="暴投">WP</abbr></th>
-                <th><abbr title="被本塁打">HR</abbr></th>
-                <th><abbr title="防御率：(自責点*9*3)/(投球回*3)">ERA</abbr></th>
-                <th><abbr title="失点率：(失点*9*3)/(投球回*3)">URA</abbr></th>
-                <th><abbr title="1イニングあたりに出した走者：(被安打+与四死球)*3/(投球回*3)">WHIP</abbr></th>
-                <th><abbr title="1つ四球を出すまでにいくつ三振を取れるか：奪三振/与四死球">K/BB</abbr></th>
-                <th><abbr title="奪三振率：(奪三振*9*3)/(投球回*3)">K/9</abbr></th>
-                <th><abbr title="打者と対戦し奪三振を取る確率：奪三振/対戦打者">K%</abbr></th>
-                <th><abbr title="与四死球率：(与四死球*9*3)/(投球回*3)">BB/9</abbr></th>
-                <th><abbr title="打者と対戦し四死球を与える確率：四死球/対戦打者">BB%</abbr></th>
-                <th><abbr title="被打率：(被安打*9*3)/(投球回*3)">H/9</abbr></th>
-                <th><abbr title="打者と対戦し安打を与える確率：被安打/対戦打者">H%</abbr></th>
-                <th><abbr title="被本塁打率：(被本塁打*9*3)/(投球回*3)">HR/9</abbr></th>
-                <th><abbr title="打者と対戦し本塁打を与える確率：被本塁打/対戦打者">HR%</abbr></th>
-                <th><abbr title="出塁した走者に得点を許さなかった割合：(安打+四死球-失点)/(安打+四死球-1.4*本塁打)">LOB%</abbr></th>
-                <th><abbr title="1イニングあたりの投球数：(球数*3)/(投球回*3)">P/IP</abbr></th>
-            </tr>
-        </thead>
-        <tbody class="text-right">
-            {% for ptr in pitcher_total_results %}
-            <tr>
-                <th><a href="{% url 'eikan:player_detail' ptr.player_id.pk %}">{{ ptr.player_id }}</a></th>
-                <td class="text-center">
-                    {% if ptr.player_id.is_ob %}
-                        OB 
-                    {% endif %} 
-                    {% if ptr.player_id.is_active %}
-                        現役 
-                    {% endif %} 
-                    {% if ptr.player_id.is_genius %}
-                        天才 
-                    {% endif %} 
-                    {% if ptr.player_id.remark %}
-                        {{ ptr.player_id.remark }}
-                    {% endif %}
-                </td>
-                <td>{{ ptr.games }}</td>
-                <td>{{ ptr.games_started }}</td>
-                <td>{{ ptr.innings_pitched }}</td>
-                <td>{{ ptr.number_of_pitch }}</td>
-                <td>{{ ptr.total_batters_faced }}</td>
-                <td>{{ ptr.hit }}</td>
-                <td>{{ ptr.strike_out }}</td>
-                <td>{{ ptr.bb_hbp }}</td>
-                <td>{{ ptr.run }}</td>
-                <td>{{ ptr.earned_run }}</td>
-                <td>{{ ptr.wild_pitch }}</td>
-                <td>{{ ptr.home_run }}</td>
-                <td>{{ ptr.era|floatformat:2 }}</td>
-                <td>{{ ptr.ura|floatformat:2 }}</td>
-                <td>{{ ptr.whip|floatformat:2 }}</td>
-                <td>{{ ptr.k_bbhp|floatformat:2 }}</td>
-                <td>{{ ptr.k_9|floatformat:2 }}</td>
-                <td>{{ ptr.k_percent|floatformat:2 }}</td>
-                <td>{{ ptr.bbhp_9|floatformat:2 }}</td>
-                <td>{{ ptr.p_bbhp_percent|floatformat:2 }}</td>
-                <td>{{ ptr.h_9|floatformat:2 }}</td>
-                <td>{{ ptr.h_percent|floatformat:2 }}</td>
-                <td>{{ ptr.hr_9|floatformat:2 }}</td>
-                <td>{{ ptr.hr_percent|floatformat:2 }}</td>
-                <td>{{ ptr.lob_percent|floatformat:2 }}</td>
-                <td>{{ ptr.p_ip|floatformat:2 }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% include "./_paginate.html" %}
+<table class="table table-bordered table-hover table-sm table-responsive text-nowrap">
+    <thead class="thead-light text-center">
+        <tr>
+            <th>Player</th>
+            <th>備考</th>
+            <th><abbr title="登板数">G</abbr></th>
+            <th><abbr title="先発数">GS</abbr></th>
+            <th><abbr title="投球回数">PI</abbr></th>
+            <th><abbr title="投球数">NP</abbr></th>
+            <th><abbr title="対戦打者">TBF</abbr></th>
+            <th><abbr title="被安打">H</abbr></th>
+            <th><abbr title="奪三振">SO</abbr></th>
+            <th><abbr title="与四死球">BBHP</abbr></th>
+            <th><abbr title="失点">R</abbr></th>
+            <th><abbr title="自責点">ER</abbr></th>
+            <th><abbr title="暴投">WP</abbr></th>
+            <th><abbr title="被本塁打">HR</abbr></th>
+            <th><abbr title="防御率：(自責点*9*3)/(投球回*3)">ERA</abbr></th>
+            <th><abbr title="失点率：(失点*9*3)/(投球回*3)">URA</abbr></th>
+            <th><abbr title="1イニングあたりに出した走者：(被安打+与四死球)*3/(投球回*3)">WHIP</abbr></th>
+            <th><abbr title="1つ四球を出すまでにいくつ三振を取れるか：奪三振/与四死球">K/BB</abbr></th>
+            <th><abbr title="奪三振率：(奪三振*9*3)/(投球回*3)">K/9</abbr></th>
+            <th><abbr title="打者と対戦し奪三振を取る確率：奪三振/対戦打者">K%</abbr></th>
+            <th><abbr title="与四死球率：(与四死球*9*3)/(投球回*3)">BB/9</abbr></th>
+            <th><abbr title="打者と対戦し四死球を与える確率：四死球/対戦打者">BB%</abbr></th>
+            <th><abbr title="被打率：(被安打*9*3)/(投球回*3)">H/9</abbr></th>
+            <th><abbr title="打者と対戦し安打を与える確率：被安打/対戦打者">H%</abbr></th>
+            <th><abbr title="被本塁打率：(被本塁打*9*3)/(投球回*3)">HR/9</abbr></th>
+            <th><abbr title="打者と対戦し本塁打を与える確率：被本塁打/対戦打者">HR%</abbr></th>
+            <th><abbr title="出塁した走者に得点を許さなかった割合：(安打+四死球-失点)/(安打+四死球-1.4*本塁打)">LOB%</abbr></th>
+            <th><abbr title="1イニングあたりの投球数：(球数*3)/(投球回*3)">P/IP</abbr></th>
+        </tr>
+    </thead>
+    <tbody class="text-right">
+        {% for ptr in pitcher_total_results %}
+        <tr>
+            <th><a href="{% url 'eikan:player_detail' ptr.player_id.pk %}">{{ ptr.player_id }}</a></th>
+            <td class="text-center">
+                {% if ptr.player_id.is_ob %}
+                OB
+                {% endif %}
+                {% if ptr.player_id.is_active %}
+                現役
+                {% endif %}
+                {% if ptr.player_id.is_genius %}
+                天才
+                {% endif %}
+                {% if ptr.player_id.remark %}
+                {{ ptr.player_id.remark }}
+                {% endif %}
+            </td>
+            <td>{{ ptr.games }}</td>
+            <td>{{ ptr.games_started }}</td>
+            <td>{{ ptr.innings_pitched }}</td>
+            <td>{{ ptr.number_of_pitch }}</td>
+            <td>{{ ptr.total_batters_faced }}</td>
+            <td>{{ ptr.hit }}</td>
+            <td>{{ ptr.strike_out }}</td>
+            <td>{{ ptr.bb_hbp }}</td>
+            <td>{{ ptr.run }}</td>
+            <td>{{ ptr.earned_run }}</td>
+            <td>{{ ptr.wild_pitch }}</td>
+            <td>{{ ptr.home_run }}</td>
+            <td>{{ ptr.era|floatformat:2 }}</td>
+            <td>{{ ptr.ura|floatformat:2 }}</td>
+            <td>{{ ptr.whip|floatformat:2 }}</td>
+            <td>{{ ptr.k_bbhp|floatformat:2 }}</td>
+            <td>{{ ptr.k_9|floatformat:2 }}</td>
+            <td>{{ ptr.k_percent|floatformat:2 }}</td>
+            <td>{{ ptr.bbhp_9|floatformat:2 }}</td>
+            <td>{{ ptr.p_bbhp_percent|floatformat:2 }}</td>
+            <td>{{ ptr.h_9|floatformat:2 }}</td>
+            <td>{{ ptr.h_percent|floatformat:2 }}</td>
+            <td>{{ ptr.hr_9|floatformat:2 }}</td>
+            <td>{{ ptr.hr_percent|floatformat:2 }}</td>
+            <td>{{ ptr.lob_percent|floatformat:2 }}</td>
+            <td>{{ ptr.p_ip|floatformat:2 }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% include "./_paginate.html" %}
 {% else %}
 <div class="text-center">
     <h4>（登録データが）ないです</h4>

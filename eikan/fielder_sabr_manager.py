@@ -8,44 +8,44 @@ class FielderSabrFormatter:
     def __init__(self):
         self
 
-    def update_fielder_total_results(
+    def create_fielder_total_results(
             self,
-            fielder_results,
-            fielder_total_results):
-        fielder_total_results.at_bat = fielder_results['at_bat__sum']
-        fielder_total_results.run = fielder_results['run__sum']
-        fielder_total_results.hit = fielder_results['hit__sum']
-        fielder_total_results.two_base = fielder_results['two_base__sum']
-        fielder_total_results.three_base = fielder_results['three_base__sum']
-        fielder_total_results.home_run = fielder_results['home_run__sum']
-        fielder_total_results.run_batted_in = fielder_results['run_batted_in__sum']
-        fielder_total_results.strike_out = fielder_results['strike_out__sum']
-        fielder_total_results.bb_hbp = fielder_results['bb_hbp__sum']
-        fielder_total_results.sacrifice_bunt = fielder_results['sacrifice_bunt__sum']
-        fielder_total_results.stolen_base = fielder_results['stolen_base__sum']
-        fielder_total_results.grounded_into_double_play = fielder_results[
+            fielder_results):
+        fielder_total_results = {}
+        fielder_total_results['at_bat'] = fielder_results['at_bat__sum']
+        fielder_total_results['run'] = fielder_results['run__sum']
+        fielder_total_results['hit'] = fielder_results['hit__sum']
+        fielder_total_results['two_base'] = fielder_results['two_base__sum']
+        fielder_total_results['three_base'] = fielder_results['three_base__sum']
+        fielder_total_results['home_run'] = fielder_results['home_run__sum']
+        fielder_total_results['run_batted_in'] = fielder_results['run_batted_in__sum']
+        fielder_total_results['strike_out'] = fielder_results['strike_out__sum']
+        fielder_total_results['bb_hbp'] = fielder_results['bb_hbp__sum']
+        fielder_total_results['sacrifice_bunt'] = fielder_results['sacrifice_bunt__sum']
+        fielder_total_results['stolen_base'] = fielder_results['stolen_base__sum']
+        fielder_total_results['grounded_into_double_play'] = fielder_results[
             'grounded_into_double_play__sum']
-        fielder_total_results.error = fielder_results['error__sum']
-        fielder_total_results.total_bases = f.total_bases(
+        fielder_total_results['error'] = fielder_results['error__sum']
+        fielder_total_results['total_bases'] = f.total_bases(
             self,
             fielder_results['hit__sum'],
             fielder_results['two_base__sum'],
             fielder_results['three_base__sum'],
             fielder_results['home_run__sum'])
-        fielder_total_results.obp = f.on_base_percentage(
+        fielder_total_results['obp'] = f.on_base_percentage(
             self,
             fielder_results['at_bat__sum'],
             fielder_results['bb_hbp__sum'],
             fielder_results['hit__sum'])
-        fielder_total_results.slg = f.slugging_percentage(
+        fielder_total_results['slg'] = f.slugging_percentage(
             self,
             fielder_results['at_bat__sum'],
-            fielder_total_results.total_bases)
-        fielder_total_results.ops = f.on_base_plus_slugging(
+            fielder_total_results['total_bases'])
+        fielder_total_results['ops'] = f.on_base_plus_slugging(
             self,
-            fielder_total_results.obp,
-            fielder_total_results.slg)
-        fielder_total_results.br = f.batting_runs(
+            fielder_total_results['obp'],
+            fielder_total_results['slg'])
+        fielder_total_results['br'] = f.batting_runs(
             self,
             fielder_results['hit__sum'],
             fielder_results['two_base__sum'],
@@ -54,7 +54,7 @@ class FielderSabrFormatter:
             fielder_results['bb_hbp__sum'],
             fielder_results['at_bat__sum']
         )
-        fielder_total_results.woba = f.weighted_on_base_average(
+        fielder_total_results['woba'] = f.weighted_on_base_average(
             self,
             fielder_results['hit__sum'],
             fielder_results['two_base__sum'],
@@ -63,35 +63,65 @@ class FielderSabrFormatter:
             fielder_results['bb_hbp__sum'],
             fielder_results['at_bat__sum']
         )
-        fielder_total_results.gpa = f.gross_production_average(
+        fielder_total_results['gpa'] = f.gross_production_average(
             self,
-            fielder_total_results.obp,
-            fielder_total_results.slg)
-        fielder_total_results.batting_average = f.batting_average(
+            fielder_total_results['obp'],
+            fielder_total_results['slg'])
+        fielder_total_results['batting_average'] = f.batting_average(
             self,
             fielder_results['at_bat__sum'],
             fielder_results['hit__sum'])
-        fielder_total_results.bbhp_percent = f.bb_hp_percentage(
+        fielder_total_results['bbhp_percent'] = f.bb_hp_percentage(
             self,
             fielder_results['at_bat__sum'],
             fielder_results['bb_hbp__sum'],
             fielder_results['sacrifice_bunt__sum'])
-        fielder_total_results.isod = f.isolated_discipline(
+        fielder_total_results['isod'] = f.isolated_discipline(
             self,
-            fielder_total_results.obp,
-            fielder_total_results.batting_average)
-        fielder_total_results.isop = f.isolated_power(
+            fielder_total_results['obp'],
+            fielder_total_results['batting_average'])
+        fielder_total_results['isop'] = f.isolated_power(
             self,
-            fielder_total_results.slg,
-            fielder_total_results.batting_average)
-        fielder_total_results.bbhp_k = f.bb_hbp_per_so(
+            fielder_total_results['slg'],
+            fielder_total_results['batting_average'])
+        fielder_total_results['bbhp_k'] = f.bb_hbp_per_so(
             self,
             fielder_results['strike_out__sum'],
             fielder_results['bb_hbp__sum'])
-        fielder_total_results.p_s = f.power_speed_number(
+        fielder_total_results['p_s'] = f.power_speed_number(
             self,
             fielder_results['home_run__sum'],
             fielder_results['stolen_base__sum'])
+
+        return fielder_total_results
+    
+    def update_fielder_total_results(self, dict_fielder_total_results, fielder_total_results):
+        fielder_total_results.at_bat = dict_fielder_total_results['at_bat']
+        fielder_total_results.run = dict_fielder_total_results['run']
+        fielder_total_results.hit = dict_fielder_total_results['hit']
+        fielder_total_results.two_base = dict_fielder_total_results['two_base']
+        fielder_total_results.three_base = dict_fielder_total_results['three_base']
+        fielder_total_results.home_run = dict_fielder_total_results['home_run']
+        fielder_total_results.run_batted_in = dict_fielder_total_results['run_batted_in']
+        fielder_total_results.strike_out = dict_fielder_total_results['strike_out']
+        fielder_total_results.bb_hbp = dict_fielder_total_results['bb_hbp']
+        fielder_total_results.sacrifice_bunt = dict_fielder_total_results['sacrifice_bunt']
+        fielder_total_results.stolen_base = dict_fielder_total_results['stolen_base']
+        fielder_total_results.grounded_into_double_play = dict_fielder_total_results['grounded_into_double_play']
+        fielder_total_results.error = dict_fielder_total_results['error']
+        fielder_total_results.total_bases = dict_fielder_total_results['total_bases']
+        fielder_total_results.slg = dict_fielder_total_results['slg']
+        fielder_total_results.obp = dict_fielder_total_results['obp']
+        fielder_total_results.ops = dict_fielder_total_results['ops']
+        fielder_total_results.br = dict_fielder_total_results['br']
+        fielder_total_results.woba = dict_fielder_total_results['woba']
+        fielder_total_results.gpa = dict_fielder_total_results['gpa']
+        fielder_total_results.batting_average = dict_fielder_total_results['batting_average']
+        fielder_total_results.bbhp_percent = dict_fielder_total_results['bbhp_percent']
+        fielder_total_results.isod = dict_fielder_total_results['isod']
+        fielder_total_results.isop = dict_fielder_total_results['isop']
+        fielder_total_results.bbhp_k = dict_fielder_total_results['bbhp_k']
+        fielder_total_results.p_s = dict_fielder_total_results['p_s']
 
         return fielder_total_results
 
@@ -161,34 +191,30 @@ class FielderSabrFormatter:
 
         return fielder_results
 
-    # FielderTotalResults更新用メソッド
     def update_total_results(self, player_id):
+        # FielderTotalResults更新用メソッド
         self.player_id = player_id
-        fielder_total_results = FielderTotalResults.objects.select_related(
-            'player_id').get(player_id=self.player_id)
         fielder_results = self.tally_from_player_all_results()
-        f = self.update_fielder_total_results(
-            fielder_results, fielder_total_results)
+        fielder_total_results = self.create_fielder_total_results(fielder_results)
+        f = self.update_fielder_total_results(fielder_total_results, FielderTotalResults.objects.select_related(
+            'player_id').get(player_id=self.player_id))
         f.save()
 
-    # 打者詳細画面用にデータを取得するメソッド
     def create_sabr_from_results_by_year(self, player_id):
+        # 打者詳細画面用にデータを取得するメソッド
         self.player_id = player_id
-        fielder_total_results = FielderTotalResults.objects.select_related(
-            'player_id').get(player_id=self.player_id)
         fielder_results = self.tally_from_player_results_by_year()
         fielder_total_results_list = []
 
         for result in fielder_results:
-            f = self.update_fielder_total_results(
-                result, fielder_total_results)
-            f.year = result['game_id__team_id__year']
+            f = self.create_fielder_total_results(result)
+            f['year'] = result['game_id__team_id__year']
             fielder_total_results_list.append(f)
 
         return fielder_total_results_list
 
-    # チーム詳細画面用にデータを取得するメソッド
     def create_sabr_from_results_of_team(self, team_id):
+        # チーム詳細画面用にデータを取得するメソッド
         self.team_id = team_id
         fielder_results = self.tally_from_player_results_of_team()
         player_list = []
@@ -202,8 +228,8 @@ class FielderSabrFormatter:
 
         for result, total_results in zip(
                 fielder_results, fielder_total_results):
-            f = self.update_fielder_total_results(
-                result, total_results)
+            f = self.create_fielder_total_results(result)
+            f['player_id'] = total_results.player_id
             fielder_total_results_list.append(f)
 
         return fielder_total_results_list

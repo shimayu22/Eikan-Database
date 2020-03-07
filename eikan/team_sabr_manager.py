@@ -23,32 +23,37 @@ class TeamSabrFormatter:
         team_total_results.score = games_results['score']
         team_total_results.run = games_results['run']
         team_total_results.score_difference = games_results['score_difference']
-        team_total_results.hr = self.fielder_results['home_run__sum']
+        team_total_results.hr = fielder_results['home_run__sum']
         team_total_results.rank = games_results['update_rank']
 
         team_total_results.batting_average = f.batting_average(
-            self, fielder_results['at_bat__sum'],
+            self, 
+            fielder_results['at_bat__sum'],
             fielder_results['hit__sum'])
         team_obp = f.on_base_percentage(
             self,
-            self.fielder_results['at_bat__sum'],
-            self.fielder_results['bb_hbp__sum'],
-            self.fielder_results['hit__sum'])
+            fielder_results['at_bat__sum'],
+            fielder_results['bb_hbp__sum'],
+            fielder_results['hit__sum'])
         team_tb = f.total_bases(
             self,
-            self.fielder_results['hit__sum'],
-            self.fielder_results['two_base__sum'],
-            self.fielder_results['three_base__sum'],
-            self.fielder_results['home_run__sum'],)
+            fielder_results['hit__sum'],
+            fielder_results['two_base__sum'],
+            fielder_results['three_base__sum'],
+            fielder_results['home_run__sum'],)
         team_slg = f.slugging_percentage(
-            self, fielder_results['at_bat__sum'], team_tb)
+            self, 
+            fielder_results['at_bat__sum'], team_tb)
         team_total_results.ops = f.on_base_plus_slugging(
-            self, team_obp, team_slg)
+            self, 
+            team_obp, team_slg)
         
         total_sum_pi = (pitcher_results['innings_pitched__sum'] + (
             pitcher_results['innings_pitched_fraction__sum'] / 3)) * 3
         team_total_results.era = p.earned_runs_average(
-            self, total_sum_pi, pitcher_results['earned_run__sum'])
+            self, 
+            total_sum_pi, 
+            pitcher_results['earned_run__sum'])
         team_total_results.der = t.team_der(
             self,
             pitcher_results['total_batters_faced__sum'],
@@ -108,11 +113,12 @@ class TeamSabrFormatter:
         
         return pitcher_results
 
-    # チーム詳細画面用にデータを取得するメソッド
     def create_sabr_from_results_of_team(self, team_id):
+        # チーム詳細画面用にデータを取得するメソッド
         self.team_id = team_id
-        games_results = Games.objects.select_related(
+        self.games = Games.objects.select_related(
             'team_id').filter(team_id=self.team_id)
+        games_results = self.tally_from_game_results()
         fielder_results = self.tally_from_fielder_results()
         pitcher_result = self.tally_from_pitcher_results()
         team_total_results = self.update_team_total_results(
@@ -123,7 +129,7 @@ class TeamSabrFormatter:
 
         return team_total_results
 
-    # TeamsTotalResults更新用メソッド
     def update_results(self, team_id):
+        # TeamsTotalResults更新用メソッド
         t = self.create_sabr_from_results_of_team(team_id)
         t.save()

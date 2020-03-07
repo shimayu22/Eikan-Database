@@ -7,98 +7,128 @@ class PitcherSabrFormatter:
     def __init__(self):
         self
 
-    def update_pitcher_total_results(
+    def create_pitcher_total_results(
             self,
-            pitcher_results,
-            pitcher_total_results):
+            pitcher_results):
+        pitcher_total_results = {}
+        pitcher_total_results['games'] = pitcher_results['pk__count']
+        pitcher_total_results['games_started'] = pitcher_results['games_started']
+        pitcher_total_results['number_of_pitch'] = pitcher_results['number_of_pitch__sum']
+        pitcher_total_results['total_batters_faced'] = pitcher_results['total_batters_faced__sum']
+        pitcher_total_results['hit'] = pitcher_results['hit__sum']
+        pitcher_total_results['strike_out'] = pitcher_results['strike_out__sum']
+        pitcher_total_results['bb_hbp'] = pitcher_results['bb_hbp__sum']
+        pitcher_total_results['run'] = pitcher_results['run__sum']
+        pitcher_total_results['earned_run'] = pitcher_results['earned_run__sum']
+        pitcher_total_results['wild_pitch'] = pitcher_results['wild_pitch__sum']
+        pitcher_total_results['home_run'] = pitcher_results['home_run__sum']
+
         sum_innings_pitched = p.innings_conversion_for_calculate(
             self,
             pitcher_results['innings_pitched__sum'],
             pitcher_results['innings_pitched_fraction__sum'])
-        pitcher_total_results.games = PitcherResults.objects.filter(
-            player_id=self.player_id).count()
-        pitcher_total_results.games_started = PitcherResults.objects.filter(
-            player_id=self.player_id, games_started=True).count()
-        pitcher_total_results.number_of_pitch = pitcher_results['number_of_pitch__sum']
-        pitcher_total_results.total_batters_faced = pitcher_results['total_batters_faced__sum']
-        pitcher_total_results.hit = pitcher_results['hit__sum']
-        pitcher_total_results.strike_out = pitcher_results['strike_out__sum']
-        pitcher_total_results.bb_hbp = pitcher_results['bb_hbp__sum']
-        pitcher_total_results.run = pitcher_results['run__sum']
-        pitcher_total_results.earned_run = pitcher_results['earned_run__sum']
-        pitcher_total_results.wild_pitch = pitcher_results['wild_pitch__sum']
-        pitcher_total_results.home_run = pitcher_results['home_run__sum']
-        pitcher_total_results.innings_pitched = p.innings_conversion_for_display(
+        pitcher_total_results['innings_pitched'] = p.innings_conversion_for_display(
             self,
             pitcher_results['innings_pitched__sum'],
             pitcher_results['innings_pitched_fraction__sum'])
-        pitcher_total_results.era = p.earned_runs_average(
+        pitcher_total_results['era'] = p.earned_runs_average(
             self,
             sum_innings_pitched,
             pitcher_results['earned_run__sum'])
-        pitcher_total_results.ura = p.runs_average(
+        pitcher_total_results['ura'] = p.runs_average(
             self,
             sum_innings_pitched,
             pitcher_results['run__sum'])
-        pitcher_total_results.whip = p.walks_plus_hits_per_inning_pitched(
+        pitcher_total_results['whip'] = p.walks_plus_hits_per_inning_pitched(
             self,
             sum_innings_pitched,
             pitcher_results['hit__sum'],
             pitcher_results['bb_hbp__sum'])
-        pitcher_total_results.k_bbhp = p.strike_out_per_bbhp(
+        pitcher_total_results['k_bbhp'] = p.strike_out_per_bbhp(
             self,
             pitcher_results['bb_hbp__sum'],
             pitcher_results['strike_out__sum'])
-        pitcher_total_results.k_9 = p.strike_out_per_game(
+        pitcher_total_results['k_9'] = p.strike_out_per_game(
             self,
             sum_innings_pitched,
             pitcher_results['strike_out__sum'])
-        pitcher_total_results.k_percent = p.strike_out_percentage(
+        pitcher_total_results['k_percent'] = p.strike_out_percentage(
             self,
             pitcher_results['total_batters_faced__sum'],
             pitcher_results['strike_out__sum'])
-        pitcher_total_results.bbhp_9 = p.bbhp_per_game(
+        pitcher_total_results['bbhp_9'] = p.bbhp_per_game(
             self,
             sum_innings_pitched,
             pitcher_results['bb_hbp__sum'])
-        pitcher_total_results.p_bbhp_percent = p.bbhp_percentage(
+        pitcher_total_results['p_bbhp_percent'] = p.bbhp_percentage(
             self,
             pitcher_results['total_batters_faced__sum'],
             pitcher_results['bb_hbp__sum'])
-        pitcher_total_results.h_9 = p.hit_per_game(
+        pitcher_total_results['h_9'] = p.hit_per_game(
             self,
             sum_innings_pitched,
             pitcher_results['hit__sum']
         )
-        pitcher_total_results.h_percent = p.hit_percentage(
+        pitcher_total_results['h_percent'] = p.hit_percentage(
             self,
             pitcher_results['total_batters_faced__sum'],
             pitcher_results['hit__sum']
         )
-        pitcher_total_results.hr_9 = p.home_run_per_game(
+        pitcher_total_results['hr_9'] = p.home_run_per_game(
             self,
             sum_innings_pitched,
             pitcher_results['home_run__sum'])
-        pitcher_total_results.hr_percent = p.home_run_percentage(
+        pitcher_total_results['hr_percent'] = p.home_run_percentage(
             self,
             pitcher_results['total_batters_faced__sum'],
             pitcher_results['home_run__sum'])
-        pitcher_total_results.lob_percent = p.left_on_base_percentage(
+        pitcher_total_results['lob_percent'] = p.left_on_base_percentage(
             self,
             pitcher_results['hit__sum'],
             pitcher_results['bb_hbp__sum'],
             pitcher_results['home_run__sum'],
             pitcher_results['run__sum'])
-        pitcher_total_results.p_ip = p.pitch_per_inning(
+        pitcher_total_results['p_ip'] = p.pitch_per_inning(
             self,
             sum_innings_pitched,
             pitcher_results['number_of_pitch__sum'])
+
+        return pitcher_total_results
+    
+    def update_pitcher_total_results(self, dict_pitcher_total_results, pitcher_total_results):
+        pitcher_total_results.games = dict_pitcher_total_results['games']
+        pitcher_total_results.games_started = dict_pitcher_total_results['games_started']
+        pitcher_total_results.number_of_pitch = dict_pitcher_total_results['number_of_pitch']
+        pitcher_total_results.total_batters_faced = dict_pitcher_total_results['total_batters_faced']
+        pitcher_total_results.hit = dict_pitcher_total_results['hit']
+        pitcher_total_results.strike_out = dict_pitcher_total_results['strike_out']
+        pitcher_total_results.bb_hbp = dict_pitcher_total_results['bb_hbp']
+        pitcher_total_results.run = dict_pitcher_total_results['run']
+        pitcher_total_results.earned_run = dict_pitcher_total_results['earned_run']
+        pitcher_total_results.wild_pitch = dict_pitcher_total_results['wild_pitch']
+        pitcher_total_results.home_run = dict_pitcher_total_results['home_run']
+        pitcher_total_results.innings_pitched = dict_pitcher_total_results['innings_pitched']
+        pitcher_total_results.era = dict_pitcher_total_results['era']
+        pitcher_total_results.ura = dict_pitcher_total_results['ura']
+        pitcher_total_results.whip = dict_pitcher_total_results['whip']
+        pitcher_total_results.k_bbhp = dict_pitcher_total_results['k_bbhp']
+        pitcher_total_results.k_9 = dict_pitcher_total_results['k_9']
+        pitcher_total_results.k_percent = dict_pitcher_total_results['k_percent']
+        pitcher_total_results.bbhp_9 = dict_pitcher_total_results['bbhp_9']
+        pitcher_total_results.p_bbhp_percent = dict_pitcher_total_results['p_bbhp_percent']
+        pitcher_total_results.h_9 = dict_pitcher_total_results['h_9']
+        pitcher_total_results.h_percent = dict_pitcher_total_results['h_percent']
+        pitcher_total_results.hr_9 = dict_pitcher_total_results['hr_9']
+        pitcher_total_results.hr_percent = dict_pitcher_total_results['hr_percent']
+        pitcher_total_results.lob_percent = dict_pitcher_total_results['lob_percent']
+        pitcher_total_results.p_ip = dict_pitcher_total_results['p_ip']
 
         return pitcher_total_results
 
     def tally_from_player_all_results(self):
         pitcher_results = PitcherResults.objects.select_related('player_id').filter(
             player_id=self.player_id).aggregate(
+            models.Count('pk'),
             models.Sum('innings_pitched'),
             models.Sum('innings_pitched_fraction'),
             models.Sum('total_batters_faced'),
@@ -110,6 +140,9 @@ class PitcherSabrFormatter:
             models.Sum('earned_run'),
             models.Sum('wild_pitch'),
             models.Sum('home_run'))
+        
+        pitcher_results['games_started'] = PitcherResults.objects.select_related('player_id').filter(
+            player_id=self.player_id, games_started=True).count()
 
         return pitcher_results
     
@@ -120,7 +153,7 @@ class PitcherSabrFormatter:
             'player_id').filter(
             player_id=self.player_id).values(
             'game_id__team_id__year').annotate(
-            games__count=models.Count('pk'),
+            pk__count=models.Count('pk'),
             innings_pitched__sum=models.Sum('innings_pitched'),
             innings_pitched_fraction__sum=models.Sum('innings_pitched_fraction'),
             total_batters_faced__sum=models.Sum('total_batters_faced'),
@@ -132,6 +165,12 @@ class PitcherSabrFormatter:
             earned_run__sum=models.Sum('earned_run'),
             wild_pitch__sum=models.Sum('wild_pitch'),
             home_run__sum=models.Sum('home_run')).order_by('-game_id__team_id__year')
+        
+        for pi in pitcher_results:
+            pi['games_started'] = PitcherResults.objects.filter(
+                player_id=self.player_id,
+                game_id__team_id__year=pi['game_id__team_id__year'],
+                games_started=True).count()
 
         return pitcher_results
 
@@ -141,7 +180,7 @@ class PitcherSabrFormatter:
             'player_id').filter(
             game_id__team_id=self.team_id).values(
             'player_id').annotate(
-            games__count=models.Count('pk'),
+            pk__count=models.Count('pk'),
             innings_pitched__sum=models.Sum('innings_pitched'),
             innings_pitched_fraction__sum=models.Sum(
                 'innings_pitched_fraction'),
@@ -154,36 +193,41 @@ class PitcherSabrFormatter:
             earned_run__sum=models.Sum('earned_run'),
             wild_pitch__sum=models.Sum('wild_pitch'),
             home_run__sum=models.Sum('home_run')).order_by('player_id')
+        
+        for pi in pitcher_results:
+            pi['games_started'] = PitcherResults.objects.select_related(
+                'game_id__team_id',
+                'player_id').filter(
+                player_id=pi['player_id'],
+                game_id__team_id=self.team_id,
+                games_started=True).count()
 
         return pitcher_results
         
-    # PitcherTotalResults更新用メソッド
     def update_results(self, player_id):
+        # PitcherTotalResults更新用メソッド
         self.player_id = player_id
-        pitcher_total_results = PitcherTotalResults.objects.select_related(
-            'player_id').get(player_id=self.player_id)
         pitcher_results = self.tally_from_player_all_results()
-        p = self.update_pitcher_total_results(pitcher_results, pitcher_total_results)
+        pitcher_total_results = self.create_pitcher_total_results(pitcher_results)
+        p = self.update_pitcher_total_results(pitcher_total_results, PitcherTotalResults.objects.select_related(
+            'player_id').get(player_id=self.player_id))
         p.save()
 
-    # 投手詳細画面用にデータを取得するメソッド
     def create_sabr_from_results_by_year(self, player_id):
+        # 投手詳細画面用にデータを取得するメソッド
         self.player_id = player_id
-        pitcher_total_results = PitcherTotalResults.objects.select_related(
-            'player_id').get(player_id=self.player_id)
         pitcher_results = self.tally_from_player_results_by_year()
         pitcher_total_results_list = []
 
         for result in pitcher_results:
-            p = self.update_fielder_total_results(
-                result, pitcher_total_results)
-            p.year = result['game_id__team_id__year']
+            p = self.create_pitcher_total_results(result)
+            p['year'] = result['game_id__team_id__year']
             pitcher_total_results_list.append(p)
 
         return pitcher_total_results_list
 
-    # チーム詳細画面用にデータを取得するメソッド
     def create_sabr_from_results_of_team(self, team_id):
+        # チーム詳細画面用にデータを取得するメソッド
         self.team_id = team_id
         pitcher_results = self.tally_from_player_results_of_team()
         player_list = []
@@ -197,8 +241,8 @@ class PitcherSabrFormatter:
 
         for result, total_results in zip(
                 pitcher_results, pitcher_total_results):
-            p = self.update_fielder_total_results(
-                result, total_results)
+            p = self.create_pitcher_total_results(result)
+            p['player_id'] = total_results.player_id
             pitcher_total_results_list.append(p)
 
         return pitcher_total_results_list

@@ -1,8 +1,7 @@
 from django.shortcuts import get_list_or_404
 from django.views.generic import TemplateView, DetailView, ListView
-from eikan import sabr_manager_for_player as p
-from eikan import sabr_manager_for_team as t
-from eikan import sabr_manager as m
+from eikan import fielder_sabr_manager as f
+from eikan import pithcer_sabr_manager as p
 
 from .models import Teams, Players, Games, \
     FielderResults, PitcherResults, \
@@ -67,11 +66,11 @@ class TeamDetailView(DetailView):
         if g.exists():
             ctx['game_latest'] = g.latest('pk')
         # このチームで行った試合結果を取得する
-        ctx['fielder_results'] = m.FielderSabrFormatter(
+        ctx['fielder_results'] = f.FielderSabrFormatter(
         ).create_sabr_from_results_of_team(teams)
         # 投手編
-        tpt = t.PitcherByTeamSabrManager(teams)
-        ctx['pitcher_results'] = tpt.create_sabr_from_results()
+        ctx['pitcher_results'] = p.PitcherSabrFormatter(
+        ).create_sabr_from_results_of_team(teams)
 
         return ctx
 
@@ -106,7 +105,7 @@ class PlayerDetailView(DetailView):
         ctx['fielder_results'] = FielderResults.objects.select_related(
             'game_id__team_id', 'game_id', 'player_id').filter(
             player_id=player).order_by('-pk')
-        ctx['fielder_by_year_results'] = m.FielderSabrFormatter(
+        ctx['fielder_by_year_results'] = f.FielderSabrFormatter(
         ).create_sabr_from_results_by_year(player)
 
         # 投手のみ以下の処理を行う
@@ -116,8 +115,8 @@ class PlayerDetailView(DetailView):
             ctx['pitcher_results'] = PitcherResults.objects.select_related(
                 'game_id__team_id', 'game_id', 'player_id').filter(
                 player_id=player).order_by('-pk')
-            pps = p.PitcherByYearSabrManager(player)
-            ctx['pitcher_by_year_results'] = pps.create_sabr_from_results()
+            ctx['pitcher_by_year_results'] = p.PitcherSabrFormatter(
+            ).create_sabr_from_results_by_year(player)
 
         return ctx
 

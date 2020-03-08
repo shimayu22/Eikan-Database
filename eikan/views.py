@@ -2,7 +2,6 @@ from django.shortcuts import get_list_or_404
 from django.views.generic import TemplateView, DetailView, ListView
 from eikan import sabr_manager_for_player as p
 from eikan import sabr_manager_for_team as t
-from eikan import sabr_manager as m
 
 from .models import Teams, Players, Games, \
     FielderResults, PitcherResults, \
@@ -67,8 +66,8 @@ class TeamDetailView(DetailView):
         if g.exists():
             ctx['game_latest'] = g.latest('pk')
         # このチームで行った試合結果を取得する
-        ctx['fielder_results'] = m.FielderSabrFormatter(
-        ).create_sabr_from_results_of_team(teams)
+        tft = t.FielderByTeamSabrManager(teams)
+        ctx['fielder_results'] = tft.create_sabr_from_results()
         # 投手編
         tpt = t.PitcherByTeamSabrManager(teams)
         ctx['pitcher_results'] = tpt.create_sabr_from_results()
@@ -106,8 +105,8 @@ class PlayerDetailView(DetailView):
         ctx['fielder_results'] = FielderResults.objects.select_related(
             'game_id__team_id', 'game_id', 'player_id').filter(
             player_id=player).order_by('-pk')
-        ctx['fielder_by_year_results'] = m.FielderSabrFormatter(
-        ).create_sabr_from_results_by_year(player)
+        pfs = p.FielderByYearSabrManager(player)
+        ctx['fielder_by_year_results'] = pfs.create_sabr_from_results()
 
         # 投手のみ以下の処理を行う
         if player.is_pitcher:

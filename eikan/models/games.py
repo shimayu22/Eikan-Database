@@ -16,7 +16,7 @@ def default_team_rank():
 
 class Games(models.Model):
 
-    COMPETITON_CHOICES = (
+    COMPETITION_CHOICES = (
         ('', '選択'),
         (1, '練習試合'),
         (2, '県大会'),
@@ -62,7 +62,7 @@ class Games(models.Model):
 
     competition_type = models.PositiveSmallIntegerField(
         verbose_name="大会",
-        choices=COMPETITON_CHOICES,
+        choices=COMPETITION_CHOICES,
         default=0,
     )
 

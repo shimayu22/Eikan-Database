@@ -1,9 +1,11 @@
-from eikan import sabr_manager as s
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.contrib import admin
 from django.db import models
 from django.forms import NumberInput
+from eikan import fielder_sabr_manager as f
+from eikan import pithcer_sabr_manager as p
+from eikan import team_sabr_manager as t
 
 # Register your models here.
 from .models import Teams, Players, Games, \
@@ -180,20 +182,17 @@ def update_teams_total_results_updated_at(sender, instance, created, **kwargs):
     if created:
         TeamTotalResults.objects.get(team_id=instance.team_id).save()
     else:
-        sts = s.TeamSabrManager(instance.team_id)
-        sts.update_results()
+        t.TeamSabrFormatter().update_results(instance.team_id)
 
 # 野手成績の更新
 @receiver(post_save, sender=FielderResults)
 def update_cal_fielder_results(sender, instance, **kwargs):
-    sfs = s.FielderTotalSabrManager(instance.player_id)
-    sfs.update_results()
+    f.FielderSabrFormatter().update_total_results(instance.player_id)
 
 # 投手成績の更新
 @receiver(post_save, sender=PitcherResults)
 def update_cal_pitcher_results(sender, instance, **kwargs):
-    sps = s.PitcherTotalSabrManager(instance.player_id)
-    sps.update_results()
+    p.PitcherSabrFormatter().update_results(instance.player_id)
 
 # チーム総合成績の更新
 @receiver(post_save, sender=PitcherTotalResults)
@@ -203,5 +202,4 @@ def update_cal_team_results(sender, instance, created, **kwargs):
         pass
     else:
         team_id = TeamTotalResults.objects.latest('updated_at').team_id
-        sts = s.TeamSabrManager(team_id)
-        sts.update_results()
+        t.TeamSabrFormatter().update_results(team_id)

@@ -217,19 +217,13 @@ class FielderSabrFormatter:
         # チーム詳細画面用にデータを取得するメソッド
         self.team_id = team_id
         fielder_results = self.tally_from_player_results_of_team()
-        player_list = []
 
-        for player in fielder_results:
-            player_list.append(player['player_id'])
-
-        fielder_total_results = FielderTotalResults.objects.select_related(
-            'player_id').filter(player_id__in=player_list).order_by('player_id')
         fielder_total_results_list = []
 
-        for result, total_results in zip(
-                fielder_results, fielder_total_results):
+        for result in fielder_results:
             f = self.create_fielder_total_results(result)
-            f['player_id'] = total_results.player_id
+            ftr = FielderTotalResults.objects.select_related('player_id').get(player_id=result['player_id'])
+            f['player_id'] = ftr.player_id
             fielder_total_results_list.append(f)
 
         return fielder_total_results_list

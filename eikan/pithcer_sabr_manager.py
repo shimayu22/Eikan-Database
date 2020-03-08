@@ -230,19 +230,13 @@ class PitcherSabrFormatter:
         # チーム詳細画面用にデータを取得するメソッド
         self.team_id = team_id
         pitcher_results = self.tally_from_player_results_of_team()
-        player_list = []
 
-        for player in pitcher_results:
-            player_list.append(player['player_id'])
-
-        pitcher_total_results = PitcherTotalResults.objects.select_related(
-            'player_id').filter(player_id__in=player_list).order_by('player_id')
         pitcher_total_results_list = []
 
-        for result, total_results in zip(
-                pitcher_results, pitcher_total_results):
+        for result in pitcher_results:
             p = self.create_pitcher_total_results(result)
-            p['player_id'] = total_results.player_id
+            ptr = PitcherTotalResults.objects.select_related('player_id').get(player_id=result['player_id'])
+            p['player_id'] = ptr.player_id
             pitcher_total_results_list.append(p)
 
         return pitcher_total_results_list

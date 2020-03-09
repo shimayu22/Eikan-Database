@@ -100,32 +100,32 @@
                 ３年
                 {% endif %}
             </td>
-            <td>{{ pitcher_result.games|default:"0" }}</td>
-            <td>{{ pitcher_result.games_started|default:"0" }}</td>
-            <td>{{ pitcher_result.innings_pitched|default:"0" }}</td>
-            <td>{{ pitcher_result.number_of_pitch|default:"0" }}</td>
-            <td>{{ pitcher_result.total_batters_faced|default:"0" }}</td>
-            <td>{{ pitcher_result.hit|default:"0" }}</td>
-            <td>{{ pitcher_result.strike_out|default:"0" }}</td>
-            <td>{{ pitcher_result.bb_hbp|default:"0" }}</td>
-            <td>{{ pitcher_result.run|default:"0" }}</td>
-            <td>{{ pitcher_result.earned_run|default:"0" }}</td>
-            <td>{{ pitcher_result.wild_pitch|default:"0" }}</td>
-            <td>{{ pitcher_result.home_run|default:"0" }}</td>
-            <td>{{ pitcher_result.era|floatformat:"2"|default:"0.00" }}</td>
-            <td>{{ pitcher_result.ura|floatformat:"2"|default:"0.00" }}</td>
-            <td>{{ pitcher_result.whip|floatformat:"2"|default:"0.00" }}</td>
-            <td>{{ pitcher_result.k_bbhp|floatformat:"2"|default:"0.00" }}</td>
-            <td>{{ pitcher_result.k_9|floatformat:"2"|default:"0.00" }}</td>
-            <td>{{ pitcher_result.k_percent|floatformat:"2"|default:"0.00" }}</td>
-            <td>{{ pitcher_result.bbhp_9|floatformat:"2"|default:"0.00" }}</td>
-            <td>{{ pitcher_result.p_bbhp_percent|floatformat:"2"|default:"0.00" }}</td>
-            <td>{{ pitcher_result.h_9|floatformat:"2"|default:"0.00" }}</td>
-            <td>{{ pitcher_result.h_percent|floatformat:"2"|default:"0.00" }}</td>
-            <td>{{ pitcher_result.hr_9|floatformat:"2"|default:"0.00" }}</td>
-            <td>{{ pitcher_result.hr_percent|floatformat:"2"|default:"0.00" }}</td>
-            <td>{{ pitcher_result.lob_percent|floatformat:"2"|default:"0.00" }}</td>
-            <td>{{ pitcher_result.p_ip|floatformat:"2"|default:"0.00" }}</td>
+            <td>{{ pitcher_result.data.games|default:"0" }}</td>
+            <td>{{ pitcher_result.data.games_started|default:"0" }}</td>
+            <td>{{ pitcher_result.data.innings_pitched|default:"0" }}</td>
+            <td>{{ pitcher_result.data.number_of_pitch|default:"0" }}</td>
+            <td>{{ pitcher_result.data.total_batters_faced|default:"0" }}</td>
+            <td>{{ pitcher_result.data.hit|default:"0" }}</td>
+            <td>{{ pitcher_result.data.strike_out|default:"0" }}</td>
+            <td>{{ pitcher_result.data.bb_hbp|default:"0" }}</td>
+            <td>{{ pitcher_result.data.run|default:"0" }}</td>
+            <td>{{ pitcher_result.data.earned_run|default:"0" }}</td>
+            <td>{{ pitcher_result.data.wild_pitch|default:"0" }}</td>
+            <td>{{ pitcher_result.data.home_run|default:"0" }}</td>
+            <td>{{ pitcher_result.data.era|floatformat:"2"|default:"0.00" }}</td>
+            <td>{{ pitcher_result.data.ura|floatformat:"2"|default:"0.00" }}</td>
+            <td>{{ pitcher_result.data.whip|floatformat:"2"|default:"0.00" }}</td>
+            <td>{{ pitcher_result.data.k_bbhp|floatformat:"2"|default:"0.00" }}</td>
+            <td>{{ pitcher_result.data.k_9|floatformat:"2"|default:"0.00" }}</td>
+            <td>{{ pitcher_result.data.k_percent|floatformat:"2"|default:"0.00" }}</td>
+            <td>{{ pitcher_result.data.bbhp_9|floatformat:"2"|default:"0.00" }}</td>
+            <td>{{ pitcher_result.data.p_bbhp_percent|floatformat:"2"|default:"0.00" }}</td>
+            <td>{{ pitcher_result.data.h_9|floatformat:"2"|default:"0.00" }}</td>
+            <td>{{ pitcher_result.data.h_percent|floatformat:"2"|default:"0.00" }}</td>
+            <td>{{ pitcher_result.data.hr_9|floatformat:"2"|default:"0.00" }}</td>
+            <td>{{ pitcher_result.data.hr_percent|floatformat:"2"|default:"0.00" }}</td>
+            <td>{{ pitcher_result.data.lob_percent|floatformat:"2"|default:"0.00" }}</td>
+            <td>{{ pitcher_result.data.p_ip|floatformat:"2"|default:"0.00" }}</td>
         </tr>
         {% endfor %}
     </tbody>

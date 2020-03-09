@@ -1,7 +1,7 @@
 from django.shortcuts import get_list_or_404
 from django.views.generic import TemplateView, DetailView, ListView
 from eikan import fielder_sabr_manager as f
-from eikan import pithcer_sabr_manager as p
+from eikan import pitcher_sabr_manager as p
 
 from .models import Teams, Players, Games, \
     FielderResults, PitcherResults, \

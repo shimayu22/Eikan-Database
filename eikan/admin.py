@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.db import models
 from django.forms import NumberInput
 from eikan import fielder_sabr_manager as f
-from eikan import pithcer_sabr_manager as p
+from eikan import pitcher_sabr_manager as p
 from eikan import team_sabr_manager as t
 
 # Register your models here.

@@ -136,6 +136,7 @@
         <tr>
             <th>Player</th>
             <th>備考</th>
+            <th><abbr title="前の試合">PG</th>
             <th><abbr title="登板数">G</abbr></th>
             <th><abbr title="先発数">GS</abbr></th>
             <th><abbr title="投球回数">PI</abbr></th>
@@ -165,8 +166,8 @@
         </tr>
     </thead>
     <tbody class="text-right">
-        {% for ptr in pitcher_total_results %}
         <tr>
+        {% for ptr in pitcher_total_results %}
             <th><a href="{% url 'eikan:player_detail' ptr.player_id.pk %}">{{ ptr.player_id }}</a></th>
             <td class="text-center">
                 {% if ptr.player_id.is_ob %}
@@ -181,6 +182,14 @@
                 {% if ptr.player_id.remark %}
                 {{ ptr.player_id.remark }}
                 {% endif %}
+            </td>
+            {% if ptr.innings_pitched > 5 %}
+                <td class="bg-danger">
+            {% elif ptr.innings_pitched > 2 %}
+                <td class="bg-warning">
+            {% else %}
+                <td class="bg-primary">
+            {% endif %}
             </td>
             <td>{{ ptr.games }}</td>
             <td>{{ ptr.games_started }}</td>

@@ -5,7 +5,7 @@
     <div class="col text-right">チーム：</div>
     <div class="col">{{ games.team_id }}</div>
     <div class="col text-right">大会：</div>
-    <div class="col">{{ games.get_competition_type_display }}{{ games.get_competiton_round_display|cut:"練習試合" }}</div>
+    <div class="col">{{ games.get_competition_type_display }}{{ games.get_competition_round_display|cut:"練習試合" }}</div>
     <div class="col text-right">勝敗：</div>
     <div class="col">{{ games.get_result_display }}</div>
     <div class="col text-right">スコア：</div>

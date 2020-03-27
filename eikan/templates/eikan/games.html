@@ -27,10 +27,10 @@
         </table>
         {% include "./_paginate.html" %}
     {% else %}
-    <div class="text-center">
-        <h4>（登録データが）ないです</h4>
-        <p><a href="{% url 'admin:eikan_teams_add' %}">管理画面</a>からデータを登録してください。</p>
-    </div>
+        <div class="text-center">
+            <h4>（登録データが）ないです</h4>
+            <p><a href="{% url 'admin:eikan_teams_add' %}">管理画面</a>からデータを登録してください。</p>
+        </div>
     {% endif %}
 </div>
 {% endblock %}

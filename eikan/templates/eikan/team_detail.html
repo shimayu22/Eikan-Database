@@ -8,18 +8,13 @@
     <div class="col">方針：{{ teams.get_training_policy_display }}</div>
     <div class="col">指名：{{ teams.draft_nomination }}人</div>
     <div class="col">戦績：
-        {% if game_latest.competition_type > 3 and game_latest.competiton_round == 8 and game_latest.result == 1 %}
-        {{ game_latest.get_competition_type_display}}優勝
+        {% if game_latest.competition_type != "県大会" and game_latest.get_competiton_round_display == "決勝" and game_latest.get_result_display == "勝" %}
+            {{ game_latest.get_competition_type_display}}優勝
         {% else %}
-        {{ game_latest.get_competition_type_display|default:"なし" }}{{ game_latest.get_competiton_round_display }}
+            {{ game_latest.get_competition_type_display|default:"なし" }}{{ game_latest.get_competiton_round_display }}
         {% endif %}
     </div>
-
-    <div class="col">備考：
-        {% if players.remark %}
-        {{ players.remark }}
-        {% endif %}
-    </div>
+    <div class="col">備考：{{ players.remark|default:"" }}</div>
 </div>
 <hr class="mb-5">
 <h3 class="mt-2">チーム成績</h3>
@@ -57,11 +52,7 @@
             <td>{{ team_total_result.hr }}</td>
             <td>{{ team_total_result.era }}</td>
             <td>{{ team_total_result.der }}</td>
-            <td class="text-left">
-                {% if team_total_result.team_id.remark %}
-                {{ team_total_result.team_id.remark }}
-                {% endif %}
-            </td>
+            <td class="text-left">{{ team_total_result.team_id.remark|default:"" }}</td>
         </tr>
     </tbody>
 </table>
@@ -134,18 +125,10 @@
         <tr>
             <th><a href="{% url 'eikan:player_detail' fr.player_id.pk %}">{{ fr.player_id }}</a></th>
             <td class="text-left">
-                {% if fr.player_id.is_ob %}
-                【OB】
-                {% endif %}
-                {% if fr.player_id.is_active %}
-                【現役】
-                {% endif %}
-                {% if fr.player_id.is_genius %}
-                【天才】
-                {% endif %}
-                {% if fr.player_id.remark %}
-                {{ fr.player_id.remark }}
-                {% endif %}
+                {{ fr.player_id.is_ob|yesno:"[OB], " }}
+                {{ fr.player_id.is_active|yesno:"[現役], " }}
+                {{ fr.player_id.is_genius|yesno:"[天才], " }}
+                {{ fr.player_id.remark|default:"" }}
             </td>
             <td>{{ fr.ops|floatformat:"3"|default:"0.000" }}</td>
             <td>{{ fr.slg|floatformat:"3"|default:"0.000" }}</td>
@@ -215,18 +198,10 @@
         <tr>
             <th><a href="{% url 'eikan:player_detail' pr.player_id.pk %}">{{ pr.player_id }}</a></th>
             <td class="text-center">
-                {% if pr.player_id.is_ob %}
-                【OB】
-                {% endif %}
-                {% if pr.player_id.is_active %}
-                【現役】
-                {% endif %}
-                {% if pr.player_id.is_genius %}
-                【天才】
-                {% endif %}
-                {% if pr.player_id.remark %}
-                {{ pr.player_id.remark }}
-                {% endif %}
+                {{ pr.player_id.is_ob|yesno:"[OB], " }}
+                {{ pr.player_id.is_active|yesno:"[現役], " }}
+                {{ pr.player_id.is_genius|yesno:"[天才], " }}
+                {{ pr.player_id.remark|default:"" }}
             </td>
             <td>{{ pr.games|default:"0" }}</td>
             <td>{{ pr.games_started|default:"0" }}</td>

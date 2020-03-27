@@ -10,193 +10,179 @@
     <div class="col">{{ players.get_position_display }}</div>
     <div class="col text-right">備考：</div>
     <div class="col">
-        {% if players.is_ob %}
-        【OB】
-        {% endif %}
-        {% if players.is_active %}
-        【現役】
-        {% endif %}
-        {% if players.is_genius %}
-        【天才】
-        {% endif %}
-        {% if players.remark %}
-        {{ players.remark }}
-        {% endif %}
+        {{ players.is_ob|yesno:"[OB], " }}
+        {{ players.is_active|yesno:"[現役], " }}
+        {{ players.is_genius|yesno:"[天才], " }}
+        {{ players.remark|default:"" }}
     </div>
 </div>
 <hr class="mb-5">
 {% if pitcher_total_results %}
-<h3 class="mt-2">投手成績</h3>
-<table class="table table-bordered table-hover table-sm table-responsive-lg text-nowrap">
-    <thead class="thead-light text-center">
-        <tr>
-            <th>　</th>
-            <th><abbr title="登板数">G</abbr></th>
-            <th><abbr title="先発数">GS</abbr></th>
-            <th><abbr title="投球回数">PI</abbr></th>
-            <th><abbr title="投球数">NP</abbr></th>
-            <th><abbr title="対戦打者">TBF</abbr></th>
-            <th><abbr title="被安打">H</abbr></th>
-            <th><abbr title="奪三振">SO</abbr></th>
-            <th><abbr title="与四死球">BBHP</abbr></th>
-            <th><abbr title="失点">R</abbr></th>
-            <th><abbr title="自責点">ER</abbr></th>
-            <th><abbr title="暴投">WP</abbr></th>
-            <th><abbr title="被本塁打">HR</abbr></th>
-            <th><abbr title="防御率：(自責点*9*3)/(投球回*3)">ERA</abbr></th>
-            <th><abbr title="失点率：(失点*9*3)/(投球回*3)">URA</abbr></th>
-            <th><abbr title="1イニングあたりに出した走者：(被安打+与四死球)*3/(投球回*3)">WHIP</abbr></th>
-            <th><abbr title="1つ四球を出すまでにいくつ三振を取れるか：奪三振/与四死球">K/BB</abbr></th>
-            <th><abbr title="奪三振率：(奪三振*9*3)/(投球回*3)">K/9</abbr></th>
-            <th><abbr title="打者と対戦し奪三振を取る確率：奪三振/対戦打者">K%</abbr></th>
-            <th><abbr title="与四死球率：(与四死球*9*3)/(投球回*3)">BB/9</abbr></th>
-            <th><abbr title="打者と対戦し四死球を与える確率：四死球/対戦打者">BB%</abbr></th>
-            <th><abbr title="被打率：(被安打*9*3)/(投球回*3)">H/9</abbr></th>
-            <th><abbr title="打者と対戦し安打を与える確率：被安打/対戦打者">H%</abbr></th>
-            <th><abbr title="被本塁打率：(被本塁打*9*3)/(投球回*3)">HR/9</abbr></th>
-            <th><abbr title="打者と対戦し本塁打を与える確率：被本塁打/対戦打者">HR%</abbr></th>
-            <th><abbr title="出塁した走者に得点を許さなかった割合：(安打+四死球-失点)/(安打+四死球-1.4*本塁打)">LOB%</abbr></th>
-            <th><abbr title="1イニングあたりの投球数：(球数*3)/(投球回*3)">P/IP</abbr></th>
-        </tr>
-    </thead>
-    <tbody class="text-right">
-        <tr>
-            <td>通算</td>
-            <td>{{ pitcher_total_results.games }}</td>
-            <td>{{ pitcher_total_results.games_started }}</td>
-            <td>{{ pitcher_total_results.innings_pitched }}</td>
-            <td>{{ pitcher_total_results.number_of_pitch }}</td>
-            <td>{{ pitcher_total_results.total_batters_faced }}</td>
-            <td>{{ pitcher_total_results.hit }}</td>
-            <td>{{ pitcher_total_results.strike_out }}</td>
-            <td>{{ pitcher_total_results.bb_hbp }}</td>
-            <td>{{ pitcher_total_results.run }}</td>
-            <td>{{ pitcher_total_results.earned_run }}</td>
-            <td>{{ pitcher_total_results.wild_pitch }}</td>
-            <td>{{ pitcher_total_results.home_run }}</td>
-            <td>{{ pitcher_total_results.era|floatformat:2 }}</td>
-            <td>{{ pitcher_total_results.ura|floatformat:2 }}</td>
-            <td>{{ pitcher_total_results.whip|floatformat:2 }}</td>
-            <td>{{ pitcher_total_results.k_bbhp|floatformat:2 }}</td>
-            <td>{{ pitcher_total_results.k_9|floatformat:2 }}</td>
-            <td>{{ pitcher_total_results.k_percent|floatformat:2 }}</td>
-            <td>{{ pitcher_total_results.bbhp_9|floatformat:2 }}</td>
-            <td>{{ pitcher_total_results.p_bbhp_percent|floatformat:2 }}</td>
-            <td>{{ pitcher_total_results.h_9|floatformat:2 }}</td>
-            <td>{{ pitcher_total_results.h_percent|floatformat:2 }}</td>
-            <td>{{ pitcher_total_results.hr_9|floatformat:2 }}</td>
-            <td>{{ pitcher_total_results.hr_percent|floatformat:2 }}</td>
-            <td>{{ pitcher_total_results.lob_percent|floatformat:2 }}</td>
-            <td>{{ pitcher_total_results.p_ip|floatformat:2 }}</td>
-        </tr>
-        {% for pitcher_result in pitcher_by_year_results %}
-        <tr>
-            <td>
-                {% if players.admission_year == pitcher_result.year %}
-                １年
-                {% elif players.admission_year|add:1 == pitcher_result.year %}
-                ２年
-                {% else %}
-                ３年
-                {% endif %}
-            </td>
-            <td>{{ pitcher_result.data.games|default:"0" }}</td>
-            <td>{{ pitcher_result.data.games_started|default:"0" }}</td>
-            <td>{{ pitcher_result.data.innings_pitched|default:"0" }}</td>
-            <td>{{ pitcher_result.data.number_of_pitch|default:"0" }}</td>
-            <td>{{ pitcher_result.data.total_batters_faced|default:"0" }}</td>
-            <td>{{ pitcher_result.data.hit|default:"0" }}</td>
-            <td>{{ pitcher_result.data.strike_out|default:"0" }}</td>
-            <td>{{ pitcher_result.data.bb_hbp|default:"0" }}</td>
-            <td>{{ pitcher_result.data.run|default:"0" }}</td>
-            <td>{{ pitcher_result.data.earned_run|default:"0" }}</td>
-            <td>{{ pitcher_result.data.wild_pitch|default:"0" }}</td>
-            <td>{{ pitcher_result.data.home_run|default:"0" }}</td>
-            <td>{{ pitcher_result.data.era|floatformat:"2"|default:"0.00" }}</td>
-            <td>{{ pitcher_result.data.ura|floatformat:"2"|default:"0.00" }}</td>
-            <td>{{ pitcher_result.data.whip|floatformat:"2"|default:"0.00" }}</td>
-            <td>{{ pitcher_result.data.k_bbhp|floatformat:"2"|default:"0.00" }}</td>
-            <td>{{ pitcher_result.data.k_9|floatformat:"2"|default:"0.00" }}</td>
-            <td>{{ pitcher_result.data.k_percent|floatformat:"2"|default:"0.00" }}</td>
-            <td>{{ pitcher_result.data.bbhp_9|floatformat:"2"|default:"0.00" }}</td>
-            <td>{{ pitcher_result.data.p_bbhp_percent|floatformat:"2"|default:"0.00" }}</td>
-            <td>{{ pitcher_result.data.h_9|floatformat:"2"|default:"0.00" }}</td>
-            <td>{{ pitcher_result.data.h_percent|floatformat:"2"|default:"0.00" }}</td>
-            <td>{{ pitcher_result.data.hr_9|floatformat:"2"|default:"0.00" }}</td>
-            <td>{{ pitcher_result.data.hr_percent|floatformat:"2"|default:"0.00" }}</td>
-            <td>{{ pitcher_result.data.lob_percent|floatformat:"2"|default:"0.00" }}</td>
-            <td>{{ pitcher_result.data.p_ip|floatformat:"2"|default:"0.00" }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-<hr class="mt-5 mb-5">
-<h3 class="mt-2">投手試合結果</h3>
-<table class="table table-bordered table-hover table-sm table-responsive-lg text-nowrap">
-    <thead class="thead-light text-center">
-        <tr>
-            <th>チーム</th>
-            <th>試合</th>
-            <th><abbr title="先発数">GS</abbr></th>
-            <th><abbr title="投球回数">PI</abbr></th>
-            <th><abbr title="投球数">NP</abbr></th>
-            <th><abbr title="対戦打者">TBF</abbr></th>
-            <th><abbr title="被安打">H</abbr></th>
-            <th><abbr title="奪三振">SO</abbr></th>
-            <th><abbr title="与四死球">BBHP</abbr></th>
-            <th><abbr title="失点">R</abbr></th>
-            <th><abbr title="自責点">ER</abbr></th>
-            <th><abbr title="暴投">WP</abbr></th>
-            <th><abbr title="被本塁打">HR</abbr></th>
-        </tr>
-    </thead>
-    <tbody class="text-right">
-        {% for p in pitcher_results %}
-        <tr>
-            <td class="text-center"><a href="{% url 'eikan:team_detail' p.game_id.team_id.pk %}">{{ p.game_id }}</a>
-            </td>
-            <td class="text-center"><a
-                    href="{% url 'eikan:game_detail' p.game_id.pk %}">{{ p.game_id.get_competition_type_display }}{{ p.game_id.get_competiton_round_display|cut:"練習試合"}}</a>
-            </td>
-            <td class="text-center">
-                {% if p.games_started %}
-                先発
-                {% else %}
-                リリーフ
-                {% endif %}
-            </td>
-            <td>{{ p.innings_pitched }}</td>
-            <td>{{ p.number_of_pitch }}</td>
-            <td>{{ p.total_batters_faced }}</td>
-            <td>{{ p.hit }}</td>
-            <td>{{ p.strike_out }}</td>
-            <td>{{ p.bb_hbp }}</td>
-            <td>{{ p.run }}</td>
-            <td>{{ p.earned_run }}</td>
-            <td>{{ p.wild_pitch }}</td>
-            <td>{{ p.home_run }}</td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td class="text-center">データなし</td>
-            <td class="text-center">-</td>
-            <td class="text-center">-</td>
-            <td class="text-center">-</td>
-            <td class="text-center">-</td>
-            <td class="text-center">-</td>
-            <td class="text-center">-</td>
-            <td class="text-center">-</td>
-            <td class="text-center">-</td>
-            <td class="text-center">-</td>
-            <td class="text-center">-</td>
-            <td class="text-center">-</td>
-            <td class="text-center">-</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+    <h3 class="mt-2">投手成績</h3>
+    <table class="table table-bordered table-hover table-sm table-responsive-lg text-nowrap">
+        <thead class="thead-light text-center">
+            <tr>
+                <th>　</th>
+                <th><abbr title="登板数">G</abbr></th>
+                <th><abbr title="先発数">GS</abbr></th>
+                <th><abbr title="投球回数">PI</abbr></th>
+                <th><abbr title="投球数">NP</abbr></th>
+                <th><abbr title="対戦打者">TBF</abbr></th>
+                <th><abbr title="被安打">H</abbr></th>
+                <th><abbr title="奪三振">SO</abbr></th>
+                <th><abbr title="与四死球">BBHP</abbr></th>
+                <th><abbr title="失点">R</abbr></th>
+                <th><abbr title="自責点">ER</abbr></th>
+                <th><abbr title="暴投">WP</abbr></th>
+                <th><abbr title="被本塁打">HR</abbr></th>
+                <th><abbr title="防御率：(自責点*9*3)/(投球回*3)">ERA</abbr></th>
+                <th><abbr title="失点率：(失点*9*3)/(投球回*3)">URA</abbr></th>
+                <th><abbr title="1イニングあたりに出した走者：(被安打+与四死球)*3/(投球回*3)">WHIP</abbr></th>
+                <th><abbr title="1つ四球を出すまでにいくつ三振を取れるか：奪三振/与四死球">K/BB</abbr></th>
+                <th><abbr title="奪三振率：(奪三振*9*3)/(投球回*3)">K/9</abbr></th>
+                <th><abbr title="打者と対戦し奪三振を取る確率：奪三振/対戦打者">K%</abbr></th>
+                <th><abbr title="与四死球率：(与四死球*9*3)/(投球回*3)">BB/9</abbr></th>
+                <th><abbr title="打者と対戦し四死球を与える確率：四死球/対戦打者">BB%</abbr></th>
+                <th><abbr title="被打率：(被安打*9*3)/(投球回*3)">H/9</abbr></th>
+                <th><abbr title="打者と対戦し安打を与える確率：被安打/対戦打者">H%</abbr></th>
+                <th><abbr title="被本塁打率：(被本塁打*9*3)/(投球回*3)">HR/9</abbr></th>
+                <th><abbr title="打者と対戦し本塁打を与える確率：被本塁打/対戦打者">HR%</abbr></th>
+                <th><abbr title="出塁した走者に得点を許さなかった割合：(安打+四死球-失点)/(安打+四死球-1.4*本塁打)">LOB%</abbr></th>
+                <th><abbr title="1イニングあたりの投球数：(球数*3)/(投球回*3)">P/IP</abbr></th>
+            </tr>
+        </thead>
+        <tbody class="text-right">
+            <tr>
+                <td>通算</td>
+                <td>{{ pitcher_total_results.games }}</td>
+                <td>{{ pitcher_total_results.games_started }}</td>
+                <td>{{ pitcher_total_results.innings_pitched }}</td>
+                <td>{{ pitcher_total_results.number_of_pitch }}</td>
+                <td>{{ pitcher_total_results.total_batters_faced }}</td>
+                <td>{{ pitcher_total_results.hit }}</td>
+                <td>{{ pitcher_total_results.strike_out }}</td>
+                <td>{{ pitcher_total_results.bb_hbp }}</td>
+                <td>{{ pitcher_total_results.run }}</td>
+                <td>{{ pitcher_total_results.earned_run }}</td>
+                <td>{{ pitcher_total_results.wild_pitch }}</td>
+                <td>{{ pitcher_total_results.home_run }}</td>
+                <td>{{ pitcher_total_results.era|floatformat:2 }}</td>
+                <td>{{ pitcher_total_results.ura|floatformat:2 }}</td>
+                <td>{{ pitcher_total_results.whip|floatformat:2 }}</td>
+                <td>{{ pitcher_total_results.k_bbhp|floatformat:2 }}</td>
+                <td>{{ pitcher_total_results.k_9|floatformat:2 }}</td>
+                <td>{{ pitcher_total_results.k_percent|floatformat:2 }}</td>
+                <td>{{ pitcher_total_results.bbhp_9|floatformat:2 }}</td>
+                <td>{{ pitcher_total_results.p_bbhp_percent|floatformat:2 }}</td>
+                <td>{{ pitcher_total_results.h_9|floatformat:2 }}</td>
+                <td>{{ pitcher_total_results.h_percent|floatformat:2 }}</td>
+                <td>{{ pitcher_total_results.hr_9|floatformat:2 }}</td>
+                <td>{{ pitcher_total_results.hr_percent|floatformat:2 }}</td>
+                <td>{{ pitcher_total_results.lob_percent|floatformat:2 }}</td>
+                <td>{{ pitcher_total_results.p_ip|floatformat:2 }}</td>
+            </tr>
+            {% for pitcher_result in pitcher_by_year_results %}
+                <tr>
+                    <td>
+                        {% if players.admission_year == pitcher_result.year %}
+                            １年
+                        {% elif players.admission_year|add:1 == pitcher_result.year %}
+                            ２年
+                        {% else %}
+                            ３年
+                        {% endif %}
+                    </td>
+                    <td>{{ pitcher_result.data.games|default:"0" }}</td>
+                    <td>{{ pitcher_result.data.games_started|default:"0" }}</td>
+                    <td>{{ pitcher_result.data.innings_pitched|default:"0" }}</td>
+                    <td>{{ pitcher_result.data.number_of_pitch|default:"0" }}</td>
+                    <td>{{ pitcher_result.data.total_batters_faced|default:"0" }}</td>
+                    <td>{{ pitcher_result.data.hit|default:"0" }}</td>
+                    <td>{{ pitcher_result.data.strike_out|default:"0" }}</td>
+                    <td>{{ pitcher_result.data.bb_hbp|default:"0" }}</td>
+                    <td>{{ pitcher_result.data.run|default:"0" }}</td>
+                    <td>{{ pitcher_result.data.earned_run|default:"0" }}</td>
+                    <td>{{ pitcher_result.data.wild_pitch|default:"0" }}</td>
+                    <td>{{ pitcher_result.data.home_run|default:"0" }}</td>
+                    <td>{{ pitcher_result.data.era|floatformat:"2"|default:"0.00" }}</td>
+                    <td>{{ pitcher_result.data.ura|floatformat:"2"|default:"0.00" }}</td>
+                    <td>{{ pitcher_result.data.whip|floatformat:"2"|default:"0.00" }}</td>
+                    <td>{{ pitcher_result.data.k_bbhp|floatformat:"2"|default:"0.00" }}</td>
+                    <td>{{ pitcher_result.data.k_9|floatformat:"2"|default:"0.00" }}</td>
+                    <td>{{ pitcher_result.data.k_percent|floatformat:"2"|default:"0.00" }}</td>
+                    <td>{{ pitcher_result.data.bbhp_9|floatformat:"2"|default:"0.00" }}</td>
+                    <td>{{ pitcher_result.data.p_bbhp_percent|floatformat:"2"|default:"0.00" }}</td>
+                    <td>{{ pitcher_result.data.h_9|floatformat:"2"|default:"0.00" }}</td>
+                    <td>{{ pitcher_result.data.h_percent|floatformat:"2"|default:"0.00" }}</td>
+                    <td>{{ pitcher_result.data.hr_9|floatformat:"2"|default:"0.00" }}</td>
+                    <td>{{ pitcher_result.data.hr_percent|floatformat:"2"|default:"0.00" }}</td>
+                    <td>{{ pitcher_result.data.lob_percent|floatformat:"2"|default:"0.00" }}</td>
+                    <td>{{ pitcher_result.data.p_ip|floatformat:"2"|default:"0.00" }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <hr class="mt-5 mb-5">
+    <h3 class="mt-2">投手試合結果</h3>
+    <table class="table table-bordered table-hover table-sm table-responsive-lg text-nowrap">
+        <thead class="thead-light text-center">
+            <tr>
+                <th>チーム</th>
+                <th>試合</th>
+                <th><abbr title="先発数">GS</abbr></th>
+                <th><abbr title="投球回数">PI</abbr></th>
+                <th><abbr title="投球数">NP</abbr></th>
+                <th><abbr title="対戦打者">TBF</abbr></th>
+                <th><abbr title="被安打">H</abbr></th>
+                <th><abbr title="奪三振">SO</abbr></th>
+                <th><abbr title="与四死球">BBHP</abbr></th>
+                <th><abbr title="失点">R</abbr></th>
+                <th><abbr title="自責点">ER</abbr></th>
+                <th><abbr title="暴投">WP</abbr></th>
+                <th><abbr title="被本塁打">HR</abbr></th>
+            </tr>
+        </thead>
+        <tbody class="text-right">
+            {% for p in pitcher_results %}
+                <tr>
+                    <td class="text-center"><a href="{% url 'eikan:team_detail' p.game_id.team_id.pk %}">{{ p.game_id }}</a>
+                    </td>
+                    <td class="text-center"><a
+                            href="{% url 'eikan:game_detail' p.game_id.pk %}">{{ p.game_id.get_competition_type_display }}{{ p.game_id.get_competiton_round_display|cut:"練習試合"}}</a>
+                    </td>
+                    <td class="text-center">{{ p.games_started|yesno:"先発,リリーフ" }}</td>
+                    <td>{{ p.innings_pitched }}</td>
+                    <td>{{ p.number_of_pitch }}</td>
+                    <td>{{ p.total_batters_faced }}</td>
+                    <td>{{ p.hit }}</td>
+                    <td>{{ p.strike_out }}</td>
+                    <td>{{ p.bb_hbp }}</td>
+                    <td>{{ p.run }}</td>
+                    <td>{{ p.earned_run }}</td>
+                    <td>{{ p.wild_pitch }}</td>
+                    <td>{{ p.home_run }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td class="text-center">データなし</td>
+                    <td class="text-center">-</td>
+                    <td class="text-center">-</td>
+                    <td class="text-center">-</td>
+                    <td class="text-center">-</td>
+                    <td class="text-center">-</td>
+                    <td class="text-center">-</td>
+                    <td class="text-center">-</td>
+                    <td class="text-center">-</td>
+                    <td class="text-center">-</td>
+                    <td class="text-center">-</td>
+                    <td class="text-center">-</td>
+                    <td class="text-center">-</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
-<hr class="mt-5 mb-5">
+    <hr class="mt-5 mb-5">
 {% endif %}
 <h3 class="mt-2">打者成績</h3>
 <table class="table table-bordered table-hover table-sm table-responsive-lg text-nowrap">
@@ -264,43 +250,43 @@
             <td>{{ fielder_total_results.p_s }}</td>
         </tr>
         {% for fielder_result in fielder_by_year_results %}
-        <tr>
-            <td>
-                {% if players.admission_year == fielder_result.year %}
-                １年
-                {% elif players.admission_year|add:1 == fielder_result.year %}
-                ２年
-                {% else %}
-                ３年
-                {% endif %}
-            </td>
-            <td>{{ fielder_result.data.at_bat|default:"0" }}</td>
-            <td>{{ fielder_result.data.run|default:"0" }}</td>
-            <td>{{ fielder_result.data.hit|default:"0" }}</td>
-            <td>{{ fielder_result.data.two_base|default:"0" }}</td>
-            <td>{{ fielder_result.data.three_base|default:"0" }}</td>
-            <td>{{ fielder_result.data.home_run|default:"0" }}</td>
-            <td>{{ fielder_result.data.run_batted_in|default:"0" }}</td>
-            <td>{{ fielder_result.data.strike_out|default:"0" }}</td>
-            <td>{{ fielder_result.data.bb_hbp|default:"0" }}</td>
-            <td>{{ fielder_result.data.sacrifice_bunt|default:"0" }}</td>
-            <td>{{ fielder_result.data.stolen_base|default:"0" }}</td>
-            <td>{{ fielder_result.data.grounded_into_double_play|default:"0" }}</td>
-            <td>{{ fielder_result.data.error|default:"0" }}</td>
-            <td>{{ fielder_result.data.total_bases|default:"0" }}</td>
-            <td>{{ fielder_result.data.ops|floatformat:"3"|default:"0.000" }}</td>
-            <td>{{ fielder_result.data.slg|floatformat:"3"|default:"0.000" }}</td>
-            <td>{{ fielder_result.data.obp|floatformat:"3"|default:"0.000" }}</td>
-            <td>{{ fielder_result.data.br|floatformat:"1"|default:"0.0" }}</td>
-            <td>{{ fielder_result.data.woba|floatformat:"3"|default:"0.000" }}</td>
-            <td>{{ fielder_result.data.gpa|floatformat:"3"|default:"0.000" }}</td>
-            <td>{{ fielder_result.data.batting_average|floatformat:"3"|default:"0.000" }}</td>
-            <td>{{ fielder_result.data.bbhp_k|floatformat:"3"|default:"0.000" }}</td>
-            <td>{{ fielder_result.data.bbhp_percent|floatformat:"3"|default:"0.000" }}</td>
-            <td>{{ fielder_result.data.isod|floatformat:"3"|default:"0.000" }}</td>
-            <td>{{ fielder_result.data.isop|floatformat:"3"|default:"0.000" }}</td>
-            <td>{{ fielder_result.data.p_s|floatformat:"3"|default:"0.000" }}</td>
-        </tr>
+            <tr>
+                <td>
+                    {% if players.admission_year == fielder_result.year %}
+                        １年
+                    {% elif players.admission_year|add:1 == fielder_result.year %}
+                        ２年
+                    {% else %}
+                        ３年
+                    {% endif %}
+                </td>
+                <td>{{ fielder_result.data.at_bat|default:"0" }}</td>
+                <td>{{ fielder_result.data.run|default:"0" }}</td>
+                <td>{{ fielder_result.data.hit|default:"0" }}</td>
+                <td>{{ fielder_result.data.two_base|default:"0" }}</td>
+                <td>{{ fielder_result.data.three_base|default:"0" }}</td>
+                <td>{{ fielder_result.data.home_run|default:"0" }}</td>
+                <td>{{ fielder_result.data.run_batted_in|default:"0" }}</td>
+                <td>{{ fielder_result.data.strike_out|default:"0" }}</td>
+                <td>{{ fielder_result.data.bb_hbp|default:"0" }}</td>
+                <td>{{ fielder_result.data.sacrifice_bunt|default:"0" }}</td>
+                <td>{{ fielder_result.data.stolen_base|default:"0" }}</td>
+                <td>{{ fielder_result.data.grounded_into_double_play|default:"0" }}</td>
+                <td>{{ fielder_result.data.error|default:"0" }}</td>
+                <td>{{ fielder_result.data.total_bases|default:"0" }}</td>
+                <td>{{ fielder_result.data.ops|floatformat:"3"|default:"0.000" }}</td>
+                <td>{{ fielder_result.data.slg|floatformat:"3"|default:"0.000" }}</td>
+                <td>{{ fielder_result.data.obp|floatformat:"3"|default:"0.000" }}</td>
+                <td>{{ fielder_result.data.br|floatformat:"1"|default:"0.0" }}</td>
+                <td>{{ fielder_result.data.woba|floatformat:"3"|default:"0.000" }}</td>
+                <td>{{ fielder_result.data.gpa|floatformat:"3"|default:"0.000" }}</td>
+                <td>{{ fielder_result.data.batting_average|floatformat:"3"|default:"0.000" }}</td>
+                <td>{{ fielder_result.data.bbhp_k|floatformat:"3"|default:"0.000" }}</td>
+                <td>{{ fielder_result.data.bbhp_percent|floatformat:"3"|default:"0.000" }}</td>
+                <td>{{ fielder_result.data.isod|floatformat:"3"|default:"0.000" }}</td>
+                <td>{{ fielder_result.data.isop|floatformat:"3"|default:"0.000" }}</td>
+                <td>{{ fielder_result.data.p_s|floatformat:"3"|default:"0.000" }}</td>
+            </tr>
         {% endfor %}
     </tbody>
 </table>
@@ -328,44 +314,44 @@
     </thead>
     <tbody class="text-right">
         {% for f in fielder_results %}
-        <tr>
-            <td class="text-center"><a href="{% url 'eikan:team_detail' f.game_id.team_id.pk %}">{{ f.game_id }}</a>
-            </td>
-            <td class="text-center"><a
-                    href="{% url 'eikan:game_detail' f.game_id.pk %}">{{ f.game_id.get_competition_type_display }}{{ f.game_id.get_competiton_round_display|cut:"練習試合"}}</a>
-            </td>
-            <td>{{ f.at_bat }}</td>
-            <td>{{ f.run }}</td>
-            <td>{{ f.hit }}</td>
-            <td>{{ f.two_base }}</td>
-            <td>{{ f.three_base }}</td>
-            <td>{{ f.home_run }}</td>
-            <td>{{ f.run_batted_in }}</td>
-            <td>{{ f.strike_out }}</td>
-            <td>{{ f.bb_hbp }}</td>
-            <td>{{ f.sacrifice_bunt }}</td>
-            <td>{{ f.stolen_base }}</td>
-            <td>{{ f.grounded_into_double_play }}</td>
-            <td>{{ f.error }}</td>
-        </tr>
+            <tr>
+                <td class="text-center"><a href="{% url 'eikan:team_detail' f.game_id.team_id.pk %}">{{ f.game_id }}</a>
+                </td>
+                <td class="text-center"><a
+                        href="{% url 'eikan:game_detail' f.game_id.pk %}">{{ f.game_id.get_competition_type_display }}{{ f.game_id.get_competiton_round_display|cut:"練習試合"}}</a>
+                </td>
+                <td>{{ f.at_bat }}</td>
+                <td>{{ f.run }}</td>
+                <td>{{ f.hit }}</td>
+                <td>{{ f.two_base }}</td>
+                <td>{{ f.three_base }}</td>
+                <td>{{ f.home_run }}</td>
+                <td>{{ f.run_batted_in }}</td>
+                <td>{{ f.strike_out }}</td>
+                <td>{{ f.bb_hbp }}</td>
+                <td>{{ f.sacrifice_bunt }}</td>
+                <td>{{ f.stolen_base }}</td>
+                <td>{{ f.grounded_into_double_play }}</td>
+                <td>{{ f.error }}</td>
+            </tr>
         {% empty %}
-        <tr>
-            <td class="text-center">データなし</td>
-            <td class="text-center">-</td>
-            <td class="text-center">-</td>
-            <td class="text-center">-</td>
-            <td class="text-center">-</td>
-            <td class="text-center">-</td>
-            <td class="text-center">-</td>
-            <td class="text-center">-</td>
-            <td class="text-center">-</td>
-            <td class="text-center">-</td>
-            <td class="text-center">-</td>
-            <td class="text-center">-</td>
-            <td class="text-center">-</td>
-            <td class="text-center">-</td>
-            <td class="text-center">-</td>
-        </tr>
+            <tr>
+                <td class="text-center">データなし</td>
+                <td class="text-center">-</td>
+                <td class="text-center">-</td>
+                <td class="text-center">-</td>
+                <td class="text-center">-</td>
+                <td class="text-center">-</td>
+                <td class="text-center">-</td>
+                <td class="text-center">-</td>
+                <td class="text-center">-</td>
+                <td class="text-center">-</td>
+                <td class="text-center">-</td>
+                <td class="text-center">-</td>
+                <td class="text-center">-</td>
+                <td class="text-center">-</td>
+                <td class="text-center">-</td>
+            </tr>
         {% endfor %}
     </tbody>
 </table>

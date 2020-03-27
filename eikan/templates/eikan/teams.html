@@ -26,11 +26,7 @@
             </thead>
             <tbody class="text-right">
                 {% for ttr in team_total_results %}
-                    {% if ttr.is_to_win %}
-                    <tr class="table-danger">
-                    {% else %}
-                    <tr>
-                    {% endif %}
+                    <tr class="{{ ttr.is_to_win|yesno:'table-danger,' }}">
                         <th class="text-center"><a href="{% url 'eikan:team_detail' ttr.team_id.pk %}">{{ ttr.team_id }}</a></th>
                         <td>{{ ttr.rank|default:"未" }}</td>
                         <td>{{ ttr.total_win }}</td>
@@ -46,11 +42,7 @@
                         <td>{{ ttr.der }}</td>
                         <td>{{ ttr.team_id.get_training_policy_display }}</td>
                         <td>{{ ttr.team_id.draft_nomination }}</td>
-                        <td class="text-left">
-                        {% if ttr.team_id.remark %}
-                            {{ ttr.team_id.remark }}    
-                        {% endif %}
-                        </td>
+                        <td class="text-left">{{ ttr.team_id.remark|default:"" }}</td>
                     </tr>
                 {% endfor %}
             </tbody>

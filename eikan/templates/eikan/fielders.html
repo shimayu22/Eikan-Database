@@ -40,18 +40,10 @@
             <tr>
                 <th><a href="{% url 'eikan:player_detail' ftr.player_id.pk %}">{{ ftr.player_id }}</a></th>
                 <td class="text-left">
-                    {% if ftr.player_id.is_ob %}
-                        OB 
-                    {% endif %} 
-                    {% if ftr.player_id.is_active %}
-                        現役 
-                    {% endif %} 
-                    {% if ftr.player_id.is_genius %}
-                        天才 
-                    {% endif %} 
-                    {% if ftr.player_id.remark %}
-                        {{ ftr.player_id.remark }}
-                    {% endif %}
+                    {{ ftr.player_id.is_ob|yesno:"[OB]," }}
+                    {{ ftr.player_id.is_active|yesno:"[現役]," }}
+                    {{ ftr.player_id.is_genius|yesno:"[天才]," }}
+                    {{ ftr.player_id.remark|default:"" }}
                 </td>
                 <td>{{ ftr.ops }}</td>
                 <td>{{ ftr.slg }}</td>
@@ -85,9 +77,9 @@
     </table>
     {% include "./_paginate.html" %}
 {% else %}
-<div class="text-center">
-    <h4>（登録データが）ないです</h4>
-    <p><a href="{% url 'admin:eikan_players_add' %}">管理画面</a>からデータを登録してください。</p>
-</div>
+    <div class="text-center">
+        <h4>（登録データが）ないです</h4>
+        <p><a href="{% url 'admin:eikan_players_add' %}">管理画面</a>からデータを登録してください。</p>
+    </div>
 {% endif %}
 {% endblock %}

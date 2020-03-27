@@ -19,8 +19,11 @@ class IndexView(TemplateView):
         get_list_or_404(Players)
 
         ctx = super().get_context_data(**kwargs)
+        # 現在のチームを取得
         ctx['team_total_result'] = TeamTotalResults.objects.select_related(
             'team_id').latest('pk')
+
+        # 現在のチームの選手を取得
         start_year = (
             ctx['team_total_result'].team_id.year -
             2) if ctx['team_total_result'].team_id.period == 1 else (
@@ -37,6 +40,15 @@ class IndexView(TemplateView):
             'player_id').filter(player_id__in=players).order_by('-ops', '-slg', 'player_id')
         ctx['pitcher_total_results'] = PitcherTotalResults.objects.select_related(
             'player_id').filter(player_id__in=pitchers).order_by('player_id')
+
+        # 一つ前の公式戦に登板した投手を取得
+        previous_game = Games.objects.select_related('team_id').filter(
+            team_id=ctx['team_total_result'], competition_type__gte=1)
+        if previous_game.exists():
+            ctx['previous_game_pitcher'] = PitcherResults.objects.select_related(
+                'game_id').get(game_id=previous_game.latest('competiton_round'))
+        else:
+            ctx['previous_game_pitcher'] = ""
 
         return ctx
 

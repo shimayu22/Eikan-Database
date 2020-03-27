@@ -45,12 +45,11 @@ class IndexView(TemplateView):
         previous_game = Games.objects.select_related('team_id').filter(
             team_id=ctx['team_total_result'].id, competition_type__gte=1)
         if previous_game.exists():
-            previous_game_pitchers = PitcherResults.objects.select_related('game_id').filter(
-                game_id=previous_game.latest('competiton_round')).order_by('player_id')
+            previous_game_pitchers = PitcherResults.objects.select_related(
+                'game_id').filter(game_id=previous_game.latest('pk')).order_by('player_id')
             for pts in ctx['pitcher_total_results']:
                 for pgp in previous_game_pitchers:
                     if pts.player_id == pgp.player_id:
-                        pts.games_started = pgp.games_started
                         pts.innings_pitched = pgp.innings_pitched
                         break
 

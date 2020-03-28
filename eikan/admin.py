@@ -149,6 +149,7 @@ class PitcherTotalResultsAdmin(admin.ModelAdmin):
         'earned_run',
         'wild_pitch',
         'home_run',
+        'previous_game_pitched',
     )
 
 
@@ -181,6 +182,7 @@ def new_player_results(sender, instance, created, **kwargs):
 def update_teams_total_results_updated_at(sender, instance, created, **kwargs):
     if created:
         TeamTotalResults.objects.get(team_id=instance.team_id).save()
+        p.PitcherSabrFormatter().update_previous_game_pitched()
     else:
         t.TeamSabrFormatter().update_results(instance.team_id)
 

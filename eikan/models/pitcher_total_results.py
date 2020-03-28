@@ -195,6 +195,12 @@ class PitcherTotalResults(models.Model):
         editable=False,
     )
 
+    previous_game_pitched = models.PositiveIntegerField(
+        verbose_name="前回登板",
+        default=0,
+        editable=False,
+    )
+
     created_at = models.DateTimeField(
         verbose_name="登録日",
         auto_now_add=True,

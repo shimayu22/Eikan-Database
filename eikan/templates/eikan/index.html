@@ -163,14 +163,15 @@
                     {{ ptr.player_id.is_genius|yesno:"[天才], " }}
                     {{ ptr.player_id.remark|default:"" }}
                 </td>
-                {% if ptr.innings_pitched > 5 %}
-                    <td class="bg-danger">
-                {% elif ptr.innings_pitched > 2 %}
-                    <td class="bg-warning">
+                {% if ptr.previous_game_pitched == 1 %}
+                    <td class="bg-danger"></td>
+                {% elif ptr.previous_game_pitched == 2 %}
+                    <td class="bg-warning"></td>
+                {% elif ptr.previous_game_pitched == 3 %}
+                    <td class="bg-primary"></td>
                 {% else %}
-                    <td class="bg-primary">
+                    <td></td>                    
                 {% endif %}
-                </td>
                 <td>{{ ptr.games }}</td>
                 <td>{{ ptr.games_started }}</td>
                 <td>{{ ptr.innings_pitched }}</td>

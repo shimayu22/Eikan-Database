@@ -1,5 +1,5 @@
 from django.db import models
-from eikan.models import PitcherResults, PitcherTotalResults
+from eikan.models import PitcherResults, PitcherTotalResults, Players, Teams
 from eikan.calculate_sabr import CalculatePitcherSabr as p
 
 
@@ -23,6 +23,7 @@ class PitcherSabrFormatter:
         pitcher_total_results.earned_run = pitcher_results['earned_run__sum']
         pitcher_total_results.wild_pitch = pitcher_results['wild_pitch__sum']
         pitcher_total_results.home_run = pitcher_results['home_run__sum']
+        pitcher_total_results.previous_game_pitched = pitcher_results['previous_game_pitched']
 
         sum_innings_pitched = p.innings_conversion_for_calculate(
             self,
@@ -115,6 +116,18 @@ class PitcherSabrFormatter:
         pitcher_results['games_started'] = PitcherResults.objects.select_related(
             'player_id').filter(player_id=self.player_id, games_started=True).count()
 
+        previous_game_pitcher_result = PitcherResults.objects.select_related(
+            'player_id').filter(player_id=self.player_id).latest('pk').innings_pitched
+
+        if previous_game_pitcher_result > 4:
+            pitcher_results['previous_game_pitched'] = 1
+        elif previous_game_pitcher_result > 2:
+            pitcher_results['previous_game_pitched'] = 2
+        elif previous_game_pitcher_result > 0:
+            pitcher_results['previous_game_pitched'] = 3
+        else:
+            pitcher_results['previous_game_pitched'] = 0
+
         return pitcher_results
 
     def tally_from_player_results_by_year(self):
@@ -142,6 +155,7 @@ class PitcherSabrFormatter:
                 player_id=self.player_id,
                 game_id__team_id__year=pi['game_id__team_id__year'],
                 games_started=True).count()
+            pi['previous_game_pitched'] = 0
 
         return pitcher_results
 
@@ -172,6 +186,7 @@ class PitcherSabrFormatter:
                 player_id=pi['player_id'],
                 game_id__team_id=self.team_id,
                 games_started=True).count()
+            pi['previous_game_pitched'] = 0
 
         return pitcher_results
 
@@ -181,6 +196,15 @@ class PitcherSabrFormatter:
         pitcher_results = self.tally_from_player_all_results()
         p = self.create_pitcher_total_results(pitcher_results)
         p.save()
+    
+    def update_previous_game_pitched(self):
+        year = Teams.objects.latest('pk').year - 2
+        pitchers = Players.objects.filter(is_pitcher=True, admission_year__gte=year)
+        
+        pitcher_total_results = PitcherTotalResults.objects.select_related('player_id').filter(player_id__in=pitchers)
+        for ptr in pitcher_total_results:
+            ptr.previous_game_pitched = 0
+            ptr.save()
 
     def create_sabr_from_results_by_year(self, player_id):
         # 投手詳細画面用にデータを取得するメソッド

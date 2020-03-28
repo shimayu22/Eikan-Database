@@ -41,13 +41,6 @@ class IndexView(TemplateView):
         ctx['pitcher_total_results'] = PitcherTotalResults.objects.select_related(
             'player_id').filter(player_id__in=pitchers).order_by('player_id')
 
-        # 一つ前の公式戦に登板した投手を取得
-        previous_game = Games.objects.select_related('team_id').filter(
-            team_id=ctx['team_total_result'].id, competition_type__gte=1)
-        if previous_game.exists():
-            ctx['previous_game_pitchers'] = PitcherResults.objects.select_related(
-                'game_id').filter(game_id=previous_game.latest('pk')).order_by('player_id')
-
         return ctx
 
 

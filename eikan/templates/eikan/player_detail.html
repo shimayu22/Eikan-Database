@@ -10,18 +10,10 @@
     <div class="col">{{ players.get_position_display }}</div>
     <div class="col text-right">備考：</div>
     <div class="col">
-        {% if players.is_ob %}
-        【OB】
-        {% endif %}
-        {% if players.is_active %}
-        【現役】
-        {% endif %}
-        {% if players.is_genius %}
-        【天才】
-        {% endif %}
-        {% if players.remark %}
-        {{ players.remark }}
-        {% endif %}
+        {{ players.is_ob|yesno:"[OB], " }}
+        {{ players.is_active|yesno:"[現役], " }}
+        {{ players.is_genius|yesno:"[天才], " }}
+        {{ players.remark|default:"" }}
     </div>
 </div>
 <hr class="mb-5">
@@ -156,15 +148,9 @@
             <td class="text-center"><a href="{% url 'eikan:team_detail' p.game_id.team_id.pk %}">{{ p.game_id }}</a>
             </td>
             <td class="text-center"><a
-                    href="{% url 'eikan:game_detail' p.game_id.pk %}">{{ p.game_id.get_competition_type_display }}{{ p.game_id.get_competiton_round_display|cut:"練習試合"}}</a>
+                    href="{% url 'eikan:game_detail' p.game_id.pk %}">{{ p.game_id.get_competition_type_display }}{{ p.game_id.get_competition_round_display|cut:"練習試合"}}</a>
             </td>
-            <td class="text-center">
-                {% if p.games_started %}
-                先発
-                {% else %}
-                リリーフ
-                {% endif %}
-            </td>
+            <td class="text-center">{{ p.games_started|yesno:"先発,リリーフ" }}</td>
             <td>{{ p.innings_pitched }}</td>
             <td>{{ p.number_of_pitch }}</td>
             <td>{{ p.total_batters_faced }}</td>
@@ -332,7 +318,7 @@
             <td class="text-center"><a href="{% url 'eikan:team_detail' f.game_id.team_id.pk %}">{{ f.game_id }}</a>
             </td>
             <td class="text-center"><a
-                    href="{% url 'eikan:game_detail' f.game_id.pk %}">{{ f.game_id.get_competition_type_display }}{{ f.game_id.get_competiton_round_display|cut:"練習試合"}}</a>
+                    href="{% url 'eikan:game_detail' f.game_id.pk %}">{{ f.game_id.get_competition_type_display }}{{ f.game_id.get_competition_round_display|cut:"練習試合"}}</a>
             </td>
             <td>{{ f.at_bat }}</td>
             <td>{{ f.run }}</td>

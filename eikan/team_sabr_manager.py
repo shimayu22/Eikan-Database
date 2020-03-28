@@ -27,7 +27,7 @@ class TeamSabrFormatter:
         team_total_results.rank = games_results['update_rank']
 
         team_total_results.batting_average = f.batting_average(
-            self, 
+            self,
             fielder_results['at_bat__sum'],
             fielder_results['hit__sum'])
         team_obp = f.on_base_percentage(
@@ -42,17 +42,17 @@ class TeamSabrFormatter:
             fielder_results['three_base__sum'],
             fielder_results['home_run__sum'],)
         team_slg = f.slugging_percentage(
-            self, 
+            self,
             fielder_results['at_bat__sum'], team_tb)
         team_total_results.ops = f.on_base_plus_slugging(
-            self, 
+            self,
             team_obp, team_slg)
-        
+
         total_sum_pi = (pitcher_results['innings_pitched__sum'] + (
             pitcher_results['innings_pitched_fraction__sum'] / 3)) * 3
         team_total_results.era = p.earned_runs_average(
-            self, 
-            total_sum_pi, 
+            self,
+            total_sum_pi,
             pitcher_results['earned_run__sum'])
         team_total_results.der = t.team_der(
             self,
@@ -67,7 +67,7 @@ class TeamSabrFormatter:
             pass
         else:
             g = self.games.latest('pk')
-            if g.competition_type > 3 and g.competiton_round == 8 and g.result == 1:
+            if g.competition_type > 3 and g.competition_round == 8 and g.result == 1:
                 team_total_results.is_to_win = True
 
         return team_total_results
@@ -81,9 +81,11 @@ class TeamSabrFormatter:
             models.Sum('score'), models.Sum('run'))
         games_results['score'] = total_score['score__sum']
         games_results['run'] = total_score['run__sum']
-        games_results['score_difference'] = games_results['score'] - games_results['run']
-        games_results['update_rank'] = ["-", "弱小", "そこそこ", "中堅", "強豪", "名門"][self.games.latest('pk').rank]
-        
+        games_results['score_difference'] = games_results['score'] - \
+            games_results['run']
+        games_results['update_rank'] = ["-", "弱小", "そこそこ",
+                                        "中堅", "強豪", "名門"][self.games.latest('pk').rank]
+
         return games_results
 
     def tally_from_fielder_results(self):
@@ -96,7 +98,7 @@ class TeamSabrFormatter:
             models.Sum('home_run'),
             models.Sum('bb_hbp'),
             models.Sum('error'))
-        
+
         return fielder_results
 
     def tally_from_pitcher_results(self):
@@ -110,7 +112,7 @@ class TeamSabrFormatter:
             models.Sum('bb_hbp'),
             models.Sum('strike_out'),
             models.Sum('home_run'))
-        
+
         return pitcher_results
 
     def create_sabr_from_results_of_team(self, team_id):
@@ -125,7 +127,8 @@ class TeamSabrFormatter:
             games_results,
             fielder_results,
             pitcher_result,
-            TeamTotalResults.objects.select_related('team_id').get(team_id=self.team_id))
+            TeamTotalResults.objects.select_related('team_id').get(
+                team_id=self.team_id))
 
         return team_total_results
 

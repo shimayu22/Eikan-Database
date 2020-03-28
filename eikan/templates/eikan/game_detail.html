@@ -5,7 +5,7 @@
     <div class="col text-right">チーム：</div>
     <div class="col">{{ games.team_id }}</div>
     <div class="col text-right">大会：</div>
-    <div class="col">{{ games.get_competition_type_display }}{{ games.get_competiton_round_display|cut:"練習試合" }}</div>
+    <div class="col">{{ games.get_competition_type_display }}{{ games.get_competition_round_display|cut:"練習試合" }}</div>
     <div class="col text-right">勝敗：</div>
     <div class="col">{{ games.get_result_display }}</div>
     <div class="col text-right">スコア：</div>
@@ -41,18 +41,10 @@
             <th class="text-center"><a href="{% url 'eikan:player_detail' fr.player_id.pk %}">{{ fr.player_id }}</a>
             </th>
             <td class="text-left">
-                {% if fr.player_id.is_ob %}
-                OB
-                {% endif %}
-                {% if fr.player_id.is_active %}
-                現役
-                {% endif %}
-                {% if fr.player_id.is_genius %}
-                天才
-                {% endif %}
-                {% if fr.player_id.remark %}
-                {{ fr.player_id.remark }}
-                {% endif %}
+                {{ fr.player_id.is_ob|yesno:"[OB], " }}
+                {{ fr.player_id.is_active|yesno:"[現役], " }}
+                {{ fr.player_id.is_genius|yesno:"[天才], " }}
+                {{ fr.player_id.remark|default:"" }}
             </td>
             <td>{{ fr.at_bat }}</td>
             <td>{{ fr.run }}</td>
@@ -96,27 +88,13 @@
         <tr>
             <th class="text-center"><a href="{% url 'eikan:player_detail' pr.player_id.pk %}">{{ pr.player_id }}</a>
             </th>
-            <td class="text-center">
-                {% if pr.player_id.is_ob %}
-                OB
-                {% endif %}
-                {% if pr.player_id.is_active %}
-                現役
-                {% endif %}
-                {% if pr.player_id.is_genius %}
-                天才
-                {% endif %}
-                {% if pr.player_id.remark %}
-                {{ pr.player_id.remark }}
-                {% endif %}
+            <td class="text-left">
+                {{ pr.player_id.is_ob|yesno:"[OB], " }}
+                {{ pr.player_id.is_active|yesno:"[現役], " }}
+                {{ pr.player_id.is_genius|yesno:"[天才], " }}
+                {{ pr.player_id.remark|default:"" }}
             </td>
-            <td class="text-center">
-                {% if pr.games_started %}
-                先発
-                {% else %}
-                リリーフ
-                {% endif %}
-            </td>
+            <td class="text-center">{{ p.games_started|yesno:"先発,リリーフ" }}</td>
             <td class="text-center">{{ pr.innings_pitched }}回</td>
             <td class="text-center">{{ pr.number_of_pitch }}球</td>
             <td>{{ pr.total_batters_faced }}</td>

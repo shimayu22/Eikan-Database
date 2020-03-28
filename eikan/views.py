@@ -19,8 +19,11 @@ class IndexView(TemplateView):
         get_list_or_404(Players)
 
         ctx = super().get_context_data(**kwargs)
+        # 現在のチームを取得
         ctx['team_total_result'] = TeamTotalResults.objects.select_related(
             'team_id').latest('pk')
+
+        # 現在のチームの選手を取得
         start_year = (
             ctx['team_total_result'].team_id.year -
             2) if ctx['team_total_result'].team_id.period == 1 else (

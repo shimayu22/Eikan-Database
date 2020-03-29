@@ -195,9 +195,9 @@ class PitcherTotalResults(models.Model):
         editable=False,
     )
 
-    previous_game_pitched = models.PositiveIntegerField(
+    previous_game_pitched = models.FloatField(
         verbose_name="前回登板",
-        default=0,
+        default=0.0,
         editable=False,
     )
 

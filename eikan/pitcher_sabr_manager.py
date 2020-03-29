@@ -1,5 +1,5 @@
 from django.db import models
-from eikan.models import PitcherResults, PitcherTotalResults, Players, Teams
+from eikan.models import PitcherResults, PitcherTotalResults, Players, Teams, Games
 from eikan.calculate_sabr import CalculatePitcherSabr as p
 
 
@@ -113,18 +113,18 @@ class PitcherSabrFormatter:
             models.Sum('wild_pitch'),
             models.Sum('home_run'))
 
+        # PitcherResultsは必ず存在するのでチェックしない
         pitcher_results['games_started'] = PitcherResults.objects.select_related(
             'player_id').filter(player_id=self.player_id, games_started=True).count()
-
-        previous_game_pitcher_result = PitcherResults.objects.select_related(
-            'player_id').filter(player_id=self.player_id).latest('pk').innings_pitched
-
-        if previous_game_pitcher_result > 4:
-            pitcher_results['previous_game_pitched'] = 1
-        elif previous_game_pitcher_result > 2:
-            pitcher_results['previous_game_pitched'] = 2
-        elif previous_game_pitcher_result > 0:
-            pitcher_results['previous_game_pitched'] = 3
+                
+        # GamesとPitcherResultsは必ず存在するのでチェックしない
+        # 練習試合の場合は前の試合を気にしない
+        if Games.objects.latest('pk').competition_type > 1:
+            pr = PitcherResults.objects.select_related('player_id').filter(player_id=self.player_id).latest('pk')
+            pitcher_results['previous_game_pitched'] = p.innings_conversion_for_display(
+                self,
+                pr.innings_pitched,
+                pr.innings_pitched_fraction)
         else:
             pitcher_results['previous_game_pitched'] = 0
 
@@ -204,7 +204,9 @@ class PitcherSabrFormatter:
         pitcher_total_results = PitcherTotalResults.objects.select_related('player_id').filter(player_id__in=pitchers)
         for ptr in pitcher_total_results:
             ptr.previous_game_pitched = 0
-            ptr.save()
+        
+        # 一括でUpdate(bulk_updateは通知がいかない)
+        PitcherTotalResults.objects.bulk_update(pitcher_total_results, fields=["previous_game_pitched"])
 
     def create_sabr_from_results_by_year(self, player_id):
         # 投手詳細画面用にデータを取得するメソッド

@@ -9,16 +9,16 @@
     <div class="col">指名：{{ teams.draft_nomination }}人</div>
     <div class="col">戦績：
         {% if game_latest.competition_type != "県大会" and game_latest.get_competition_round_display == "決勝" and game_latest.get_result_display == "勝" %}
-        {{ game_latest.get_competition_type_display}}優勝
+            {{ game_latest.get_competition_type_display}}優勝
         {% else %}
-        {{ game_latest.get_competition_type_display|default:"なし" }}{{ game_latest.get_competition_round_display }}
+            {{ game_latest.get_competition_type_display|default:"なし" }}{{ game_latest.get_competition_round_display }}
         {% endif %}
     </div>
     <div class="col">備考：{{ players.remark|default:"" }}</div>
 </div>
 <hr class="mb-5">
 <h3 class="mt-2">チーム成績</h3>
-<table class="table table-bordered table-hover table-sm table-responsive-lg text-nowrap">
+<table class="table table-bordered table-hover table-sm table-responsive-md text-nowrap">
     <thead class="thead-light text-center">
         <tr>
             <th>年度:期間:地区</th>
@@ -59,7 +59,7 @@
 
 <hr class="mt-5 mb-5">
 <h3 class="mt-2">試合結果</h3>
-<table class="table table-bordered table-hover table-sm table-responsive-lg text-nowrap">
+<table class="table table-bordered table-hover table-sm text-nowrap">
     <thead class="thead-light text-center">
         <tr>
             <th>試合</th>

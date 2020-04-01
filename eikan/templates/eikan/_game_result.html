@@ -15,7 +15,11 @@
         {% for g in games %}
         <tr>
             {% if pg == "games" %}
-                <th><a href="{% url 'eikan:team_detail' g.team_id.pk %}">{{ g.team_id }}</a></th>
+                <th>
+                {% ifchanged %}
+                    <a href="{% url 'eikan:team_detail' g.team_id.pk %}">{{ g.team_id }}</a>
+                {% endifchanged %}
+                </th>
             {% endif %}
             <th><a
                     href="{% url 'eikan:game_detail' g.pk %}">{{ g.get_competition_type_display }}{{ g.get_competition_round_display|cut:"練習試合" }}</a>

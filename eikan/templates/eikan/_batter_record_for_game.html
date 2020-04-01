@@ -22,7 +22,10 @@
     <tbody class="text-right">
         {% for f in fielder_results %}
         <tr>
-            <td class="text-center"><a href="{% url 'eikan:team_detail' f.game_id.team_id.pk %}">{{ f.game_id }}</a>
+            <td class="text-center">
+            {% ifchanged %}
+                <a href="{% url 'eikan:team_detail' f.game_id.team_id.pk %}">{{ f.game_id }}</a>
+            {% endifchanged %}
             </td>
             <td class="text-center"><a
                     href="{% url 'eikan:game_detail' f.game_id.pk %}">{{ f.game_id.get_competition_type_display }}{{ f.game_id.get_competition_round_display|cut:"練習試合"}}</a>

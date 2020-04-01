@@ -20,7 +20,10 @@
     <tbody class="text-right">
         {% for p in pitcher_results %}
         <tr>
-            <td class="text-center"><a href="{% url 'eikan:team_detail' p.game_id.team_id.pk %}">{{ p.game_id }}</a>
+            <td class="text-center">
+            {% ifchanged %}
+                <a href="{% url 'eikan:team_detail' p.game_id.team_id.pk %}">{{ p.game_id }}</a>
+            {% endifchanged %}
             </td>
             <td class="text-center"><a
                     href="{% url 'eikan:game_detail' p.game_id.pk %}">{{ p.game_id.get_competition_type_display }}{{ p.game_id.get_competition_round_display|cut:"練習試合"}}</a>

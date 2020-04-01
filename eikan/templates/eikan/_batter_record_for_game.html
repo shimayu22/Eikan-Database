@@ -2,8 +2,13 @@
 <table class="table table-bordered table-hover table-sm table-responsive-md text-nowrap">
     <thead class="thead-light text-center">
         <tr>
-            <th>チーム</th>
-            <th>試合</th>
+            {% if pg == "players" %}
+                <th>チーム</th>
+                <th>試合</th>
+            {% else %}
+                <th>Player</th>
+                <th>備考</th>
+            {% endif %}
             <th><abbr title="打数">AB</abbr></th>
             <th><abbr title="得点">R</abbr></th>
             <th><abbr title="安打">H</abbr></th>
@@ -22,14 +27,26 @@
     <tbody class="text-right">
         {% for f in fielder_results %}
         <tr>
-            <td class="text-center">
-            {% ifchanged %}
-                <a href="{% url 'eikan:team_detail' f.game_id.team_id.pk %}">{{ f.game_id }}</a>
-            {% endifchanged %}
-            </td>
-            <td class="text-center"><a
-                    href="{% url 'eikan:game_detail' f.game_id.pk %}">{{ f.game_id.get_competition_type_display }}{{ f.game_id.get_competition_round_display|cut:"練習試合"}}</a>
-            </td>
+            {% if pg == "players" %}
+                <td class="text-center">
+                {% ifchanged %}
+                    <a href="{% url 'eikan:team_detail' f.game_id.team_id.pk %}">{{ f.game_id }}</a>
+                {% endifchanged %}
+                </td>
+                <td class="text-center"><a
+                        href="{% url 'eikan:game_detail' f.game_id.pk %}">{{ f.game_id.get_competition_type_display }}{{ f.game_id.get_competition_round_display|cut:"練習試合"}}</a>
+                </td>
+            {% else %}
+                <th class="text-center">
+                    <a href="{% url 'eikan:player_detail' f.player_id.pk %}">{{ f.player_id }}</a>
+                </th>
+                <td class="text-left">
+                    {{ f.player_id.is_ob|yesno:"[OB], " }}
+                    {{ f.player_id.is_active|yesno:"[現役], " }}
+                    {{ f.player_id.is_genius|yesno:"[天才], " }}
+                    {{ f.player_id.remark|default:"" }}
+                </td>
+            {% endif %}
             <td>{{ f.at_bat }}</td>
             <td>{{ f.run }}</td>
             <td>{{ f.hit }}</td>

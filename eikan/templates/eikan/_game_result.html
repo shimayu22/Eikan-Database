@@ -1,0 +1,33 @@
+<h3 class="mt-2">試合一覧</h3>
+<table class="table table-bordered table-hover table-sm text-nowrap">
+    <thead class="thead-light text-center">
+        <tr>
+            {% if pg == "games" %}
+                <th>年度:期間:地区</th>
+            {% endif %}
+            <th>大会</th>
+            <th>勝敗</th>
+            <th>スコア</th>
+            <th>ランク</th>
+        </tr>
+    </thead>
+    <tbody class="text-center">
+        {% for g in games %}
+        <tr>
+            {% if pg == "games" %}
+                <th>
+                {% ifchanged %}
+                    <a href="{% url 'eikan:team_detail' g.team_id.pk %}">{{ g.team_id }}</a>
+                {% endifchanged %}
+                </th>
+            {% endif %}
+            <th><a
+                    href="{% url 'eikan:game_detail' g.pk %}">{{ g.get_competition_type_display }}{{ g.get_competition_round_display|cut:"練習試合" }}</a>
+            </th>
+            <td>{{ g.get_result_display }}</td>
+            <td>{{ g.score }} - {{ g.run }}</td>
+            <td>{{ g.get_rank_display }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

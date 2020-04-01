@@ -1,33 +1,10 @@
 {% extends './_base.html' %}
 {% block content %}
 <div class="container">
-    <h3 class="mt-2">試合一覧</h3>
     {% if games %}
-    <table class="table table-bordered table-hover table-sm text-nowrap">
-        <thead class="thead-light text-center">
-            <tr>
-                <th>年度:期間:地区</th>
-                <th>大会</th>
-                <th>勝敗</th>
-                <th>スコア</th>
-                <th>ランク</th>
-            </tr>
-        </thead>
-        <tbody class="text-center">
-            {% for g in games %}
-            <tr>
-                <th><a href="{% url 'eikan:team_detail' g.team_id.pk %}">{{ g.team_id }}</a></th>
-                <th><a
-                        href="{% url 'eikan:game_detail' g.pk %}">{{ g.get_competition_type_display }}{{ g.get_competition_round_display|cut:"練習試合" }}</a>
-                </th>
-                <td>{{ g.get_result_display }}</td>
-                <td>{{ g.score }} - {{ g.run }}</td>
-                <td>{{ g.get_rank_display }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% include "./_paginate.html" %}
+        {# 試合結果(games) #}
+        {% include "./_game_result.html" with pg="games" %}
+        {% include "./_paginate.html" %}
     {% else %}
     <div class="text-center">
         <h4>（登録データが）ないです</h4>

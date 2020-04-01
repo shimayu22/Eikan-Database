@@ -69,10 +69,10 @@ class TeamDetailView(DetailView):
         if g.exists():
             ctx['game_latest'] = g.latest('pk')
         # このチームで行った試合結果を取得する
-        ctx['fielder_results'] = f.FielderSabrFormatter(
+        ctx['fielder_total_results'] = f.FielderSabrFormatter(
         ).create_sabr_from_results_of_team(teams)
         # 投手編
-        ctx['pitcher_results'] = p.PitcherSabrFormatter(
+        ctx['pitcher_total_results'] = p.PitcherSabrFormatter(
         ).create_sabr_from_results_of_team(teams)
 
         return ctx

@@ -16,11 +16,11 @@
 <hr class="mb-5">
 
     {# 打者試合成績(fielder_results) #}
-    {% include "./_batter_record_for_game.html" %}
+    {% include "./_batter_record_for_game.html" with pg="games" %}
 
 <hr>
 
     {# 投手試合成績(fielder_results) #}
-    {% include "./_pitcher_record_for_game.html" %}
+    {% include "./_pitcher_record_for_game.html" with pg="games" %}
 
 {% endblock %}

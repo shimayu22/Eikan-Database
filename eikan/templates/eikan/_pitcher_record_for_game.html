@@ -2,8 +2,13 @@
 <table class="table table-bordered table-hover table-sm table-responsive-md text-nowrap">
     <thead class="thead-light text-center">
         <tr>
-            <th>チーム</th>
-            <th>試合</th>
+            {% if pg == "players" %}
+                <th>チーム</th>
+                <th>試合</th>
+            {% else %}
+                <th>Player</th>
+                <th>備考</th>
+            {% endif %}
             <th><abbr title="先発数">GS</abbr></th>
             <th><abbr title="投球回数">PI</abbr></th>
             <th><abbr title="投球数">NP</abbr></th>
@@ -20,14 +25,26 @@
     <tbody class="text-right">
         {% for p in pitcher_results %}
         <tr>
-            <td class="text-center">
-            {% ifchanged %}
-                <a href="{% url 'eikan:team_detail' p.game_id.team_id.pk %}">{{ p.game_id }}</a>
-            {% endifchanged %}
-            </td>
-            <td class="text-center"><a
-                    href="{% url 'eikan:game_detail' p.game_id.pk %}">{{ p.game_id.get_competition_type_display }}{{ p.game_id.get_competition_round_display|cut:"練習試合"}}</a>
-            </td>
+            {% if pg == "players" %}
+                <td class="text-center">
+                {% ifchanged %}
+                    <a href="{% url 'eikan:team_detail' p.game_id.team_id.pk %}">{{ p.game_id }}</a>
+                {% endifchanged %}
+                </td>
+                <td class="text-center"><a
+                        href="{% url 'eikan:game_detail' p.game_id.pk %}">{{ p.game_id.get_competition_type_display }}{{ p.game_id.get_competition_round_display|cut:"練習試合"}}</a>
+                </td>
+            {% else %}
+                <th class="text-center">
+                    <a href="{% url 'eikan:player_detail' p.player_id.pk %}">{{ p.player_id }}</a>
+                </th>
+                <td class="text-left">
+                    {{ p.player_id.is_ob|yesno:"[OB], " }}
+                    {{ p.player_id.is_active|yesno:"[現役], " }}
+                    {{ p.player_id.is_genius|yesno:"[天才], " }}
+                    {{ p.player_id.remark|default:"" }}
+                </td>
+            {% endif %}
             <td class="text-center">{{ p.games_started|yesno:"先発,リリーフ" }}</td>
             <td>{{ p.innings_pitched }}</td>
             <td>{{ p.number_of_pitch }}</td>

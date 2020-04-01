@@ -14,99 +14,13 @@
     <div class="col">{{ games.get_rank_display }}</div>
 </div>
 <hr class="mb-5">
-<h3 class="mt-2">打者成績</h3>
-<table class="table table-bordered table-hover table-sm table-responsive-lg text-nowrap">
-    <thead class="thead-light text-center">
-        <tr>
-            <th>Player</th>
-            <th>備考</th>
-            <th><abbr title="打数">AB</abbr></th>
-            <th><abbr title="得点">R</abbr></th>
-            <th><abbr title="安打">H</abbr></th>
-            <th><abbr title="二塁打">2B</abbr></th>
-            <th><abbr title="三塁打">3B</abbr></th>
-            <th><abbr title="本塁打">HR</abbr></th>
-            <th><abbr title="打点">RBI</abbr></th>
-            <th><abbr title="三振">SO</abbr></th>
-            <th><abbr title="四死球">BB</abbr></th>
-            <th><abbr title="犠打">SAC</abbr></th>
-            <th><abbr title="盗塁">SB</abbr></th>
-            <th><abbr title="併殺打">GDP</abbr></th>
-            <th><abbr title="エラー">ER</abbr></th>
-        </tr>
-    </thead>
-    <tbody class="text-right">
-        {% for fr in fielder_results %}
-        <tr>
-            <th class="text-center"><a href="{% url 'eikan:player_detail' fr.player_id.pk %}">{{ fr.player_id }}</a>
-            </th>
-            <td class="text-left">
-                {{ fr.player_id.is_ob|yesno:"[OB], " }}
-                {{ fr.player_id.is_active|yesno:"[現役], " }}
-                {{ fr.player_id.is_genius|yesno:"[天才], " }}
-                {{ fr.player_id.remark|default:"" }}
-            </td>
-            <td>{{ fr.at_bat }}</td>
-            <td>{{ fr.run }}</td>
-            <td>{{ fr.hit }}</td>
-            <td>{{ fr.two_base }}</td>
-            <td>{{ fr.three_base }}</td>
-            <td>{{ fr.home_run }}</td>
-            <td>{{ fr.run_batted_in }}</td>
-            <td>{{ fr.strike_out }}</td>
-            <td>{{ fr.bb_hbp }}</td>
-            <td>{{ fr.sacrifice_bunt }}</td>
-            <td>{{ fr.stolen_base }}</td>
-            <td>{{ fr.grounded_into_double_play }}</td>
-            <td>{{ fr.error }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+
+    {# 打者試合成績(fielder_results) #}
+    {% include "./_batter_record_for_game.html" %}
+
 <hr>
-<h3 class="mt-2">投手成績</h3>
-<table class="table table-bordered table-hover table-sm table-responsive-lg text-nowrap">
-    <thead class="thead-light text-center">
-        <tr>
-            <th>Player</th>
-            <th>備考</th>
-            <th><abbr title="登板">P</abbr></th>
-            <th><abbr title="投球回数">PI</abbr></th>
-            <th><abbr title="投球数">NP</abbr></th>
-            <th><abbr title="対戦打者">TBF</abbr></th>
-            <th><abbr title="被安打">H</abbr></th>
-            <th><abbr title="奪三振">SO</abbr></th>
-            <th><abbr title="与四死球">BBHP</abbr></th>
-            <th><abbr title="失点">R</abbr></th>
-            <th><abbr title="自責点">ER</abbr></th>
-            <th><abbr title="暴投">WP</abbr></th>
-            <th><abbr title="被本塁打">HR</abbr></th>
-        </tr>
-    </thead>
-    <tbody class="text-right">
-        {% for pr in pitcher_results %}
-        <tr>
-            <th class="text-center"><a href="{% url 'eikan:player_detail' pr.player_id.pk %}">{{ pr.player_id }}</a>
-            </th>
-            <td class="text-left">
-                {{ pr.player_id.is_ob|yesno:"[OB], " }}
-                {{ pr.player_id.is_active|yesno:"[現役], " }}
-                {{ pr.player_id.is_genius|yesno:"[天才], " }}
-                {{ pr.player_id.remark|default:"" }}
-            </td>
-            <td class="text-center">{{ p.games_started|yesno:"先発,リリーフ" }}</td>
-            <td class="text-center">{{ pr.innings_pitched }}回</td>
-            <td class="text-center">{{ pr.number_of_pitch }}球</td>
-            <td>{{ pr.total_batters_faced }}</td>
-            <td>{{ pr.hit }}</td>
-            <td>{{ pr.strike_out }}</td>
-            <td>{{ pr.bb_hbp }}</td>
-            <td>{{ pr.run }}</td>
-            <td>{{ pr.earned_run }}</td>
-            <td>{{ pr.wild_pitch }}</td>
-            <td>{{ pr.home_run }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+
+    {# 投手試合成績(fielder_results) #}
+    {% include "./_pitcher_record_for_game.html" %}
+
 {% endblock %}

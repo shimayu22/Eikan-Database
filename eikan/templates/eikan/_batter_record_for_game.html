@@ -1,0 +1,64 @@
+<h3 class="mt-2">打者試合結果</h3>
+<table class="table table-bordered table-hover table-sm table-responsive-md text-nowrap">
+    <thead class="thead-light text-center">
+        <tr>
+            <th>チーム</th>
+            <th>試合</th>
+            <th><abbr title="打数">AB</abbr></th>
+            <th><abbr title="得点">R</abbr></th>
+            <th><abbr title="安打">H</abbr></th>
+            <th><abbr title="二塁打">2B</abbr></th>
+            <th><abbr title="三塁打">3B</abbr></th>
+            <th><abbr title="本塁打">HR</abbr></th>
+            <th><abbr title="打点">RBI</abbr></th>
+            <th><abbr title="三振">SO</abbr></th>
+            <th><abbr title="四死球">BB</abbr></th>
+            <th><abbr title="犠打">SAC</abbr></th>
+            <th><abbr title="盗塁">SB</abbr></th>
+            <th><abbr title="併殺打">GDP</abbr></th>
+            <th><abbr title="エラー">ER</abbr></th>
+        </tr>
+    </thead>
+    <tbody class="text-right">
+        {% for f in fielder_results %}
+        <tr>
+            <td class="text-center"><a href="{% url 'eikan:team_detail' f.game_id.team_id.pk %}">{{ f.game_id }}</a>
+            </td>
+            <td class="text-center"><a
+                    href="{% url 'eikan:game_detail' f.game_id.pk %}">{{ f.game_id.get_competition_type_display }}{{ f.game_id.get_competition_round_display|cut:"練習試合"}}</a>
+            </td>
+            <td>{{ f.at_bat }}</td>
+            <td>{{ f.run }}</td>
+            <td>{{ f.hit }}</td>
+            <td>{{ f.two_base }}</td>
+            <td>{{ f.three_base }}</td>
+            <td>{{ f.home_run }}</td>
+            <td>{{ f.run_batted_in }}</td>
+            <td>{{ f.strike_out }}</td>
+            <td>{{ f.bb_hbp }}</td>
+            <td>{{ f.sacrifice_bunt }}</td>
+            <td>{{ f.stolen_base }}</td>
+            <td>{{ f.grounded_into_double_play }}</td>
+            <td>{{ f.error }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td class="text-center">データなし</td>
+            <td class="text-center">-</td>
+            <td class="text-center">-</td>
+            <td class="text-center">-</td>
+            <td class="text-center">-</td>
+            <td class="text-center">-</td>
+            <td class="text-center">-</td>
+            <td class="text-center">-</td>
+            <td class="text-center">-</td>
+            <td class="text-center">-</td>
+            <td class="text-center">-</td>
+            <td class="text-center">-</td>
+            <td class="text-center">-</td>
+            <td class="text-center">-</td>
+            <td class="text-center">-</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

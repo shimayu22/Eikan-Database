@@ -1,0 +1,42 @@
+{# 打者成績 #}
+{% include "./_batter_record_tableheader.html" %}
+    <tbody class="text-right">
+        {% for ftr in fielder_total_results %}
+            <tr>
+                <th><a href="{% url 'eikan:player_detail' ftr.player_id.pk %}">{{ ftr.player_id }}</a></th>
+                <td class="text-left">
+                    {{ ftr.player_id.is_ob|yesno:"[OB]," }}
+                    {{ ftr.player_id.is_active|yesno:"[現役]," }}
+                    {{ ftr.player_id.is_genius|yesno:"[天才]," }}
+                    {{ ftr.player_id.remark|default:"" }}
+                </td>
+                <td>{{ ftr.ops|floatformat:"3"|default:"0.000" }}</td>
+                <td>{{ ftr.slg|floatformat:"3"|default:"0.000" }}</td>
+                <td>{{ ftr.obp|floatformat:"3"|default:"0.000" }}</td>
+                <td>{{ ftr.br|floatformat:"1"|default:"0.0" }}</td>
+                <td>{{ ftr.woba|floatformat:"3"|default:"0.000" }}</td>
+                <td>{{ ftr.gpa|floatformat:"3"|default:"0.000" }}</td>
+                <td>{{ ftr.batting_average|floatformat:"3"|default:"0.000" }}</td>
+                <td>{{ ftr.at_bat|default:"0" }}</td>
+                <td>{{ ftr.run|default:"0" }}</td>
+                <td>{{ ftr.hit|default:"0" }}</td>
+                <td>{{ ftr.two_base|default:"0" }}</td>
+                <td>{{ ftr.three_base|default:"0" }}</td>
+                <td>{{ ftr.home_run|default:"0" }}</td>
+                <td>{{ ftr.run_batted_in|default:"0" }}</td>
+                <td>{{ ftr.strike_out|default:"0" }}</td>
+                <td>{{ ftr.bb_hbp|default:"0" }}</td>
+                <td>{{ ftr.sacrifice_bunt|default:"0" }}</td>
+                <td>{{ ftr.stolen_base|default:"0" }}</td>
+                <td>{{ ftr.grounded_into_double_play|default:"0" }}</td>
+                <td>{{ ftr.error|default:"0" }}</td>
+                <td>{{ ftr.total_bases|default:"0" }}</td>
+                <td>{{ ftr.bbhp_k|floatformat:"3"|default:"0.000" }}</td>
+                <td>{{ ftr.bbhp_percent|floatformat:"3"|default:"0.000" }}</td>
+                <td>{{ ftr.isod|floatformat:"3"|default:"0.000" }}</td>
+                <td>{{ ftr.isop|floatformat:"3"|default:"0.000" }}</td>
+                <td>{{ ftr.p_s|floatformat:"3"|default:"0.000" }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

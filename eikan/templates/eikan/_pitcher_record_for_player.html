@@ -1,0 +1,73 @@
+{# 投手成績 #}
+{% include "./_pitcher_record_tableheader.html" %}
+    <tbody class="text-right">
+        <tr>
+            <td>通算</td>
+            <td>{{ pitcher_total_results.games }}</td>
+            <td>{{ pitcher_total_results.games_started }}</td>
+            <td>{{ pitcher_total_results.innings_pitched }}</td>
+            <td>{{ pitcher_total_results.number_of_pitch }}</td>
+            <td>{{ pitcher_total_results.total_batters_faced }}</td>
+            <td>{{ pitcher_total_results.hit }}</td>
+            <td>{{ pitcher_total_results.strike_out }}</td>
+            <td>{{ pitcher_total_results.bb_hbp }}</td>
+            <td>{{ pitcher_total_results.run }}</td>
+            <td>{{ pitcher_total_results.earned_run }}</td>
+            <td>{{ pitcher_total_results.wild_pitch }}</td>
+            <td>{{ pitcher_total_results.home_run }}</td>
+            <td>{{ pitcher_total_results.era|floatformat:2 }}</td>
+            <td>{{ pitcher_total_results.ura|floatformat:2 }}</td>
+            <td>{{ pitcher_total_results.whip|floatformat:2 }}</td>
+            <td>{{ pitcher_total_results.k_bbhp|floatformat:2 }}</td>
+            <td>{{ pitcher_total_results.k_9|floatformat:2 }}</td>
+            <td>{{ pitcher_total_results.k_percent|floatformat:2 }}</td>
+            <td>{{ pitcher_total_results.bbhp_9|floatformat:2 }}</td>
+            <td>{{ pitcher_total_results.p_bbhp_percent|floatformat:2 }}</td>
+            <td>{{ pitcher_total_results.h_9|floatformat:2 }}</td>
+            <td>{{ pitcher_total_results.h_percent|floatformat:2 }}</td>
+            <td>{{ pitcher_total_results.hr_9|floatformat:2 }}</td>
+            <td>{{ pitcher_total_results.hr_percent|floatformat:2 }}</td>
+            <td>{{ pitcher_total_results.lob_percent|floatformat:2 }}</td>
+            <td>{{ pitcher_total_results.p_ip|floatformat:2 }}</td>
+        </tr>
+        {% for pitcher_result in pitcher_by_year_results %}
+        <tr>
+            <td>
+                {% if players.admission_year == pitcher_result.year %}
+                １年
+                {% elif players.admission_year|add:1 == pitcher_result.year %}
+                ２年
+                {% else %}
+                ３年
+                {% endif %}
+            </td>
+            <td>{{ pitcher_result.data.games|default:"0" }}</td>
+            <td>{{ pitcher_result.data.games_started|default:"0" }}</td>
+            <td>{{ pitcher_result.data.innings_pitched|default:"0" }}</td>
+            <td>{{ pitcher_result.data.number_of_pitch|default:"0" }}</td>
+            <td>{{ pitcher_result.data.total_batters_faced|default:"0" }}</td>
+            <td>{{ pitcher_result.data.hit|default:"0" }}</td>
+            <td>{{ pitcher_result.data.strike_out|default:"0" }}</td>
+            <td>{{ pitcher_result.data.bb_hbp|default:"0" }}</td>
+            <td>{{ pitcher_result.data.run|default:"0" }}</td>
+            <td>{{ pitcher_result.data.earned_run|default:"0" }}</td>
+            <td>{{ pitcher_result.data.wild_pitch|default:"0" }}</td>
+            <td>{{ pitcher_result.data.home_run|default:"0" }}</td>
+            <td>{{ pitcher_result.data.era|floatformat:"2"|default:"0.00" }}</td>
+            <td>{{ pitcher_result.data.ura|floatformat:"2"|default:"0.00" }}</td>
+            <td>{{ pitcher_result.data.whip|floatformat:"2"|default:"0.00" }}</td>
+            <td>{{ pitcher_result.data.k_bbhp|floatformat:"2"|default:"0.00" }}</td>
+            <td>{{ pitcher_result.data.k_9|floatformat:"2"|default:"0.00" }}</td>
+            <td>{{ pitcher_result.data.k_percent|floatformat:"2"|default:"0.00" }}</td>
+            <td>{{ pitcher_result.data.bbhp_9|floatformat:"2"|default:"0.00" }}</td>
+            <td>{{ pitcher_result.data.p_bbhp_percent|floatformat:"2"|default:"0.00" }}</td>
+            <td>{{ pitcher_result.data.h_9|floatformat:"2"|default:"0.00" }}</td>
+            <td>{{ pitcher_result.data.h_percent|floatformat:"2"|default:"0.00" }}</td>
+            <td>{{ pitcher_result.data.hr_9|floatformat:"2"|default:"0.00" }}</td>
+            <td>{{ pitcher_result.data.hr_percent|floatformat:"2"|default:"0.00" }}</td>
+            <td>{{ pitcher_result.data.lob_percent|floatformat:"2"|default:"0.00" }}</td>
+            <td>{{ pitcher_result.data.p_ip|floatformat:"2"|default:"0.00" }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

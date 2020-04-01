@@ -3,54 +3,54 @@
 <tbody class="text-right">
     <tr>
         {% for ptr in pitcher_total_results %}
-        <th><a href="{% url 'eikan:player_detail' ptr.player_id.pk %}">{{ ptr.player_id }}</a></th>
-        {% if pg == "index" or pg == "team" %}
-            <td class="text-center">
-                {{ ptr.player_id.is_ob|yesno:"[OB], " }}
-                {{ ptr.player_id.is_active|yesno:"[現役], " }}
-                {{ ptr.player_id.is_genius|yesno:"[天才], " }}
-                {{ ptr.player_id.remark|default:"" }}
-            </td>
-        {% endif %}
-        {% if pg == "index" %}
-            {% if ptr.ptrevious_game_pitched > 4.3 %}
-                <td class="text-danger">
-            {% elif ptr.ptrevious_game_pitched > 2.3 %}
-                <td class="text-warning">
-            {% elif ptr.ptrevious_game_pitched > 0.3 %}
-                <td class="text-ptrimary">
-            {% else %}
-                <td>
+            <th><a href="{% url 'eikan:player_detail' ptr.player_id.pk %}">{{ ptr.player_id }}</a></th>
+            {% if pg == "index" or pg == "team" %}
+                <td class="text-center">
+                    {{ ptr.player_id.is_ob|yesno:"[OB], " }}
+                    {{ ptr.player_id.is_active|yesno:"[現役], " }}
+                    {{ ptr.player_id.is_genius|yesno:"[天才], " }}
+                    {{ ptr.player_id.remark|default:"" }}
+                </td>
             {% endif %}
-            {{ ptr.ptrevious_game_pitched|floatformat:1 }}</td>
-        {% endif %}
-        <td>{{ ptr.games|default:"0" }}</td>
-        <td>{{ ptr.games_started|default:"0" }}</td>
-        <td>{{ ptr.innings_pitched|default:"0" }}</td>
-        <td>{{ ptr.number_of_pitch|default:"0" }}</td>
-        <td>{{ ptr.total_batters_faced|default:"0" }}</td>
-        <td>{{ ptr.hit|default:"0" }}</td>
-        <td>{{ ptr.strike_out|default:"0" }}</td>
-        <td>{{ ptr.bb_hbp|default:"0" }}</td>
-        <td>{{ ptr.run|default:"0" }}</td>
-        <td>{{ ptr.earned_run|default:"0" }}</td>
-        <td>{{ ptr.wild_pitch|default:"0" }}</td>
-        <td>{{ ptr.home_run|default:"0" }}</td>
-        <td>{{ ptr.era|floatformat:"2"|default:"0.00" }}</td>
-        <td>{{ ptr.ura|floatformat:"2"|default:"0.00" }}</td>
-        <td>{{ ptr.whip|floatformat:"2"|default:"0.00" }}</td>
-        <td>{{ ptr.k_bbhp|floatformat:"2"|default:"0.00" }}</td>
-        <td>{{ ptr.k_9|floatformat:"2"|default:"0.00" }}</td>
-        <td>{{ ptr.k_percent|floatformat:"2"|default:"0.00" }}</td>
-        <td>{{ ptr.bbhp_9|floatformat:"2"|default:"0.00" }}</td>
-        <td>{{ ptr.p_bbhp_percent|floatformat:"2"|default:"0.00" }}</td>
-        <td>{{ ptr.h_9|floatformat:"2"|default:"0.00" }}</td>
-        <td>{{ ptr.h_percent|floatformat:"2"|default:"0.00" }}</td>
-        <td>{{ ptr.hr_9|floatformat:"2"|default:"0.00" }}</td>
-        <td>{{ ptr.hr_percent|floatformat:"2"|default:"0.00" }}</td>
-        <td>{{ ptr.lob_percent|floatformat:"2"|default:"0.00" }}</td>
-        <td>{{ ptr.p_ip|floatformat:"2"|default:"0.00" }}</td>
-    </tr>
+            {% if pg == "index" %}
+                {% if ptr.previous_game_pitched > 4.3 %}
+                    <td class="text-danger">
+                {% elif ptr.previous_game_pitched > 2.3 %}
+                    <td class="text-warning">
+                {% elif ptr.previous_game_pitched > 0.3 %}
+                    <td class="text-ptrimary">
+                {% else %}
+                    <td>
+                {% endif %}
+                {{ ptr.previous_game_pitched|floatformat:1 }}</td>
+            {% endif %}
+            <td>{{ ptr.games|default:"0" }}</td>
+            <td>{{ ptr.games_started|default:"0" }}</td>
+            <td>{{ ptr.innings_pitched|default:"0" }}</td>
+            <td>{{ ptr.number_of_pitch|default:"0" }}</td>
+            <td>{{ ptr.total_batters_faced|default:"0" }}</td>
+            <td>{{ ptr.hit|default:"0" }}</td>
+            <td>{{ ptr.strike_out|default:"0" }}</td>
+            <td>{{ ptr.bb_hbp|default:"0" }}</td>
+            <td>{{ ptr.run|default:"0" }}</td>
+            <td>{{ ptr.earned_run|default:"0" }}</td>
+            <td>{{ ptr.wild_pitch|default:"0" }}</td>
+            <td>{{ ptr.home_run|default:"0" }}</td>
+            <td>{{ ptr.era|floatformat:"2"|default:"0.00" }}</td>
+            <td>{{ ptr.ura|floatformat:"2"|default:"0.00" }}</td>
+            <td>{{ ptr.whip|floatformat:"2"|default:"0.00" }}</td>
+            <td>{{ ptr.k_bbhp|floatformat:"2"|default:"0.00" }}</td>
+            <td>{{ ptr.k_9|floatformat:"2"|default:"0.00" }}</td>
+            <td>{{ ptr.k_percent|floatformat:"2"|default:"0.00" }}</td>
+            <td>{{ ptr.bbhp_9|floatformat:"2"|default:"0.00" }}</td>
+            <td>{{ ptr.p_bbhp_percent|floatformat:"2"|default:"0.00" }}</td>
+            <td>{{ ptr.h_9|floatformat:"2"|default:"0.00" }}</td>
+            <td>{{ ptr.h_percent|floatformat:"2"|default:"0.00" }}</td>
+            <td>{{ ptr.hr_9|floatformat:"2"|default:"0.00" }}</td>
+            <td>{{ ptr.hr_percent|floatformat:"2"|default:"0.00" }}</td>
+            <td>{{ ptr.lob_percent|floatformat:"2"|default:"0.00" }}</td>
+            <td>{{ ptr.p_ip|floatformat:"2"|default:"0.00" }}</td>
+        </tr>
     {% endfor %}
 </tbody>
 </table>

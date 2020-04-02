@@ -14,6 +14,14 @@ def default_team_rank():
         if Games.objects.exists() else 0
 
 
+def set_game_results(score, run):
+    # 勝:1,負:2,分:3
+    if score == run:
+        return 3
+
+    return 1 if score > run else 2
+
+
 class Games(models.Model):
 
     COMPETITION_CHOICES = (
@@ -106,12 +114,7 @@ class Games(models.Model):
     )
 
     def save(self, *args, **kwargs):
-        if self.score > self.run:
-            self.result = 1
-        elif self.score < self.run:
-            self.result = 2
-        else:
-            self.result = 3
+        self.result = set_game_results(self.score, self.run)
         super().save(*args, **kwargs)
 
     def __str__(self):

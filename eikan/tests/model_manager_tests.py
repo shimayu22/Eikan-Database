@@ -1,5 +1,5 @@
 from django.test import TestCase
-from eikan.models import Teams
+from eikan.models import Teams, Games
 from eikan.model_manager import DefaultValueExtractor, SavedValueExtractor
 
 
@@ -7,7 +7,7 @@ class DefaultValueExtractorTests(TestCase):
     def test_create_default_year_for_teams(self):
         """
         Teamsにレコードが存在しない場合 -> 1941(初期値)
-        Teamsにレコードが存在して、
+        Teamsにレコードが存在して、最新レコードが
             period == 1(夏) -> 同じyearを返す
             period == 2(秋) -> 次のyearを返す
         """
@@ -23,7 +23,7 @@ class DefaultValueExtractorTests(TestCase):
     def test_create_default_period(self):
         """
         Teamsにレコードが存在しない場合 -> 1(夏:初期値)
-        Teamsにレコードが存在して、
+        Teamsにレコードが存在して、最新レコードが
             period == 1(夏) -> 2(秋)を返す
             period == 2(秋) -> 1(夏)を返す
         """
@@ -36,7 +36,7 @@ class DefaultValueExtractorTests(TestCase):
     def test_create_default_prefecture(self):
         """
         Teamsにレコードが存在しない場合   -> 0(初期値)
-        Teamsにレコードが存在している場合 -> 同じ値を返す
+        Teamsにレコードが存在している場合 -> 最新レコードのprefectureと同じ値を返す
         """
         self.assertEqual(DefaultValueExtractor.create_default_prefecture(), 0)
         Teams(prefecture=17).save()
@@ -47,13 +47,40 @@ class DefaultValueExtractorTests(TestCase):
     def test_create_default_year_for_players(self):
         """
         Teamsにレコードが存在しない場合   -> 1939(初期値)
-        Teamsにレコードが存在している場合 -> 同じ値を返す
+        Teamsにレコードが存在している場合 -> 最新レコードのyearと同じ値を返す
         """
         self.assertEqual(DefaultValueExtractor.create_default_year_for_players(), 1939)
         Teams(year=1985).save()
         self.assertEqual(DefaultValueExtractor.create_default_year_for_players(), 1985)
         Teams(year=2040).save()
         self.assertEqual(DefaultValueExtractor.create_default_year_for_players(), 2040)
+    
+    def test_create_default_team_id(self):
+        """
+        Teamsにレコードが存在しない場合   -> 1939(初期値)
+        Teamsにレコードが存在している場合 -> 最新レコードのidと同じ値を返す
+        """
+        self.assertEqual(DefaultValueExtractor.create_default_team_id(), 0)
+        Teams(year=1985, period=1).save()
+        self.assertEqual(DefaultValueExtractor.create_default_team_id(), 1)
+        Teams(year=1985, period=2).save()
+        self.assertEqual(DefaultValueExtractor.create_default_team_id(), 2)
+
+    def test_create_default_team_rank(self):
+        """
+        Gamesにレコードが存在しない場合   -> 0(初期値)
+        Gamesにレコードが存在している場合 -> 最新レコードのrankと同じ値を返す
+        """
+        self.assertEqual(DefaultValueExtractor.create_default_team_rank(), 0)
+        Teams(year=1985, period=1).save()
+        t1 = Teams.objects.latest('pk')
+        Games(team_id=t1, rank=1).save()
+        self.assertEqual(DefaultValueExtractor.create_default_team_rank(), 1)
+        Teams(year=1985, period=2).save()
+        t2 = Teams.objects.latest('pk')
+        Games(team_id=t2, rank=5).save()
+        self.assertEqual(DefaultValueExtractor.create_default_team_rank(), 5)
+
 
 class SavedValueExtractorTests(TestCase):
     def test_create_game_results(self):

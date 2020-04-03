@@ -131,7 +131,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='games',
             name='team_id',
-            field=models.ForeignKey(default=eikan.models.games.default_team_id, on_delete=django.db.models.deletion.CASCADE, to='eikan.Teams', verbose_name='チーム'),
+            field=models.ForeignKey(default=d.create_default_team_id, on_delete=django.db.models.deletion.CASCADE, to='eikan.Teams', verbose_name='チーム'),
         ),
         migrations.CreateModel(
             name='FielderResults',
@@ -218,7 +218,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='games',
             name='rank',
-            field=models.PositiveSmallIntegerField(choices=[('', '選択'), (1, '弱小'), (2, 'そこそこ'), (3, '中堅'), (4, '強豪'), (5, '名門')], default=eikan.models.games.default_team_rank, verbose_name='ランク'),
+            field=models.PositiveSmallIntegerField(choices=[('', '選択'), (1, '弱小'), (2, 'そこそこ'), (3, '中堅'), (4, '強豪'), (5, '名門')], default=d.create_default_team_rank, verbose_name='ランク'),
         ),
         migrations.CreateModel(
             name='TeamTotalResults',

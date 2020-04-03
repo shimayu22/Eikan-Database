@@ -27,6 +27,16 @@ class DefaultValueExtractor:
         from eikan.models import Teams
         return Teams.objects.latest('pk').year if Teams.objects.exists() else 1939
 
+    @classmethod
+    def create_default_team_id(self):
+        from eikan.models import Teams
+        return Teams.objects.latest('pk').id if Teams.objects.exists() else 0
+
+    @classmethod
+    def create_default_team_rank(self):
+        from eikan.models import Games
+        return Games.objects.latest('pk').rank if Games.objects.exists() else 0
+
 
 class SavedValueExtractor:
     def create_game_results(self, score, run):

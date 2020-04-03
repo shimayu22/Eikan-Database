@@ -1,5 +1,16 @@
+from django.db import models
+
+
 class DefaultValueExtractor:
-    pass
+    @classmethod
+    def create_default_year_for_teams(self):
+        from eikan.models import Teams
+        if not Teams.objects.exists():
+            return 1941
+
+        period = Teams.objects.latest('pk').period
+        this_year = Teams.objects.latest('pk').year
+        return this_year if period == 1 else this_year + 1
 
 
 class SavedValueExtractor:

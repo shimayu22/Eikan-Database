@@ -1,17 +1,8 @@
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-
+from eikan.model_manager import DefaultValueExtractor as d
 
 # Create your models here.
-def default_year():
-
-    if Teams.objects.exists():
-        period = Teams.objects.latest('pk').period
-        this_year = Teams.objects.latest('pk').year
-        return this_year if period == 1 \
-            else this_year + 1
-
-    return 1941
 
 
 def default_period():
@@ -101,7 +92,7 @@ class Teams(models.Model):
     year = models.PositiveSmallIntegerField(
         verbose_name="年度",
         validators=[MinValueValidator(1941)],
-        default=default_year,
+        default=d.create_default_year_for_teams,
     )
 
     period = models.PositiveSmallIntegerField(

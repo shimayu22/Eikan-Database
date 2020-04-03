@@ -8,11 +8,36 @@ import eikan.models.games
 import eikan.models.pitcher_results
 import eikan.models.players
 import eikan.models.teams
+from eikan.model_manager import DefaultValueExtractor as d
 
 
 class Migration(migrations.Migration):
 
-    replaces = [('eikan', '0001_initial'), ('eikan', '0002_auto_20191213_1517'), ('eikan', '0003_auto_20200115_1541'), ('eikan', '0004_auto_20200118_1626'), ('eikan', '0005_modelsettings'), ('eikan', '0006_auto_20200129_1011'), ('eikan', '0007_auto_20200130_1458'), ('eikan', '0008_auto_20200216_2253'), ('eikan', '0009_auto_20200218_1000'), ('eikan', '0010_auto_20200327_1509'), ('eikan', '0011_pitchertotalresults_previous_game_pitched'), ('eikan', '0012_auto_20200329_2233')]
+    replaces = [
+        ('eikan',
+         '0001_initial'),
+        ('eikan',
+         '0002_auto_20191213_1517'),
+        ('eikan',
+         '0003_auto_20200115_1541'),
+        ('eikan',
+         '0004_auto_20200118_1626'),
+        ('eikan',
+         '0005_modelsettings'),
+        ('eikan',
+         '0006_auto_20200129_1011'),
+        ('eikan',
+         '0007_auto_20200130_1458'),
+        ('eikan',
+         '0008_auto_20200216_2253'),
+        ('eikan',
+         '0009_auto_20200218_1000'),
+        ('eikan',
+         '0010_auto_20200327_1509'),
+        ('eikan',
+         '0011_pitchertotalresults_previous_game_pitched'),
+        ('eikan',
+         '0012_auto_20200329_2233')]
 
     dependencies = [
     ]
@@ -62,7 +87,7 @@ class Migration(migrations.Migration):
             name='Teams',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('year', models.PositiveSmallIntegerField(default=eikan.models.teams.default_year, validators=[django.core.validators.MinValueValidator(1941)], verbose_name='年度')),
+                ('year', models.PositiveSmallIntegerField(default=d.create_default_year_for_teams, validators=[django.core.validators.MinValueValidator(1941)], verbose_name='年度')),
                 ('period', models.PositiveSmallIntegerField(choices=[('', '選択'), (1, '夏'), (2, '秋')], default=eikan.models.teams.default_period, verbose_name='期間')),
                 ('prefecture', models.PositiveSmallIntegerField(choices=[('', '選択'), (1, '北北海道'), (2, '南北海道'), (3, '青森'), (4, '岩手'), (5, '宮城'), (6, '秋田'), (7, '山形'), (8, '福島'), (9, '茨城'), (10, '栃木'), (11, '群馬'), (12, '埼玉'), (13, '千葉'), (14, '神奈川'), (15, '山梨'), (16, '東東京'), (17, '西東京'), (18, '新潟'), (19, '富山'), (20, '石川'), (21, '福井'), (22, '長野'), (23, '岐阜'), (24, '静岡'), (25, '愛知'), (26, '三重'), (27, '滋賀'), (28, '京都'), (29, '大阪'), (30, '兵庫'), (31, '奈良'), (32, '和歌山'), (33, '鳥取'), (34, '島根'), (35, '岡山'), (36, '広島'), (37, '山口'), (38, '徳島'), (39, '香川'), (40, '愛媛'), (41, '高知'), (42, '福岡'), (43, '佐賀'), (44, '長崎'), (45, '熊本'), (46, '大分'), (47, '宮崎'), (48, '鹿児島'), (49, '沖縄')], default=eikan.models.teams.default_prefecture, verbose_name='都道府県')),
                 ('training_policy', models.PositiveSmallIntegerField(choices=[(0, '選択'), (1, 'バランス'), (2, '打撃力'), (3, '機動力'), (4, '守備・投手')], default=0, verbose_name='育成方針')),

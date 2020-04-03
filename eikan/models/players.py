@@ -1,6 +1,8 @@
 from django.core.validators import MinValueValidator
 from django.db import models
 from eikan.models import Teams
+from eikan.model_manager import DefaultValueExtractor as d
+from eikan.model_manager import SavedValueExtractor as s
 
 
 def default_year():
@@ -82,10 +84,8 @@ class Players(models.Model):
     )
 
     def save(self, *args, **kwargs):
-        if self.position == 1 or self.is_pitched:
-            self.is_pitcher = True
-        elif self.position > 1 and not self.is_pitched:
-            self.is_pitcher = False
+        self.is_pitcher = s.update_is_pitcher(
+            self, self.position, self.is_pitched)
         super().save(*args, **kwargs)
 
     def __str__(self):

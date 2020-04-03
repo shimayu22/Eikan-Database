@@ -1,6 +1,3 @@
-from django.db import models
-
-
 class DefaultValueExtractor:
     @classmethod
     def create_default_year_for_teams(self):
@@ -11,6 +8,19 @@ class DefaultValueExtractor:
         period = Teams.objects.latest('pk').period
         this_year = Teams.objects.latest('pk').year
         return this_year if period == 1 else this_year + 1
+    
+    @classmethod
+    def create_default_period(self):
+        from eikan.models import Teams
+        if not Teams.objects.exists():
+            return 1
+        
+        return 1 if Teams.objects.latest('pk').period == 2 else 2
+    
+    @classmethod
+    def create_default_prefecture(self):
+        from eikan.models import Teams
+        return 0 if not Teams.objects.exists() else Teams.objects.latest('pk').prefecture
 
 
 class SavedValueExtractor:

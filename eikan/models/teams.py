@@ -2,23 +2,6 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from eikan.model_manager import DefaultValueExtractor as d
 
-# Create your models here.
-
-
-def default_period():
-
-    if Teams.objects.exists():
-        period = Teams.objects.latest('pk').period
-        return 1 if Teams.objects.latest('pk').period == 2 \
-            else 2
-
-    return 1
-
-
-def default_prefecture():
-    return 0 if not Teams.objects.all()\
-        else Teams.objects.latest('pk').prefecture
-
 
 class Teams(models.Model):
 
@@ -98,13 +81,13 @@ class Teams(models.Model):
     period = models.PositiveSmallIntegerField(
         verbose_name="期間",
         choices=PERIOD_CHOICES,
-        default=default_period,
+        default=d.create_default_period,
     )
 
     prefecture = models.PositiveSmallIntegerField(
         verbose_name="都道府県",
         choices=PREFECTURE_CHOICES,
-        default=default_prefecture,
+        default=d.create_default_prefecture,
     )
 
     training_policy = models.PositiveSmallIntegerField(

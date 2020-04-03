@@ -65,7 +65,7 @@ class Migration(migrations.Migration):
             name='Players',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('admission_year', models.PositiveSmallIntegerField(default=eikan.models.players.default_year, validators=[django.core.validators.MinValueValidator(1939)], verbose_name='入学年度')),
+                ('admission_year', models.PositiveSmallIntegerField(default=d.create_default_year_for_players, validators=[django.core.validators.MinValueValidator(1939)], verbose_name='入学年度')),
                 ('name', models.CharField(max_length=6, verbose_name='名前')),
                 ('position', models.PositiveSmallIntegerField(choices=[('', '選択'), (1, '投'), (2, '捕'), (3, '一'), (4, '二'), (5, '三'), (6, '遊'), (7, '外')], default=0, verbose_name='メインポジション')),
                 ('is_pitched', models.BooleanField(default=False, verbose_name='野手登板')),

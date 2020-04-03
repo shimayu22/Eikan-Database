@@ -44,6 +44,16 @@ class DefaultValueExtractorTests(TestCase):
         Teams(prefecture=1).save()
         self.assertEqual(DefaultValueExtractor.create_default_prefecture(), 1)
 
+    def test_create_default_year_for_players(self):
+        """
+        Teamsにレコードが存在しない場合   -> 1939(初期値)
+        Teamsにレコードが存在している場合 -> 同じ値を返す
+        """
+        self.assertEqual(DefaultValueExtractor.create_default_year_for_players(), 1939)
+        Teams(year=1985).save()
+        self.assertEqual(DefaultValueExtractor.create_default_year_for_players(), 1985)
+        Teams(year=2040).save()
+        self.assertEqual(DefaultValueExtractor.create_default_year_for_players(), 2040)
 
 class SavedValueExtractorTests(TestCase):
     def test_create_game_results(self):

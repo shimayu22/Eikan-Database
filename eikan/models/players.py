@@ -5,11 +5,6 @@ from eikan.model_manager import DefaultValueExtractor as d
 from eikan.model_manager import SavedValueExtractor as s
 
 
-def default_year():
-    return Teams.objects.latest('pk').year \
-        if Teams.objects.exists() else 1939
-
-
 class Players(models.Model):
 
     POSITION_CHOICES = (
@@ -26,7 +21,7 @@ class Players(models.Model):
     admission_year = models.PositiveSmallIntegerField(
         verbose_name="入学年度",
         validators=[MinValueValidator(1939)],
-        default=default_year,
+        default=d.create_default_year_for_players,
     )
 
     name = models.CharField(

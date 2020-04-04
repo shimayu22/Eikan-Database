@@ -1,6 +1,5 @@
 from django.core.validators import MinValueValidator
 from django.db import models
-from eikan.models import Teams
 from eikan.model_manager import DefaultValueExtractor as d
 from eikan.model_manager import SavedValueExtractor as s
 

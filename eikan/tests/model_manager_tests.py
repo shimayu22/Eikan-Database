@@ -1,5 +1,5 @@
 from django.test import TestCase
-from eikan.models import Teams, Games
+from eikan.models import Teams, Games, ModelSettings
 from eikan.model_manager import DefaultValueExtractor, SavedValueExtractor
 
 
@@ -80,6 +80,60 @@ class DefaultValueExtractorTests(TestCase):
         t2 = Teams.objects.latest('pk')
         Games(team_id=t2, rank=5).save()
         self.assertEqual(DefaultValueExtractor.create_default_team_rank(), 5)
+
+    def test_select_display_players(self):
+        """
+        Teamsにレコードが存在しない場合
+            -> 空の辞書を返す
+        ModelSettingsのis_used_limit_choices_toがTrue
+            -> 空の辞書を返す
+        eamsにレコードが存在して、最新レコードが
+            period == 1(夏)
+                -> {"admission_year__gte": teams.year - 2,
+                    "admission_year__lte": teams.year}
+                   -> 3学年分表示させる
+            period == 2(秋)
+                -> {"admission_year__gte": teams.year - 1,
+                    "admission_year__lte": teams.year}
+                    -> 2学年分表示させる
+        """
+        self.assertEqual(DefaultValueExtractor.select_display_players(), {})
+        Teams(year=1985, period=1).save()
+        self.assertEqual(DefaultValueExtractor.select_display_players(), {"admission_year__gte": 1983, "admission_year__lte": 1985})
+        Teams(year=1985, period=2).save()
+        self.assertEqual(DefaultValueExtractor.select_display_players(), {"admission_year__gte": 1984, "admission_year__lte": 1985})
+        ModelSettings(is_used_limit_choices_to=True).save()
+        self.assertEqual(DefaultValueExtractor.select_display_players(), {})
+        ModelSettings(is_used_limit_choices_to=False).save()
+        self.assertEqual(DefaultValueExtractor.select_display_players(), {"admission_year__gte": 1984, "admission_year__lte": 1985})
+
+    def test_select_display_pitchers(self):
+        """
+        Teamsにレコードが存在しない場合
+            -> 空の辞書を返す
+        ModelSettingsのis_used_limit_choices_toがTrue
+            -> 空の辞書を返す
+        eamsにレコードが存在して、最新レコードが
+            period == 1(夏)
+                -> {"is_pitcher": True,
+                    "admission_year__gte": teams.year - 2,
+                    "admission_year__lte": teams.year}
+                   -> 3学年分表示させる
+            period == 2(秋)
+                -> {"is_pitcher": True,
+                    "admission_year__gte": teams.year - 1,
+                    "admission_year__lte": teams.year}
+                    -> 2学年分表示させる
+        """
+        self.assertEqual(DefaultValueExtractor.select_display_pitchers(), {"is_pitcher": True})
+        Teams(year=1998, period=1).save()
+        self.assertEqual(DefaultValueExtractor.select_display_pitchers(), {"is_pitcher": True, "admission_year__gte": 1996, "admission_year__lte": 1998})
+        Teams(year=1998, period=2).save()
+        self.assertEqual(DefaultValueExtractor.select_display_pitchers(), {"is_pitcher": True, "admission_year__gte": 1997, "admission_year__lte": 1998})
+        ModelSettings(is_used_limit_choices_to=True).save()
+        self.assertEqual(DefaultValueExtractor.select_display_pitchers(), {"is_pitcher": True})
+        ModelSettings(is_used_limit_choices_to=False).save()
+        self.assertEqual(DefaultValueExtractor.select_display_pitchers(), {"is_pitcher": True, "admission_year__gte": 1997, "admission_year__lte": 1998})
 
 
 class SavedValueExtractorTests(TestCase):

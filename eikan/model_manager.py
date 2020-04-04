@@ -36,6 +36,38 @@ class DefaultValueExtractor:
     def create_default_team_rank(self):
         from eikan.models import Games
         return Games.objects.latest('pk').rank if Games.objects.exists() else 0
+    
+    @classmethod
+    def select_display_players(self):
+        from eikan.models import Teams, ModelSettings
+
+        if ModelSettings.objects.exists() and ModelSettings.objects.latest('pk').is_used_limit_choices_to:
+            return {}
+
+        if not Teams.objects.exists():
+            return {}
+
+        teams = Teams.objects.latest('pk')
+        if teams.period == 1:
+            return {"admission_year__gte": teams.year - 2, "admission_year__lte": teams.year}
+        else:
+            return {"admission_year__gte": teams.year - 1, "admission_year__lte": teams.year}
+
+    @classmethod
+    def select_display_pitchers(self):
+        from eikan.models import Teams, ModelSettings
+
+        if ModelSettings.objects.exists() and ModelSettings.objects.latest('pk').is_used_limit_choices_to:
+            return {"is_pitcher": True}
+
+        if not Teams.objects.exists():
+            return {"is_pitcher": True}
+
+        teams = Teams.objects.latest('pk')
+        if teams.period == 1:
+            return {"is_pitcher": True, "admission_year__gte": teams.year - 2, "admission_year__lte": teams.year}
+        else:
+            return {"is_pitcher": True, "admission_year__gte": teams.year - 1, "admission_year__lte": teams.year}
 
 
 class SavedValueExtractor:

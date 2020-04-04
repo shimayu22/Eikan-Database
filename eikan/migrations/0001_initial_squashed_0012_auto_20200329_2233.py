@@ -3,11 +3,6 @@
 import django.core.validators
 from django.db import migrations, models
 import django.db.models.deletion
-import eikan.models.fielder_results
-import eikan.models.games
-import eikan.models.pitcher_results
-import eikan.models.players
-import eikan.models.teams
 from eikan.model_manager import DefaultValueExtractor as d
 
 
@@ -121,7 +116,7 @@ class Migration(migrations.Migration):
                 ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='登録日')),
                 ('updated_at', models.DateTimeField(auto_now=True, verbose_name='更新日')),
                 ('game_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='eikan.Games')),
-                ('player_id', models.ForeignKey(limit_choices_to=eikan.models.pitcher_results.set_select_pitchers, on_delete=django.db.models.deletion.CASCADE, to='eikan.Players', verbose_name='選手')),
+                ('player_id', models.ForeignKey(limit_choices_to=d.select_display_pitchers, on_delete=django.db.models.deletion.CASCADE, to='eikan.Players', verbose_name='選手')),
             ],
             options={
                 'verbose_name': '投手一覧',
@@ -153,7 +148,7 @@ class Migration(migrations.Migration):
                 ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='登録日')),
                 ('updated_at', models.DateTimeField(auto_now=True, verbose_name='更新日')),
                 ('game_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='eikan.Games')),
-                ('player_id', models.ForeignKey(limit_choices_to=eikan.models.fielder_results.set_select_players, on_delete=django.db.models.deletion.CASCADE, to='eikan.Players', verbose_name='選手')),
+                ('player_id', models.ForeignKey(limit_choices_to=d.select_display_players, on_delete=django.db.models.deletion.CASCADE, to='eikan.Players', verbose_name='選手')),
             ],
             options={
                 'verbose_name': '打者一覧',

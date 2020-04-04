@@ -1,35 +1,9 @@
 from django.db import models
-from eikan.models import Games, Players, Teams, ModelSettings
-
-
-def set_select_players():
-    condition_dict = {}
-
-    if not Teams.objects.exists():
-        return condition_dict
-
-    teams = Teams.objects.latest('pk')
-    is_filter = False
-
-    if ModelSettings.objects.exists():
-        is_filter = ModelSettings.objects.latest('pk').is_used_limit_choices_to
-
-    if is_filter:
-        return condition_dict
-
-    condition_dict["admission_year__gte"] = \
-        (teams.year - 2) if teams.period == 1 \
-        else (teams.year - 1)
-
-    condition_dict["admission_year__lte"] = teams.year
-    return condition_dict
-
-
-# Create your models here.
+from eikan.models import Games, Players
+from eikan.model_manager import DefaultValueExtractor as d
 
 
 class FielderResults(models.Model):
-
     game_id = models.ForeignKey(
         Games,
         on_delete=models.CASCADE,
@@ -39,7 +13,7 @@ class FielderResults(models.Model):
         Players,
         on_delete=models.CASCADE,
         verbose_name="選手",
-        limit_choices_to=set_select_players,
+        limit_choices_to=d.select_display_players,
     )
 
     at_bat = models.PositiveSmallIntegerField(

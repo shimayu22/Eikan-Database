@@ -1,11 +1,7 @@
 from django.core.validators import MinValueValidator
 from django.db import models
-from eikan.models import Teams
-
-
-def default_year():
-    return Teams.objects.latest('pk').year \
-        if Teams.objects.exists() else 1939
+from eikan.model_manager import DefaultValueExtractor as d
+from eikan.model_manager import SavedValueExtractor as s
 
 
 class Players(models.Model):
@@ -24,7 +20,7 @@ class Players(models.Model):
     admission_year = models.PositiveSmallIntegerField(
         verbose_name="入学年度",
         validators=[MinValueValidator(1939)],
-        default=default_year,
+        default=d.create_default_year_for_players,
     )
 
     name = models.CharField(
@@ -82,10 +78,8 @@ class Players(models.Model):
     )
 
     def save(self, *args, **kwargs):
-        if self.position == 1 or self.is_pitched:
-            self.is_pitcher = True
-        elif self.position > 1 and not self.is_pitched:
-            self.is_pitcher = False
+        self.is_pitcher = s.update_is_pitcher(
+            self, self.position, self.is_pitched)
         super().save(*args, **kwargs)
 
     def __str__(self):

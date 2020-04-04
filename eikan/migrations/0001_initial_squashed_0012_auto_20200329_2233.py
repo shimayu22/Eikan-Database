@@ -3,16 +3,36 @@
 import django.core.validators
 from django.db import migrations, models
 import django.db.models.deletion
-import eikan.models.fielder_results
-import eikan.models.games
-import eikan.models.pitcher_results
-import eikan.models.players
-import eikan.models.teams
+from eikan.model_manager import DefaultValueExtractor as d
 
 
 class Migration(migrations.Migration):
 
-    replaces = [('eikan', '0001_initial'), ('eikan', '0002_auto_20191213_1517'), ('eikan', '0003_auto_20200115_1541'), ('eikan', '0004_auto_20200118_1626'), ('eikan', '0005_modelsettings'), ('eikan', '0006_auto_20200129_1011'), ('eikan', '0007_auto_20200130_1458'), ('eikan', '0008_auto_20200216_2253'), ('eikan', '0009_auto_20200218_1000'), ('eikan', '0010_auto_20200327_1509'), ('eikan', '0011_pitchertotalresults_previous_game_pitched'), ('eikan', '0012_auto_20200329_2233')]
+    replaces = [
+        ('eikan',
+         '0001_initial'),
+        ('eikan',
+         '0002_auto_20191213_1517'),
+        ('eikan',
+         '0003_auto_20200115_1541'),
+        ('eikan',
+         '0004_auto_20200118_1626'),
+        ('eikan',
+         '0005_modelsettings'),
+        ('eikan',
+         '0006_auto_20200129_1011'),
+        ('eikan',
+         '0007_auto_20200130_1458'),
+        ('eikan',
+         '0008_auto_20200216_2253'),
+        ('eikan',
+         '0009_auto_20200218_1000'),
+        ('eikan',
+         '0010_auto_20200327_1509'),
+        ('eikan',
+         '0011_pitchertotalresults_previous_game_pitched'),
+        ('eikan',
+         '0012_auto_20200329_2233')]
 
     dependencies = [
     ]
@@ -40,7 +60,7 @@ class Migration(migrations.Migration):
             name='Players',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('admission_year', models.PositiveSmallIntegerField(default=eikan.models.players.default_year, validators=[django.core.validators.MinValueValidator(1939)], verbose_name='入学年度')),
+                ('admission_year', models.PositiveSmallIntegerField(default=d.create_default_year_for_players, validators=[django.core.validators.MinValueValidator(1939)], verbose_name='入学年度')),
                 ('name', models.CharField(max_length=6, verbose_name='名前')),
                 ('position', models.PositiveSmallIntegerField(choices=[('', '選択'), (1, '投'), (2, '捕'), (3, '一'), (4, '二'), (5, '三'), (6, '遊'), (7, '外')], default=0, verbose_name='メインポジション')),
                 ('is_pitched', models.BooleanField(default=False, verbose_name='野手登板')),
@@ -62,9 +82,9 @@ class Migration(migrations.Migration):
             name='Teams',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('year', models.PositiveSmallIntegerField(default=eikan.models.teams.default_year, validators=[django.core.validators.MinValueValidator(1941)], verbose_name='年度')),
-                ('period', models.PositiveSmallIntegerField(choices=[('', '選択'), (1, '夏'), (2, '秋')], default=eikan.models.teams.default_period, verbose_name='期間')),
-                ('prefecture', models.PositiveSmallIntegerField(choices=[('', '選択'), (1, '北北海道'), (2, '南北海道'), (3, '青森'), (4, '岩手'), (5, '宮城'), (6, '秋田'), (7, '山形'), (8, '福島'), (9, '茨城'), (10, '栃木'), (11, '群馬'), (12, '埼玉'), (13, '千葉'), (14, '神奈川'), (15, '山梨'), (16, '東東京'), (17, '西東京'), (18, '新潟'), (19, '富山'), (20, '石川'), (21, '福井'), (22, '長野'), (23, '岐阜'), (24, '静岡'), (25, '愛知'), (26, '三重'), (27, '滋賀'), (28, '京都'), (29, '大阪'), (30, '兵庫'), (31, '奈良'), (32, '和歌山'), (33, '鳥取'), (34, '島根'), (35, '岡山'), (36, '広島'), (37, '山口'), (38, '徳島'), (39, '香川'), (40, '愛媛'), (41, '高知'), (42, '福岡'), (43, '佐賀'), (44, '長崎'), (45, '熊本'), (46, '大分'), (47, '宮崎'), (48, '鹿児島'), (49, '沖縄')], default=eikan.models.teams.default_prefecture, verbose_name='都道府県')),
+                ('year', models.PositiveSmallIntegerField(default=d.create_default_year_for_teams, validators=[django.core.validators.MinValueValidator(1941)], verbose_name='年度')),
+                ('period', models.PositiveSmallIntegerField(choices=[('', '選択'), (1, '夏'), (2, '秋')], default=d.create_default_period, verbose_name='期間')),
+                ('prefecture', models.PositiveSmallIntegerField(choices=[('', '選択'), (1, '北北海道'), (2, '南北海道'), (3, '青森'), (4, '岩手'), (5, '宮城'), (6, '秋田'), (7, '山形'), (8, '福島'), (9, '茨城'), (10, '栃木'), (11, '群馬'), (12, '埼玉'), (13, '千葉'), (14, '神奈川'), (15, '山梨'), (16, '東東京'), (17, '西東京'), (18, '新潟'), (19, '富山'), (20, '石川'), (21, '福井'), (22, '長野'), (23, '岐阜'), (24, '静岡'), (25, '愛知'), (26, '三重'), (27, '滋賀'), (28, '京都'), (29, '大阪'), (30, '兵庫'), (31, '奈良'), (32, '和歌山'), (33, '鳥取'), (34, '島根'), (35, '岡山'), (36, '広島'), (37, '山口'), (38, '徳島'), (39, '香川'), (40, '愛媛'), (41, '高知'), (42, '福岡'), (43, '佐賀'), (44, '長崎'), (45, '熊本'), (46, '大分'), (47, '宮崎'), (48, '鹿児島'), (49, '沖縄')], default=d.create_default_prefecture, verbose_name='都道府県')),
                 ('training_policy', models.PositiveSmallIntegerField(choices=[(0, '選択'), (1, 'バランス'), (2, '打撃力'), (3, '機動力'), (4, '守備・投手')], default=0, verbose_name='育成方針')),
                 ('draft_nomination', models.PositiveSmallIntegerField(default=0, validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(5)], verbose_name='指名人数')),
                 ('remark', models.CharField(blank=True, max_length=100, null=True, verbose_name='備考')),
@@ -96,7 +116,7 @@ class Migration(migrations.Migration):
                 ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='登録日')),
                 ('updated_at', models.DateTimeField(auto_now=True, verbose_name='更新日')),
                 ('game_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='eikan.Games')),
-                ('player_id', models.ForeignKey(limit_choices_to=eikan.models.pitcher_results.set_select_pitchers, on_delete=django.db.models.deletion.CASCADE, to='eikan.Players', verbose_name='選手')),
+                ('player_id', models.ForeignKey(limit_choices_to=d.select_display_pitchers, on_delete=django.db.models.deletion.CASCADE, to='eikan.Players', verbose_name='選手')),
             ],
             options={
                 'verbose_name': '投手一覧',
@@ -106,7 +126,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='games',
             name='team_id',
-            field=models.ForeignKey(default=eikan.models.games.default_team_id, on_delete=django.db.models.deletion.CASCADE, to='eikan.Teams', verbose_name='チーム'),
+            field=models.ForeignKey(default=d.create_default_team_id, on_delete=django.db.models.deletion.CASCADE, to='eikan.Teams', verbose_name='チーム'),
         ),
         migrations.CreateModel(
             name='FielderResults',
@@ -128,7 +148,7 @@ class Migration(migrations.Migration):
                 ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='登録日')),
                 ('updated_at', models.DateTimeField(auto_now=True, verbose_name='更新日')),
                 ('game_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='eikan.Games')),
-                ('player_id', models.ForeignKey(limit_choices_to=eikan.models.fielder_results.set_select_players, on_delete=django.db.models.deletion.CASCADE, to='eikan.Players', verbose_name='選手')),
+                ('player_id', models.ForeignKey(limit_choices_to=d.select_display_players, on_delete=django.db.models.deletion.CASCADE, to='eikan.Players', verbose_name='選手')),
             ],
             options={
                 'verbose_name': '打者一覧',
@@ -193,7 +213,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='games',
             name='rank',
-            field=models.PositiveSmallIntegerField(choices=[('', '選択'), (1, '弱小'), (2, 'そこそこ'), (3, '中堅'), (4, '強豪'), (5, '名門')], default=eikan.models.games.default_team_rank, verbose_name='ランク'),
+            field=models.PositiveSmallIntegerField(choices=[('', '選択'), (1, '弱小'), (2, 'そこそこ'), (3, '中堅'), (4, '強豪'), (5, '名門')], default=d.create_default_team_rank, verbose_name='ランク'),
         ),
         migrations.CreateModel(
             name='TeamTotalResults',

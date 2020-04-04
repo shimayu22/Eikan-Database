@@ -1,25 +1,8 @@
 from django.db import models
 from eikan.models import Teams
+from eikan.model_manager import DefaultValueExtractor as d
+from eikan.model_manager import SavedValueExtractor as s
 
-# Create your models here.
-
-
-def default_team_id():
-    return Teams.objects.latest('pk').id \
-        if Teams.objects.exists() else 0
-
-
-def default_team_rank():
-    return Games.objects.latest('pk').rank \
-        if Games.objects.exists() else 0
-
-
-def set_game_results(score, run):
-    # 勝:1,負:2,分:3
-    if score == run:
-        return 3
-
-    return 1 if score > run else 2
 
 
 class Games(models.Model):
@@ -64,7 +47,7 @@ class Games(models.Model):
     team_id = models.ForeignKey(
         Teams,
         on_delete=models.CASCADE,
-        default=default_team_id,
+        default=d.create_default_team_id,
         verbose_name="チーム",
     )
 
@@ -100,7 +83,7 @@ class Games(models.Model):
     rank = models.PositiveSmallIntegerField(
         verbose_name="ランク",
         choices=RANK_CHOICES,
-        default=default_team_rank,
+        default=d.create_default_team_rank,
     )
 
     created_at = models.DateTimeField(
@@ -114,7 +97,7 @@ class Games(models.Model):
     )
 
     def save(self, *args, **kwargs):
-        self.result = set_game_results(self.score, self.run)
+        self.result = s.create_game_results(self, self.score, self.run)
         super().save(*args, **kwargs)
 
     def __str__(self):

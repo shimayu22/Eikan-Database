@@ -181,7 +181,6 @@ def new_player_results(sender, instance, created, **kwargs):
 @receiver(post_save, sender=Games)
 def update_teams_total_results_updated_at(sender, instance, created, **kwargs):
     if created:
-        TeamTotalResults.objects.get(team_id=instance.team_id).save()
         p.PitcherSabrFormatter().update_previous_game_pitched()
     else:
         t.TeamSabrFormatter().update_results(instance.team_id)
@@ -195,13 +194,3 @@ def update_cal_fielder_results(sender, instance, **kwargs):
 @receiver(post_save, sender=PitcherResults)
 def update_cal_pitcher_results(sender, instance, **kwargs):
     p.PitcherSabrFormatter().update_results(instance.player_id)
-
-# チーム総合成績の更新
-@receiver(post_save, sender=PitcherTotalResults)
-def update_cal_team_results(sender, instance, created, **kwargs):
-    if created:
-        # PitcherTotalResults新規登録時は処理をしない
-        pass
-    else:
-        team_id = TeamTotalResults.objects.latest('updated_at').team_id
-        t.TeamSabrFormatter().update_results(team_id)

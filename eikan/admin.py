@@ -177,13 +177,12 @@ def new_player_results(sender, instance, created, **kwargs):
     if instance.is_pitcher:
         PitcherTotalResults.objects.get_or_create(player_id=instance)
 
-# 更新順序の関係で行う（できればもっとスマートな方法でやりたい）
+# Games更新後の処理
 @receiver(post_save, sender=Games)
 def update_teams_total_results_updated_at(sender, instance, created, **kwargs):
     if created:
+        # 新規作成時は投手の前回登板をリセットする
         p.PitcherSabrFormatter().update_previous_game_pitched()
-    else:
-        t.TeamSabrFormatter().update_results(instance.team_id)
 
 # 野手成績の更新
 @receiver(post_save, sender=FielderResults)
@@ -193,4 +192,4 @@ def update_cal_fielder_results(sender, instance, **kwargs):
 # 投手成績の更新
 @receiver(post_save, sender=PitcherResults)
 def update_cal_pitcher_results(sender, instance, **kwargs):
-    p.PitcherSabrFormatter().update_results(instance.player_id)
+    p.PitcherSabrFormatter().update_total_results(instance.player_id)

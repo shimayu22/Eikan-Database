@@ -3,6 +3,7 @@ from . import views
 
 app_name = 'eikan'
 urlpatterns = [
+    # 表示用
     # /eikan/
     path('', views.IndexView.as_view(), name='index'),
     # チーム一覧 /eikan/teams
@@ -29,4 +30,8 @@ urlpatterns = [
         'games/<int:pk>/',
         views.GameDetailView.as_view(),
         name='game_detail'),
+
+    # データ更新用
+    # 現在のページに表示されているチームを更新する
+    path('update', views.update_total_results, name='update'),
 ]

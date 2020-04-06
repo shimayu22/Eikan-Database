@@ -116,15 +116,14 @@ class PitcherSabrFormatter:
         # PitcherResultsは必ず存在するのでチェックしない
         pitcher_results['games_started'] = PitcherResults.objects.select_related(
             'player_id').filter(player_id=self.player_id, games_started=True).count()
-                
+
         # GamesとPitcherResultsは必ず存在するのでチェックしない
         # 練習試合の場合は前の試合を気にしない
         if Games.objects.latest('pk').competition_type > 1:
-            pr = PitcherResults.objects.select_related('player_id').filter(player_id=self.player_id).latest('pk')
+            pr = PitcherResults.objects.select_related(
+                'player_id').filter(player_id=self.player_id).latest('pk')
             pitcher_results['previous_game_pitched'] = p.innings_conversion_for_display(
-                self,
-                pr.innings_pitched,
-                pr.innings_pitched_fraction)
+                self, pr.innings_pitched, pr.innings_pitched_fraction)
         else:
             pitcher_results['previous_game_pitched'] = 0
 
@@ -190,23 +189,26 @@ class PitcherSabrFormatter:
 
         return pitcher_results
 
-    def update_results(self, player_id):
+    def update_total_results(self, player_id):
         # PitcherTotalResults更新用メソッド
         self.player_id = player_id
         pitcher_results = self.tally_from_player_all_results()
         p = self.create_pitcher_total_results(pitcher_results)
         p.save()
-    
+
     def update_previous_game_pitched(self):
         year = Teams.objects.latest('pk').year - 2
-        pitchers = Players.objects.filter(is_pitcher=True, admission_year__gte=year)
-        
-        pitcher_total_results = PitcherTotalResults.objects.select_related('player_id').filter(player_id__in=pitchers)
+        pitchers = Players.objects.filter(
+            is_pitcher=True, admission_year__gte=year)
+
+        pitcher_total_results = PitcherTotalResults.objects.select_related(
+            'player_id').filter(player_id__in=pitchers)
         for ptr in pitcher_total_results:
             ptr.previous_game_pitched = 0
-        
+
         # 一括でUpdate(bulk_updateは通知がいかない)
-        PitcherTotalResults.objects.bulk_update(pitcher_total_results, fields=["previous_game_pitched"])
+        PitcherTotalResults.objects.bulk_update(
+            pitcher_total_results, fields=["previous_game_pitched"])
 
     def create_sabr_from_results_by_year(self, player_id):
         # 投手詳細画面用にデータを取得するメソッド

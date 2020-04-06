@@ -2,7 +2,7 @@
 {% block content %}
 {% if team_total_result %}
     {# チーム成績(team_total_result) #}
-    {% include "./_team_record.html" %}
+    {% include "./_team_record.html" with pg="index" %}
 
     <hr>
     {# 打者成績(fielder_total_results) #}

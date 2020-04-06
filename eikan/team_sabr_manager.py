@@ -132,7 +132,7 @@ class TeamSabrFormatter:
 
         return team_total_results
 
-    def update_results(self, team_id):
+    def update_total_results(self, team_id):
         # TeamsTotalResults更新用メソッド
         t = self.create_sabr_from_results_of_team(team_id)
         t.save()

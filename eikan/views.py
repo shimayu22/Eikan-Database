@@ -3,6 +3,7 @@ from django.views.generic import TemplateView, DetailView, ListView
 from eikan import fielder_sabr_manager as f
 from eikan import pitcher_sabr_manager as p
 from eikan import team_sabr_manager as t
+from datetime import datetime, timezone, timedelta
 
 from .models import Teams, Players, Games, \
     FielderResults, PitcherResults, \
@@ -15,7 +16,11 @@ def update_total_results(request):
         return redirect('eikan: index')
 
     team_id = Teams.objects.latest('pk')
-    t.TeamSabrFormatter().update_total_results(team_id)
+
+    # 連打されてもいいように
+    if TeamTotalResults.objects.get(
+            team_id=team_id).updated_at + timedelta(minutes=1) < datetime.now(timezone.utc):
+        t.TeamSabrFormatter().update_total_results(team_id)
 
     return redirect('eikan:index')
 

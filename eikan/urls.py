@@ -33,5 +33,13 @@ urlpatterns = [
 
     # データ更新用
     # 現在のページに表示されているチームを更新する
-    path('update', views.update_total_results, name='update'),
+    path(
+        'update_current_team',
+        views.update_total_results,
+        name='update_current_team'),
+    # 現在のページに表示されているチームを更新する
+    path(
+        'update_team/<int:pk>/',
+        views.update_total_results,
+        name='update_team'),
 ]

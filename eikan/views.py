@@ -1,5 +1,6 @@
 from django.shortcuts import get_list_or_404, redirect
 from django.views.generic import TemplateView, DetailView, ListView
+from django.urls import reverse
 from eikan import fielder_sabr_manager as f
 from eikan import pitcher_sabr_manager as p
 from eikan import team_sabr_manager as t
@@ -11,18 +12,26 @@ from .models import Teams, Players, Games, \
 
 
 # データ更新用メソッド
-def update_total_results(request):
+def update_total_results(request, pk=None):
     if not Teams.objects.exists():
-        return redirect('eikan: index')
+        return redirect('eikan:index')
 
     team_id = Teams.objects.latest('pk')
+    redirect_url = reverse('eikan:index')
+    url = redirect_url
+
+    # pkがある=チーム詳細からの更新、ない=indexからの更新
+    if pk and Teams.objects.filter(pk=pk).exists():
+        team_id = Teams.objects.get(pk=pk)
+        redirect_url = reverse('eikan:teams')
+        url = redirect_url + "/" + str(pk) + "/"
 
     # 連打されてもいいように
     if TeamTotalResults.objects.get(
             team_id=team_id).updated_at + timedelta(minutes=1) < datetime.now(timezone.utc):
         t.TeamSabrFormatter().update_total_results(team_id)
 
-    return redirect('eikan:index')
+    return redirect(url)
 
 
 # 表示用クラス

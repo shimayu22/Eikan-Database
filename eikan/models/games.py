@@ -4,7 +4,6 @@ from eikan.model_manager import DefaultValueExtractor as d
 from eikan.model_manager import SavedValueExtractor as s
 
 
-
 class Games(models.Model):
 
     COMPETITION_CHOICES = (
@@ -22,10 +21,9 @@ class Games(models.Model):
         (2, '1回戦'),
         (3, '2回戦'),
         (4, '3回戦'),
-        # (5, '4回戦'),
-        (6, '準々決勝'),
-        (7, '準決勝'),
-        (8, '決勝'),
+        (5, '準々決勝'),
+        (6, '準決勝'),
+        (7, '決勝'),
     )
 
     RESULT_CHOICES = (

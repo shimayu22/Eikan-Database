@@ -1,90 +1,221 @@
 class CalculateFielderSabr:
-    # TODO: 初期値を設定する
-    def total_bases(self, h, twobase, threebase, homerun):
-        # 安打 + 二塁打 + 三塁打 * 2 + 本塁打 * 3
-        return h + twobase + threebase * 2 + homerun * 3
+    """打者のセイバーメトリクスの指標を計算する
 
-    def slugging_percentage(self, at_bat, tb):
-        # 塁打 / 打数
-        if at_bat == 0:
-            return 0
+    Notes:
+        Noneが渡されるとエラーになる
+    """
 
-        return tb / at_bat
+    def total_bases(
+            self,
+            hit: int,
+            twobase: int,
+            threebase: int,
+            homerun: int) -> int:
+        """Calculate Total Bases
 
-    def on_base_percentage(self, at_bat, bb_hbp, h):
-        # (安打数 + 四死球) / (打数 + 四死球)
-        # 栄冠ナインの仕様上、犠飛を除外
-        a = at_bat + bb_hbp
-        if a == 0:
-            return 0
+        Args:
+            hit (int): 安打数。
+            twobase (int): 二塁打数。
+            threebase (int): 三塁打数。
+            homerun (int): 本塁打数。
 
-        return (h + bb_hbp) / a
+        Returns:
+            int: 塁打 = 安打 + 二塁打 + 三塁打 * 2 + 本塁打 * 3
+        """
+        return hit + twobase + threebase * 2 + homerun * 3
 
-    def on_base_plus_slugging(self, obp, slg):
+    def slugging_percentage(self, at_bat: int, tb: int) -> float:
+        """Calculate SLG
+
+        Args:
+            at_bat (int): 打数。
+            tb (int): 塁打。
+
+        Returns:
+            float: 長打率 = 塁打 / 打数
+        """
+        return tb / at_bat \
+            if at_bat > 0 else 0
+
+    def on_base_percentage(self, at_bat: int, bb_hbp: int, hit: int) -> float:
+        """Calculate OBP
+
+        Args:
+            at_bat (int): 打数。
+            bb_hbp (int): 四死球。
+            hit (int): 安打数。
+
+        Returns:
+            float: 出塁率 = (安打数 + 四死球) / (打数 + 四死球)
+
+        Notes:
+            栄冠ナインの仕様上、犠飛を除外
+        """
+        return (hit + bb_hbp) / (at_bat + bb_hbp) \
+            if (at_bat + bb_hbp) > 0 else 0
+
+    def on_base_plus_slugging(self, obp: float, slg: float) -> float:
+        """Calculate OPS
+
+        Args:
+            obp (float): 出塁率。
+            slg (float): 長打率。
+
+        Returns:
+            float: OPS = OBP + SLG
+        """
         return obp + slg
 
-    def batting_runs(self, h, twobase, threebase, homerun, bb_hbp, at_bat):
-        # 0.44 * (安打 - 二塁打 - 三塁打 - 本塁打) + 0.77 * 二塁打 + 1.12 * 三塁打 + 1.41 * 本塁打 + 0.29 * 四死球 - 0.25 * (打数 - 安打)
-        # 栄冠ナインの仕様上、盗塁、盗塁刺を除外
+    def batting_runs(
+            self,
+            hit: int,
+            twobase: int,
+            threebase: int,
+            homerun: int,
+            bb_hbp: int,
+            at_bat: int) -> float:
+        """Calculate Butting Runs
 
-        return 0.44 * (h - twobase - threebase - homerun) + 0.77 * twobase + \
-            1.12 * threebase + 1.41 * homerun + \
-            0.29 * bb_hbp - 0.25 * (at_bat - h)
+        Args:
+            hit (int): 安打数。
+            twobase (int): 二塁打数。
+            threebase (int): 三塁打数。
+            homerun (int): 本塁打数。
+            bb_hbp (int): 四死球。
+            at_bat (int): 打数。
+
+        Returns:
+            float: BR = 0.44 * (安打 - 二塁打 - 三塁打 - 本塁打) + 0.77 * 二塁打 + 1.12 * 三塁打 + 1.41 * 本塁打 + 0.29 * 四死球 - 0.25 * (打数 - 安打)
+        Notes:
+            栄冠ナインの仕様上、盗塁、盗塁刺を除外
+        """
+        return 0.44 * (hit - twobase - threebase - homerun) + 0.77 * twobase + \
+            1.12 * threebase + 1.41 * homerun + 0.29 * bb_hbp - 0.25 * (at_bat - hit)
 
     def weighted_on_base_average(
             self,
-            h,
-            twobase,
-            threebase,
-            homerun,
-            bb_hbp,
-            at_bat):
-        # (0.7 * 四死球 + 0.9 * (安打 - 二塁打 - 三塁打 - 本塁打) + 1.3 * 二塁打 + 1.6 * 三塁打 + 2.0 * 本塁打) / (打数 + 四死球)
-        # ※パワプロ用に犠飛を除外
-        a = at_bat + bb_hbp
-        if a == 0:
-            return 0
+            hit: int,
+            twobase: int,
+            threebase: int,
+            homerun: int,
+            bb_hbp: int,
+            at_bat: int) -> float:
+        """Calculate wOBA
 
-        return (0.7 * bb_hbp + 0.9 * (h - twobase - threebase - homerun) +
-                1.3 * twobase + 1.6 * threebase + 2.0 * homerun) / a
+        Args:
+            hit (int): 安打数。
+            twobase (int): 二塁打数。
+            threebase (int): 三塁打数。
+            homerun (int): 本塁打数。
+            bb_hbp (int): 四死球。
+            at_bat (int): 打数。
 
-    def gross_production_average(self, obp, slg):
+        Returns:
+            float: (0.7 * 四死球 + 0.9 * (安打 - 二塁打 - 三塁打 - 本塁打) + 1.3 * 二塁打 + 1.6 * 三塁打 + 2.0 * 本塁打) / (打数 + 四死球)
+        Notes:
+            栄冠ナインの仕様上、犠飛を除外
+        """
+        return (0.7 * bb_hbp + 0.9 * (hit - twobase - threebase - homerun) + 1.3 * twobase +
+                1.6 * threebase + 2.0 * homerun) / (at_bat + bb_hbp) \
+            if (at_bat + bb_hbp) > 0 else 0
+
+    def gross_production_average(self, obp: float, slg: float) -> float:
+        """Calculate GPA
+
+        Args:
+            obp (float): 出塁率。
+            slg (float): 長打率。
+
+        Returns:
+            float: GPA = (OBP * 1.8 + SLG) / 4
+        """
         return (obp * 1.8 + slg) / 4
 
-    def batting_average(self, at_bat, h):
-        if at_bat == 0:
-            return 0
+    def batting_average(self, at_bat: int, hit: int) -> float:
+        """Calculate AVG
 
-        return h / at_bat
+        Args:
+            at_bat (int): 打数。
+            hit (int): 安打数。
 
-    def bb_hp_percentage(self, at_bat, bb_hbp, bunt):
-        a = at_bat + bb_hbp + bunt
-        if a == 0:
-            return 0
+        Returns:
+            float: 打率 = 安打数 / 打数
+        """
+        return hit / at_bat \
+            if at_bat > 0 else 0
 
-        return bb_hbp / a
+    def bb_hp_percentage(self, at_bat: int, bb_hbp: int, bunt: int) -> float:
+        """Calculate BBHP%
 
-    def isolated_discipline(self, obp, avg):
+        Args:
+            at_bat (int): 打数。
+            bb_hbp (int): 四死球数。
+            bunt (int): 犠打数。
+
+        Returns:
+            float: 四死球率 = 四死球 / (打数 + 四死球数 + 犠打数)
+        Notes:
+            打席 = 打数 + 四死球数 + 犠打数
+            栄冠ナインの仕様上、犠飛を除外
+        """
+
+        return bb_hbp / (at_bat + bb_hbp + bunt) \
+            if (at_bat + bb_hbp + bunt) > 0 else 0
+
+    def isolated_discipline(self, obp: float, avg: float) -> float:
+        """Calculate IsoD
+
+        Args:
+            obp (float): 出塁率。
+            avg (float): 打率。
+
+        Returns:
+            float: IsoD = 出塁率 -　打率
+        """
         return obp - avg
 
-    def isolated_power(self, slg, avg):
+    def isolated_power(self, slg: float, avg: float) -> float:
+        """Calculate IsoP
+
+        Args:
+            slg (float): 長打率。
+            avg (float): 打率。
+
+        Returns:
+            float: IsoP = 長打率 - 打率
+        """
         return slg - avg
 
-    def bb_hbp_per_so(self, strike_out, bb_hbp):
-        if strike_out == 0:
-            return 0
+    def bb_hbp_per_so(self, strike_out: int, bb_hbp: int) -> float:
+        """Calculate BBHP/K
 
-        return bb_hbp / strike_out
+        Args:
+            strike_out (int): 三振数
+            bb_hbp (int): 四死球数
 
-    def power_speed_number(self, home_run, stolen_base):
-        a = home_run + stolen_base
-        if home_run == 0 or stolen_base == 0:
-            return 0
+        Returns:
+            float: BBHP/K = 四死球数 / 三振数
+        """
+        return bb_hbp / strike_out \
+            if strike_out > 0 else 0
 
-        return (home_run * stolen_base * 2) / a
+    def power_speed_number(self, home_run: int, stolen_base: int) -> float:
+        """Calculate P-S
+
+        Args:
+            home_run (int): 本塁打数
+            stolen_base (int): 盗塁数
+
+        Returns:
+            float: P-S = (本塁打数 * 盗塁数 * 2) / (本塁打数 + 盗塁数)
+        """
+
+        return (home_run * stolen_base * 2) / (home_run + stolen_base) \
+            if (home_run + stolen_base) > 0 else 0
 
 
 class CalculatePitcherSabr:
+
     def innings_conversion_for_display(
             self, innings_pitched, innings_pitched_fraction):
         # 表示用に178.2 という値に変換する(float)

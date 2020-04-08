@@ -32,14 +32,19 @@ urlpatterns = [
         name='game_detail'),
 
     # データ更新用
-    # 現在のページに表示されているチームを更新する
+    # 現在のページに表示されているチームの総合成績を更新する
     path(
         'update_current_team',
         views.update_total_results,
         name='update_current_team'),
-    # 現在のページに表示されているチームを更新する
+    # 現在のページに表示されているチームの総合成績を更新する
     path(
         'update_team/<int:pk>/',
         views.update_total_results,
         name='update_team'),
+    # 現在登録されている全ての選手の総合成績を更新する
+    path(
+        'update_all_players',
+        views.update_all_players_total_results,
+        name="update_all_players")
 ]

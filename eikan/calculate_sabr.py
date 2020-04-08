@@ -1,4 +1,5 @@
 class CalculateFielderSabr:
+    # TODO: 初期値を設定する
     def total_bases(self, h, twobase, threebase, homerun):
         # 安打 + 二塁打 + 三塁打 * 2 + 本塁打 * 3
         return h + twobase + threebase * 2 + homerun * 3
@@ -159,7 +160,7 @@ class CalculatePitcherSabr:
     def hit_per_game(self, sum_innings_pitched, hit):
         if sum_innings_pitched == 0:
             return 0
-        
+
         return (hit * 9 * 3) / sum_innings_pitched
 
     def hit_percentage(self, batters_faced, hit):

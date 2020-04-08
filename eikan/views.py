@@ -5,7 +5,6 @@ from eikan import fielder_sabr_manager as f
 from eikan import pitcher_sabr_manager as p
 from eikan import team_sabr_manager as t
 from datetime import datetime, timezone, timedelta
-
 from .models import Teams, Players, Games, \
     FielderResults, PitcherResults, \
     FielderTotalResults, PitcherTotalResults, TeamTotalResults
@@ -24,7 +23,7 @@ def update_total_results(request, pk=None):
     if pk and Teams.objects.filter(pk=pk).exists():
         team_id = Teams.objects.get(pk=pk)
         redirect_url = reverse('eikan:teams')
-        url = redirect_url + "/" + str(pk) + "/"
+        url = f'{redirect_url}/{str(pk)}/'
 
     # 連打されてもいいように
     if TeamTotalResults.objects.get(
@@ -32,6 +31,21 @@ def update_total_results(request, pk=None):
         t.TeamSabrFormatter().update_total_results(team_id)
 
     return redirect(url)
+
+
+# 全ての選手を再計算する
+def update_all_players_total_results(request):
+    if not Players.objects.exists():
+        return redirect('eikan:index')
+
+    # 打者総合成績を更新
+    f.FielderSabrFormatter().update_all_total_results()
+    # 投手総合成績を更新
+    p.PitcherSabrFormatter().update_all_total_results()
+    # チーム総合成績を更新
+    t.TeamSabrFormatter().update_all_total_results()
+
+    return redirect('eikan:index')
 
 
 # 表示用クラス

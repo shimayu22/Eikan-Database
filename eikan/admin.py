@@ -1,5 +1,5 @@
 from django.dispatch import receiver
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
 from django.contrib import admin
 from django.db import models
 from django.forms import NumberInput
@@ -177,19 +177,22 @@ def new_player_results(sender, instance, created, **kwargs):
     if instance.is_pitcher:
         PitcherTotalResults.objects.get_or_create(player_id=instance)
 
-# Games更新後の処理
-@receiver(post_save, sender=Games)
-def update_teams_total_results_updated_at(sender, instance, created, **kwargs):
-    if created:
-        # 新規作成時は投手の前回登板をリセットする
-        p.PitcherSabrFormatter().update_previous_game_pitched()
 
-# 野手成績の更新
+# Games登録、更新後の処理
+@receiver(post_save, sender=Games)
+@receiver(post_delete, sender=Games)
+def update_teams_total_results_updated_at(sender, instance, **kwargs):
+    p.PitcherSabrFormatter().update_previous_game_pitched()
+
+
+# 野手成績の更新(追加、変更、削除時に集計・登録を行う)
 @receiver(post_save, sender=FielderResults)
+@receiver(post_delete, sender=FielderResults)
 def update_cal_fielder_results(sender, instance, **kwargs):
     f.FielderSabrFormatter().update_total_results(instance.player_id)
 
-# 投手成績の更新
+
+# 投手成績の更新(追加、変更時に集計・登録を行う)
 @receiver(post_save, sender=PitcherResults)
 def update_cal_pitcher_results(sender, instance, **kwargs):
     p.PitcherSabrFormatter().update_total_results(instance.player_id)

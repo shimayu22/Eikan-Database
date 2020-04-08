@@ -169,6 +169,55 @@ class FielderSabrFormatter:
         f = self.create_fielder_total_results(fielder_results)
         f.save()
 
+    def update_all_total_results(self):
+        # 登録済みの全ての打者総合成績を更新する
+        fielder_total_results = FielderTotalResults.objects.select_related(
+            'player_id').all()
+        update_fielder_results = []
+
+        for ftr in fielder_total_results:
+            self.player_id = ftr.player_id
+
+            fielder_results = self.tally_from_player_all_results()
+            # まだ試合に出ていない選手の場合はpassする
+            if fielder_results["at_bat__sum"] is None:
+                continue
+
+            update_fielder_results.append(
+                self.create_fielder_total_results(fielder_results))
+
+        FielderTotalResults.objects.bulk_update(
+            update_fielder_results,
+            fields=[
+                'at_bat',
+                'run',
+                'hit',
+                'two_base',
+                'three_base',
+                'home_run',
+                'run_batted_in',
+                'strike_out',
+                'bb_hbp',
+                'sacrifice_bunt',
+                'stolen_base',
+                'grounded_into_double_play',
+                'error',
+                'total_bases',
+                'slg',
+                'obp',
+                'ops',
+                'br',
+                'woba',
+                'gpa',
+                'batting_average',
+                'bbhp_percent',
+                'isod',
+                'isop',
+                'bbhp_k',
+                'p_s'],
+            batch_size=10000)
+        print("打者総合成績を更新")
+
     def create_sabr_from_results_by_year(self, player_id):
         # 打者詳細画面用にデータを取得するメソッド
         self.player_id = player_id

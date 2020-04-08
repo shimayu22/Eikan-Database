@@ -65,7 +65,7 @@ class Teams(models.Model):
     )
 
     POLICY_CHOICES = (
-        (0, '選択'),
+        ('', '選択'),
         (1, 'バランス'),
         (2, '打撃力'),
         (3, '機動力'),

@@ -67,7 +67,7 @@ class TeamSabrFormatter:
             pass
         else:
             g = self.games.latest('pk')
-            if g.competition_type > 3 and g.competition_round == 8 and g.result == 1:
+            if g.competition_type > 3 and g.competition_round == 7 and g.result == 1:
                 team_total_results.is_to_win = True
 
         return team_total_results

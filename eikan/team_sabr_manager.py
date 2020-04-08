@@ -134,5 +134,37 @@ class TeamSabrFormatter:
 
     def update_total_results(self, team_id):
         # TeamsTotalResults更新用メソッド
-        t = self.create_sabr_from_results_of_team(team_id)
-        t.save()
+        if Games.objects.filter(team_id=team_id).exists():
+            t = self.create_sabr_from_results_of_team(team_id)
+            t.save()
+
+    def update_all_total_results(self):
+        # 登録済みの全てのチーム総合成績を更新する
+        team_total_results = TeamTotalResults.objects.select_related(
+            'team_id').all()
+        update_team_results = []
+
+        for ttr in team_total_results:
+            if Games.objects.filter(team_id=ttr.team_id).exists():
+                update_team_results.append(
+                    self.create_sabr_from_results_of_team(
+                        ttr.team_id))
+
+        TeamTotalResults.objects.bulk_update(
+            update_team_results,
+            fields=[
+                'total_win',
+                'total_lose',
+                'total_draw',
+                'score',
+                'run',
+                'score_difference',
+                'batting_average',
+                'ops',
+                'hr',
+                'era',
+                'der',
+                'rank',
+                'is_to_win', ],
+            batch_size=10000)
+        print("チーム総合成績を更新")

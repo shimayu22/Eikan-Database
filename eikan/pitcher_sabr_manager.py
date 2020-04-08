@@ -209,16 +209,24 @@ class PitcherSabrFormatter:
         p.save()
 
     def update_all_total_results(self):
+        # 登録済みの全ての投手総合成績を更新する
         pitcher_total_results = PitcherTotalResults.objects.select_related(
             'player_id').all()
+        update_pitcher_results = []
 
         for ptr in pitcher_total_results:
             self.player_id = ptr.player_id
+
             pitcher_results = self.tally_from_player_all_results()
-            ptr = self.create_pitcher_total_results(pitcher_results)
+            # まだ試合に出ていない選手の場合はpassする
+            if pitcher_results["innings_pitched__sum"] is None:
+                continue
+
+            update_pitcher_results.append(
+                self.create_pitcher_total_results(pitcher_results))
 
         PitcherTotalResults.objects.bulk_update(
-            pitcher_total_results,
+            update_pitcher_results,
             fields=[
                 'games',
                 'games_started',
@@ -246,8 +254,9 @@ class PitcherSabrFormatter:
                 'hr_percent',
                 'lob_percent',
                 'p_ip',
-                'previous_game_pitched'])
-        print("投手成績を更新")
+                'previous_game_pitched'],
+            batch_size=10000)
+        print("投手総合成績を更新")
 
     def update_previous_game_pitched(self):
         year = Teams.objects.latest('pk').year - 2

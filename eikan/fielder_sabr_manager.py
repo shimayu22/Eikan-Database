@@ -28,26 +28,21 @@ class FielderSabrFormatter:
             'grounded_into_double_play__sum']
         fielder_total_results.error = fielder_results['error__sum']
         fielder_total_results.total_bases = f.total_bases(
-            self,
             fielder_results['hit__sum'],
             fielder_results['two_base__sum'],
             fielder_results['three_base__sum'],
             fielder_results['home_run__sum'])
         fielder_total_results.slg = f.slugging_percentage(
-            self,
             fielder_results['at_bat__sum'],
             fielder_total_results.total_bases)
         fielder_total_results.obp = f.on_base_percentage(
-            self,
             fielder_results['at_bat__sum'],
             fielder_results['bb_hbp__sum'],
             fielder_results['hit__sum'])
         fielder_total_results.ops = f.on_base_plus_slugging(
-            self,
             fielder_total_results.obp,
             fielder_total_results.slg)
         fielder_total_results.br = f.batting_runs(
-            self,
             fielder_results['hit__sum'],
             fielder_results['two_base__sum'],
             fielder_results['three_base__sum'],
@@ -56,7 +51,6 @@ class FielderSabrFormatter:
             fielder_results['at_bat__sum']
         )
         fielder_total_results.woba = f.weighted_on_base_average(
-            self,
             fielder_results['hit__sum'],
             fielder_results['two_base__sum'],
             fielder_results['three_base__sum'],
@@ -65,32 +59,25 @@ class FielderSabrFormatter:
             fielder_results['at_bat__sum']
         )
         fielder_total_results.gpa = f.gross_production_average(
-            self,
             fielder_total_results.obp,
             fielder_total_results.slg)
         fielder_total_results.batting_average = f.batting_average(
-            self,
             fielder_results['at_bat__sum'],
             fielder_results['hit__sum'])
         fielder_total_results.bbhp_percent = f.bb_hp_percentage(
-            self,
             fielder_results['at_bat__sum'],
             fielder_results['bb_hbp__sum'],
             fielder_results['sacrifice_bunt__sum'])
         fielder_total_results.isod = f.isolated_discipline(
-            self,
             fielder_total_results.obp,
             fielder_total_results.batting_average)
         fielder_total_results.isop = f.isolated_power(
-            self,
             fielder_total_results.slg,
             fielder_total_results.batting_average)
         fielder_total_results.bbhp_k = f.bb_hbp_per_so(
-            self,
             fielder_results['strike_out__sum'],
             fielder_results['bb_hbp__sum'])
         fielder_total_results.p_s = f.power_speed_number(
-            self,
             fielder_results['home_run__sum'],
             fielder_results['stolen_base__sum'])
 

@@ -27,35 +27,28 @@ class TeamSabrFormatter:
         team_total_results.rank = games_results['update_rank']
 
         team_total_results.batting_average = f.batting_average(
-            self,
             fielder_results['at_bat__sum'],
             fielder_results['hit__sum'])
         team_obp = f.on_base_percentage(
-            self,
             fielder_results['at_bat__sum'],
             fielder_results['bb_hbp__sum'],
             fielder_results['hit__sum'])
         team_tb = f.total_bases(
-            self,
             fielder_results['hit__sum'],
             fielder_results['two_base__sum'],
             fielder_results['three_base__sum'],
             fielder_results['home_run__sum'],)
         team_slg = f.slugging_percentage(
-            self,
             fielder_results['at_bat__sum'], team_tb)
         team_total_results.ops = f.on_base_plus_slugging(
-            self,
             team_obp, team_slg)
 
         total_sum_pi = (pitcher_results['innings_pitched__sum'] + (
             pitcher_results['innings_pitched_fraction__sum'] / 3)) * 3
         team_total_results.era = p.earned_runs_average(
-            self,
             total_sum_pi,
             pitcher_results['earned_run__sum'])
         team_total_results.der = t.team_der(
-            self,
             pitcher_results['total_batters_faced__sum'],
             pitcher_results['hit__sum'],
             pitcher_results['home_run__sum'],

@@ -6,8 +6,8 @@ class CalculateFielderSabr:
         パワプロ用なので犠飛、盗塁死、敬遠などは除外されている
     """
 
+    @staticmethod
     def total_bases(
-            self,
             hit: int,
             twobase: int,
             threebase: int,
@@ -25,7 +25,8 @@ class CalculateFielderSabr:
         """
         return hit + twobase + threebase * 2 + homerun * 3
 
-    def slugging_percentage(self, at_bat: int, tb: int) -> float:
+    @staticmethod
+    def slugging_percentage(at_bat: int, tb: int) -> float:
         """Calculate SLG
 
         Args:
@@ -38,7 +39,8 @@ class CalculateFielderSabr:
         return tb / at_bat \
             if at_bat > 0 else 0
 
-    def on_base_percentage(self, at_bat: int, bb_hbp: int, hit: int) -> float:
+    @staticmethod
+    def on_base_percentage(at_bat: int, bb_hbp: int, hit: int) -> float:
         """Calculate OBP
 
         Args:
@@ -55,7 +57,8 @@ class CalculateFielderSabr:
         return (hit + bb_hbp) / (at_bat + bb_hbp) \
             if (at_bat + bb_hbp) > 0 else 0
 
-    def on_base_plus_slugging(self, obp: float, slg: float) -> float:
+    @staticmethod
+    def on_base_plus_slugging(obp: float, slg: float) -> float:
         """Calculate OPS
 
         Args:
@@ -67,8 +70,8 @@ class CalculateFielderSabr:
         """
         return obp + slg
 
+    @staticmethod
     def batting_runs(
-            self,
             hit: int,
             twobase: int,
             threebase: int,
@@ -96,8 +99,8 @@ class CalculateFielderSabr:
             1.12 * threebase + 1.41 * homerun + \
             0.29 * bb_hbp - 0.25 * (at_bat - hit)
 
+    @staticmethod
     def weighted_on_base_average(
-            self,
             hit: int,
             twobase: int,
             threebase: int,
@@ -124,7 +127,8 @@ class CalculateFielderSabr:
                 1.6 * threebase + 2.0 * homerun) / (at_bat + bb_hbp) \
             if (at_bat + bb_hbp) > 0 else 0
 
-    def gross_production_average(self, obp: float, slg: float) -> float:
+    @staticmethod
+    def gross_production_average(obp: float, slg: float) -> float:
         """Calculate GPA
 
         Args:
@@ -136,7 +140,8 @@ class CalculateFielderSabr:
         """
         return (obp * 1.8 + slg) / 4
 
-    def batting_average(self, at_bat: int, hit: int) -> float:
+    @staticmethod
+    def batting_average(at_bat: int, hit: int) -> float:
         """Calculate AVG
 
         Args:
@@ -149,7 +154,8 @@ class CalculateFielderSabr:
         return hit / at_bat \
             if at_bat > 0 else 0
 
-    def bb_hp_percentage(self, at_bat: int, bb_hbp: int, bunt: int) -> float:
+    @staticmethod
+    def bb_hp_percentage(at_bat: int, bb_hbp: int, bunt: int) -> float:
         """Calculate BBHP%
 
         Args:
@@ -167,7 +173,8 @@ class CalculateFielderSabr:
         return bb_hbp / (at_bat + bb_hbp + bunt) \
             if (at_bat + bb_hbp + bunt) > 0 else 0
 
-    def isolated_discipline(self, obp: float, avg: float) -> float:
+    @staticmethod
+    def isolated_discipline(obp: float, avg: float) -> float:
         """Calculate IsoD
 
         Args:
@@ -179,7 +186,8 @@ class CalculateFielderSabr:
         """
         return obp - avg
 
-    def isolated_power(self, slg: float, avg: float) -> float:
+    @staticmethod
+    def isolated_power(slg: float, avg: float) -> float:
         """Calculate IsoP
 
         Args:
@@ -191,7 +199,8 @@ class CalculateFielderSabr:
         """
         return slg - avg
 
-    def bb_hbp_per_so(self, strike_out: int, bb_hbp: int) -> float:
+    @staticmethod
+    def bb_hbp_per_so(strike_out: int, bb_hbp: int) -> float:
         """Calculate BBHP/K
 
         Args:
@@ -204,7 +213,8 @@ class CalculateFielderSabr:
         return bb_hbp / strike_out \
             if strike_out > 0 else 0
 
-    def power_speed_number(self, home_run: int, stolen_base: int) -> float:
+    @staticmethod
+    def power_speed_number(home_run: int, stolen_base: int) -> float:
         """Calculate P-S
 
         Args:
@@ -227,8 +237,8 @@ class CalculatePitcherSabr:
         パワプロ用なので犠飛、盗塁死、敬遠などは除外されている
     """
 
+    @staticmethod
     def innings_conversion_for_display(
-            self,
             innings_pitched: int,
             innings_pitched_fraction: int) -> float:
         """表示用に「178.2」という値に変換する ex) 178回2/3の場合:
@@ -252,8 +262,8 @@ class CalculatePitcherSabr:
 
         return innings
 
+    @staticmethod
     def innings_conversion_for_calculate(
-            self,
             innings_pitched: int,
             innings_pitched_fraction: int) -> float:
         """計算用に「178.666... * 3」という値に変換する ex) 178回2/3の場合:
@@ -268,8 +278,8 @@ class CalculatePitcherSabr:
 
         return (innings_pitched + innings_pitched_fraction / 3) * 3
 
+    @staticmethod
     def earned_runs_average(
-            self,
             sum_innings_pitched: float,
             earned_run: int) -> float:
         """Calculate ERA
@@ -284,7 +294,8 @@ class CalculatePitcherSabr:
         return (earned_run * 9 * 3) / sum_innings_pitched \
             if sum_innings_pitched > 0 else 0
 
-    def runs_average(self, sum_innings_pitched: float, run: int) -> float:
+    @staticmethod
+    def runs_average(sum_innings_pitched: float, run: int) -> float:
         """Calculate URA
 
         Args:
@@ -297,8 +308,11 @@ class CalculatePitcherSabr:
         return (run * 9 * 3) / sum_innings_pitched \
             if sum_innings_pitched > 0 else 0
 
+    @staticmethod
     def walks_plus_hits_per_inning_pitched(
-            self, sum_innings_pitched: float, hit: int, bb_hbp: int) -> float:
+            sum_innings_pitched: float,
+            hit: int,
+            bb_hbp: int) -> float:
         """Calculate WHIP
 
         Args:
@@ -313,7 +327,8 @@ class CalculatePitcherSabr:
         return ((hit + bb_hbp) * 3) / sum_innings_pitched \
             if sum_innings_pitched > 0 else 0
 
-    def strike_out_per_bbhp(self, bb_hbp: int, strike_out: int) -> float:
+    @staticmethod
+    def strike_out_per_bbhp(bb_hbp: int, strike_out: int) -> float:
         """Calculate K/BBHP
 
         Args:
@@ -326,8 +341,8 @@ class CalculatePitcherSabr:
         return strike_out / bb_hbp \
             if bb_hbp > 0 else 0
 
+    @staticmethod
     def strike_out_per_game(
-            self,
             sum_innings_pitched: float,
             strike_out: int) -> float:
         """Calculate K/9
@@ -342,8 +357,8 @@ class CalculatePitcherSabr:
         return (strike_out * 9 * 3) / sum_innings_pitched \
             if sum_innings_pitched > 0 else 0
 
+    @staticmethod
     def strike_out_percentage(
-            self,
             batters_faced: int,
             strike_out: int) -> float:
         """Calculate K%
@@ -358,7 +373,8 @@ class CalculatePitcherSabr:
         return strike_out / batters_faced \
             if batters_faced > 0 else 0
 
-    def bbhp_per_game(self, sum_innings_pitched: float, bb_hbp: int) -> float:
+    @staticmethod
+    def bbhp_per_game(sum_innings_pitched: float, bb_hbp: int) -> float:
         """Calculate BBHP/9
 
         Args:
@@ -371,7 +387,8 @@ class CalculatePitcherSabr:
         return (bb_hbp * 9 * 3) / sum_innings_pitched \
             if sum_innings_pitched > 0 else 0
 
-    def bbhp_percentage(self, batters_faced: int, bb_hbp: int) -> float:
+    @staticmethod
+    def bbhp_percentage(batters_faced: int, bb_hbp: int) -> float:
         """Calculate BBHP%
 
         Args:
@@ -384,7 +401,8 @@ class CalculatePitcherSabr:
         return bb_hbp / batters_faced \
             if batters_faced > 0 else 0
 
-    def hit_per_game(self, sum_innings_pitched: float, hit: int) -> float:
+    @staticmethod
+    def hit_per_game(sum_innings_pitched: float, hit: int) -> float:
         """Calculate H/9
 
         Args:
@@ -397,7 +415,8 @@ class CalculatePitcherSabr:
         return (hit * 9 * 3) / sum_innings_pitched \
             if sum_innings_pitched > 0 else 0
 
-    def hit_percentage(self, batters_faced: int, hit: int) -> float:
+    @staticmethod
+    def hit_percentage(batters_faced: int, hit: int) -> float:
         """Calculate H%
 
         Args:
@@ -410,8 +429,8 @@ class CalculatePitcherSabr:
         return hit / batters_faced \
             if batters_faced > 0 else 0
 
+    @staticmethod
     def home_run_per_game(
-            self,
             sum_innings_pitched: float,
             home_run: int) -> float:
         """Calculate HR/9
@@ -426,7 +445,8 @@ class CalculatePitcherSabr:
         return (home_run * 9 * 3) / sum_innings_pitched \
             if sum_innings_pitched > 0 else 0
 
-    def home_run_percentage(self, batters_faced: int, home_run: int) -> float:
+    @staticmethod
+    def home_run_percentage(batters_faced: int, home_run: int) -> float:
         """Calculate HR%
 
         Args:
@@ -439,8 +459,8 @@ class CalculatePitcherSabr:
         return home_run / batters_faced \
             if batters_faced > 0 else 0
 
+    @staticmethod
     def left_on_base_percentage(
-            self,
             hit: int,
             bb_hbp: int,
             home_run: int,
@@ -459,7 +479,8 @@ class CalculatePitcherSabr:
         return (hit + bb_hbp - run) / (hit + bb_hbp - 1.4 * home_run) \
             if (hit + bb_hbp - 1.4 * home_run) != 0.0 else 0
 
-    def pitch_per_inning(self, sum_innings_pitched: float,
+    @staticmethod
+    def pitch_per_inning(sum_innings_pitched: float,
                          number_of_pitch: int) -> float:
         """Calculate P/IP
 
@@ -482,8 +503,8 @@ class CalculateTeamSabr:
         パワプロ用なので犠飛、盗塁死、敬遠などは除外されている
     """
 
+    @staticmethod
     def team_der(
-            self,
             batters_faced: int,
             suffer_hit: int,
             suffer_home_run: int,

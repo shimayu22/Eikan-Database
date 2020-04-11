@@ -26,6 +26,7 @@ class TeamsAdmin(admin.ModelAdmin):
               'draft_nomination', 'remark')
     list_display = ('year', 'period', 'prefecture', 'training_policy',
                     'draft_nomination', 'remark')
+    list_editable = ('draft_nomination','remark',)
 
 
 class PlayersAdmin(admin.ModelAdmin):

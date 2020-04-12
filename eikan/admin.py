@@ -26,7 +26,7 @@ class TeamsAdmin(admin.ModelAdmin):
               'draft_nomination', 'remark')
     list_display = ('year', 'period', 'prefecture', 'training_policy',
                     'draft_nomination', 'remark')
-    list_editable = ('draft_nomination','remark',)
+    list_editable = ('draft_nomination', 'remark',)
 
 
 class PlayersAdmin(admin.ModelAdmin):
@@ -69,6 +69,7 @@ class GamesAdmin(admin.ModelAdmin):
               ('score', 'run'), 'rank')
     list_display = ('team_id', 'competition_type', 'competition_round',
                     'result', 'score', 'run', 'rank')
+    list_editable = ('rank',)
     inlines = [FielderResultsInline, PitcherResultsInline]
 
 

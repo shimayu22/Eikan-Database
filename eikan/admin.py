@@ -41,7 +41,7 @@ class PlayersAdmin(admin.ModelAdmin):
         'remark')
     list_display = ('name', 'admission_year', 'position', 'is_ob',
                     'is_active', 'is_genius', 'remark')
-    list_editable = ('position',)
+    list_editable = ('position', 'remark',)
 
 
 class FielderResultsInline(admin.TabularInline):

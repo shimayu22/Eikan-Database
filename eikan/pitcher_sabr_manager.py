@@ -122,11 +122,11 @@ class PitcherSabrFormatter:
         else:
             return 0
 
-    def tally_from_player_all_results(self) -> PitcherTotalResults:
+    def tally_from_player_all_results(self) -> dict:
         """PitcherResultsを集計する
 
         Returns:
-            PitcherTotalResults: 対象選手の全てのFielderResultsを集計した結果を返す
+            dict: 対象選手の全てのFielderResultsを集計した結果を返す
 
         Notes:
             pk__count, innings_pitched__sum, innings_pitched_fraction__sum,

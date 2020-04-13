@@ -97,11 +97,11 @@ class FielderSabrFormatter:
 
         return fielder_total_results
 
-    def tally_from_player_all_results(self) -> FielderResults:
+    def tally_from_player_all_results(self) -> dict:
         """FielderResultsを集計する
 
         Returns:
-            FielderResults: 対象選手の全てのFielderResultsを集計した結果を返す
+            dict: 対象選手の全てのFielderResultsを集計した結果を返す
 
         Notes:
             at_bat__sum, run__sum, hit__sum, two_base__sum, three_base__sum, home_run__sum,

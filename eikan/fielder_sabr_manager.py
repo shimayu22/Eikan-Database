@@ -218,6 +218,9 @@ class FielderSabrFormatter:
 
         Returns:
             なし
+
+        Notes:
+            再集計、再計算が行われる
         """
         fielder_total_results = FielderTotalResults.objects.select_related(
             'player_id').all()

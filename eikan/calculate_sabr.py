@@ -1,3 +1,12 @@
+"""セイバーメトリクスを算出する
+
+Notes:
+    CalculateFielderSabr:打者の指標を算出する
+    CalculatePitcherSabr:投手の指標を算出する
+    CalculateTeamSabr:チームの指標を算出する
+"""
+
+
 class CalculateFielderSabr:
     """打者のセイバーメトリクスの指標を計算する
 

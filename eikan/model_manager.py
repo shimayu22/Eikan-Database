@@ -14,6 +14,7 @@ class DefaultValueExtractor:
 
         Returns:
             int: 前チームの期間(period)が夏(1)なら前チームと同じ年、秋(2)なら翌年を返す
+
         Notes:
             初めて登録する場合は1941を返す
         """
@@ -31,6 +32,7 @@ class DefaultValueExtractor:
 
         Returns:
             int: 前チームの期間(period)が夏(1)なら秋(2)、秋(2)なら夏(1)を返す
+
         Notes:
             初めて登録する場合は1を返す
         """
@@ -46,6 +48,7 @@ class DefaultValueExtractor:
 
         Returns:
             int: 前のチームと同じ都道府県を返す
+
         Notes:
             初めて登録する場合は0を返す
         """
@@ -58,6 +61,7 @@ class DefaultValueExtractor:
 
         Returns:
             int: 現在のチームのyearを返す
+
         Notes:
             初めて登録する場合は1939を返す
         """
@@ -71,6 +75,7 @@ class DefaultValueExtractor:
 
         Returns:
             int: 現在のチームのidを返す
+
         Notes:
             Teamsにレコードがなければ0を返す
         """
@@ -83,6 +88,7 @@ class DefaultValueExtractor:
 
         Returns:
             int: １つ前のレコードと同じrankを返す
+
         Notes:
             初めて登録する場合は0を返す
         """
@@ -97,6 +103,7 @@ class DefaultValueExtractor:
             dict: 現在のチームの年度と期間をもとに、そのチームに所属している選手を表示する
             夏: ３学年分
             秋: ２学年分
+
         Notes:
             ModelSettingsのis_used_limit_choices_toがTrueの場合、全ての選手を表示する
         """
@@ -127,6 +134,7 @@ class DefaultValueExtractor:
             dict: 現在のチームの年度と期間をもとに、そのチームに所属している投手を表示する
             夏: ３学年分
             秋: ２学年分
+
         Notes:
             - 投手または登板した野手のみ表示される
             - ModelSettingsのis_used_limit_choices_toがTrueの場合、全ての投手を表示する
@@ -177,6 +185,7 @@ class SavedValueExtractor:
 
         Returns:
             bool: 投手または登板したことがある野手かを返す
+
         Notes:
             is_pitcherがTrueの場合、pitcher_resultsのプルダウンに表示される
         """

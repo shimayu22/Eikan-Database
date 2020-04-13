@@ -1,16 +1,30 @@
+"""打者成績に関する処理"""
+
 from django.db import models
-from eikan.models import FielderResults, FielderTotalResults
+from eikan.models import FielderResults, FielderTotalResults, Teams, Players
 from eikan.calculate_sabr import CalculateFielderSabr as f
 
 
 class FielderSabrFormatter:
+    """主にFielderResults,FielderTotalResultsを操作する"""
 
     def __init__(self):
         self
 
     def create_fielder_total_results(
             self,
-            fielder_results):
+            fielder_results: FielderResults) -> FielderTotalResults:
+        """集計したFielderResultsをもとに更新用のFielderTotalResultsを作る
+
+        Args:
+            fielder_results (FielderResults):集計したFielderResults
+
+        Returns:
+            FielderTotalResults: 計算した指標を代入したFielderTotalResults
+
+        Notes:
+            セイバーメトリクスはここで計算する
+        """
         fielder_total_results = FielderTotalResults.objects.select_related(
             'player_id').get(player_id=self.player_id)
         fielder_total_results.at_bat = fielder_results['at_bat__sum']
@@ -83,7 +97,17 @@ class FielderSabrFormatter:
 
         return fielder_total_results
 
-    def tally_from_player_all_results(self):
+    def tally_from_player_all_results(self) -> FielderResults:
+        """FielderResultsを集計する
+
+        Returns:
+            FielderResults: 対象選手の全てのFielderResultsを集計した結果を返す
+
+        Notes:
+            at_bat__sum, run__sum, hit__sum, two_base__sum, three_base__sum, home_run__sum,
+            run_batted_in__sum, strike_out__sum, bb_hbp__sum, sacrifice_bunt__sum,
+            stolen_base__sum, grounded_into_double_play__sum, error__sum
+        """
         fielder_results = FielderResults.objects.select_related('player_id').filter(
             player_id=self.player_id).aggregate(
             models.Sum('at_bat'),
@@ -102,7 +126,17 @@ class FielderSabrFormatter:
 
         return fielder_results
 
-    def tally_from_player_results_by_year(self):
+    def tally_from_player_results_by_year(self) -> list:
+        """選手詳細画面用に年度ごとにデータを集計する
+
+        Returns:
+            list: 年度ごとに以下を集計したList
+
+        Notes:
+            at_bat__sum, run__sum, hit__sum, two_base__sum, three_base__sum, home_run__sum,
+            run_batted_in__sum, strike_out__sum, bb_hbp__sum, sacrifice_bunt__sum,
+            stolen_base__sum, grounded_into_double_play__sum, error__sum
+        """
         fielder_results = FielderResults.objects.select_related(
             'game_id__team_id',
             'game_id',
@@ -126,7 +160,17 @@ class FielderSabrFormatter:
 
         return fielder_results
 
-    def tally_from_player_results_of_team(self):
+    def tally_from_player_results_of_team(self) -> list:
+        """チーム詳細画面用にデータを集計する
+
+        Returns:
+            list: 選手ごとに以下を集計したList
+
+        Notes:
+            at_bat__sum, run__sum, hit__sum, two_base__sum, three_base__sum, home_run__sum,
+            run_batted_in__sum, strike_out__sum, bb_hbp__sum, sacrifice_bunt__sum,
+            stolen_base__sum, grounded_into_double_play__sum, error__sum
+        """
         fielder_results = FielderResults.objects.select_related(
             'game_id__team_id',
             'player_id').filter(
@@ -149,15 +193,32 @@ class FielderSabrFormatter:
 
         return fielder_results
 
-    def update_total_results(self, player_id):
-        # FielderTotalResults更新用メソッド
+    def update_total_results(self, player_id: Players):
+        """FielderTotalResultsを更新する
+
+        Args:
+            player_id (Players): 対象選手
+
+        Returns:
+            なし
+
+        Notes:
+            対象選手のFielderResultsを集計し、FielderTotalResultsを更新する
+        """
         self.player_id = player_id
         fielder_results = self.tally_from_player_all_results()
         f = self.create_fielder_total_results(fielder_results)
         f.save()
 
     def update_all_total_results(self):
-        # 登録済みの全ての打者総合成績を更新する
+        """登録済みの全ての打者総合成績を更新する
+
+        Args:
+            なし
+
+        Returns:
+            なし
+        """
         fielder_total_results = FielderTotalResults.objects.select_related(
             'player_id').all()
         update_fielder_results = []
@@ -205,8 +266,18 @@ class FielderSabrFormatter:
             batch_size=10000)
         print("打者総合成績を更新")
 
-    def create_sabr_from_results_by_year(self, player_id):
-        # 打者詳細画面用にデータを取得するメソッド
+    def create_sabr_from_results_by_year(self, player_id: Players) -> list:
+        """選手詳細画面用にデータを取得する
+
+        Args:
+            player_id (Players): 対象選手
+
+        Returns:
+            list: [{'year': year,'data': FielderTotalResults}]
+
+        Notes:
+            学年ごとに集計した打者成績を返す
+        """
         self.player_id = player_id
         fielder_results = self.tally_from_player_results_by_year()
         fielder_total_results_list = []
@@ -221,8 +292,18 @@ class FielderSabrFormatter:
 
         return sorted_fielder_total_results_list
 
-    def create_sabr_from_results_of_team(self, team_id):
-        # チーム詳細画面用にデータを取得するメソッド
+    def create_sabr_from_results_of_team(self, team_id: Teams) -> list:
+        """チーム詳細画面用にデータを取得する
+
+        Args:
+            team_id (Teams): 対象チーム
+
+        Returns:
+            list: [FielderTotalResults]
+
+        Notes:
+            対象チームの期間に所属している選手の、対象期間中の打者成績を返す
+        """
         self.team_id = team_id
         fielder_results = self.tally_from_player_results_of_team()
 

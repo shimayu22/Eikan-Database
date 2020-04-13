@@ -1,15 +1,30 @@
+"""投手成績に関する処理"""
+
 from django.db import models
 from eikan.models import PitcherResults, PitcherTotalResults, Players, Teams, Games
 from eikan.calculate_sabr import CalculatePitcherSabr as p
 
 
 class PitcherSabrFormatter:
+    """主にPitcherResults,PitcherTotalResultsを操作する"""
+
     def __init__(self):
         self
 
     def create_pitcher_total_results(
             self,
-            pitcher_results):
+            pitcher_results: PitcherResults) -> PitcherTotalResults:
+        """集計したPitcherResultsをもとに更新用のPitcherTotalResultsを作る
+
+        Args:
+            pitcher_results (PitcherResults): 集計したPitcherResults
+
+        Returns:
+            PitcherTotalResults: 計算した指標を代入したPitcherTotalResults
+
+        Notes:
+            セイバーメトリクスはここで計算する
+        """
         pitcher_total_results = PitcherTotalResults.objects.select_related(
             'player_id').get(player_id=self.player_id)
         pitcher_total_results.games = pitcher_results['pk__count']
@@ -81,9 +96,16 @@ class PitcherSabrFormatter:
 
         return pitcher_total_results
 
-    def create_previous_game_pitched(self):
+    def create_previous_game_pitched(self) -> float:
+        """1試合前に投げたイニングを取得する
+
+        Returns:
+            float: 1試合前に投げたイニングを返す ex)7.2
+
+        Notes:
+            練習試合、または登板していない場合は0を返す
+        """
         # GamesとPitcherResultsは必ず存在するのでチェックしない
-        # 練習試合の場合は前の試合を気にしない
         if Games.objects.latest('pk').competition_type < 2:
             return 0
 
@@ -100,7 +122,19 @@ class PitcherSabrFormatter:
         else:
             return 0
 
-    def tally_from_player_all_results(self):
+    def tally_from_player_all_results(self) -> dict:
+        """PitcherResultsを集計する
+
+        Returns:
+            dict: 対象選手の全てのFielderResultsを集計した結果を返す
+
+        Notes:
+            pk__count, innings_pitched__sum, innings_pitched_fraction__sum,
+            total_batters_faced__sum, total_batters_faced__sum,
+            number_of_pitch__sum, hit__sum, strike_out__sum, bb_hbp__sum,
+            run__sum, earned_run__sum, wild_pitch__sum, home_run__sum,
+            games_started, previous_game_pitched
+        """
         pitcher_results = PitcherResults.objects.select_related('player_id').filter(
             player_id=self.player_id).aggregate(
             models.Count('pk'),
@@ -125,7 +159,19 @@ class PitcherSabrFormatter:
 
         return pitcher_results
 
-    def tally_from_player_results_by_year(self):
+    def tally_from_player_results_by_year(self) -> list:
+        """選手詳細画面用に年度ごとにデータを集計する
+
+        Returns:
+            list: 年度ごとに以下を集計したList
+
+        Notes:
+            pk__count, innings_pitched__sum, innings_pitched_fraction__sum,
+            total_batters_faced__sum, total_batters_faced__sum,
+            number_of_pitch__sum, hit__sum, strike_out__sum, bb_hbp__sum,
+            run__sum, earned_run__sum, wild_pitch__sum, home_run__sum,
+            games_started, previous_game_pitched
+        """
         pitcher_results = PitcherResults.objects.select_related(
             'game_id__team_id',
             'game_id',
@@ -154,7 +200,19 @@ class PitcherSabrFormatter:
 
         return pitcher_results
 
-    def tally_from_player_results_of_team(self):
+    def tally_from_player_results_of_team(self) -> list:
+        """チーム詳細画面用にデータを集計する
+
+        Returns:
+            list: 選手ごとに以下を集計したList
+
+        Notes:
+            pk__count, innings_pitched__sum, innings_pitched_fraction__sum,
+            total_batters_faced__sum, total_batters_faced__sum,
+            number_of_pitch__sum, hit__sum, strike_out__sum, bb_hbp__sum,
+            run__sum, earned_run__sum, wild_pitch__sum, home_run__sum,
+            games_started, previous_game_pitched
+        """
         pitcher_results = PitcherResults.objects.select_related(
             'game_id__team_id',
             'player_id').filter(
@@ -185,15 +243,35 @@ class PitcherSabrFormatter:
 
         return pitcher_results
 
-    def update_total_results(self, player_id):
-        # PitcherTotalResults更新用メソッド
+    def update_total_results(self, player_id: Players):
+        """PitcherTotalResults更新用メソッド
+
+        Args:
+            player_id (Players): 対象選手
+
+        Returns:
+            なし
+
+        Notes:
+            対象選手のPitcherResultsを集計し、PitcherTotalResultsを更新する
+        """
         self.player_id = player_id
         pitcher_results = self.tally_from_player_all_results()
         p = self.create_pitcher_total_results(pitcher_results)
         p.save()
 
     def update_all_total_results(self):
-        # 登録済みの全ての投手総合成績を更新する
+        """登録済みの全ての投手総合成績を更新する
+
+        Args:
+            なし
+
+        Returns:
+            なし
+
+        Notes:
+            再集計、再計算が行われる
+        """
         pitcher_total_results = PitcherTotalResults.objects.select_related(
             'player_id').all()
         update_pitcher_results = []
@@ -243,6 +321,17 @@ class PitcherSabrFormatter:
         print("投手総合成績を更新")
 
     def update_previous_game_pitched(self):
+        """PitcherTotalResultsのprevious_game_pitchedを更新する
+
+        Args:
+            なし
+
+        Returns:
+            なし
+
+        Notes:
+            PitcherTotalResultsのprevious_game_pitchedのみを更新する
+        """
         year = Teams.objects.latest('pk').year - 2
         pitchers = Players.objects.filter(
             is_pitcher=True, admission_year__gte=year)
@@ -257,8 +346,15 @@ class PitcherSabrFormatter:
         PitcherTotalResults.objects.bulk_update(
             pitcher_total_results, fields=["previous_game_pitched"])
 
-    def create_sabr_from_results_by_year(self, player_id):
-        # 投手詳細画面用にデータを取得するメソッド
+    def create_sabr_from_results_by_year(self, player_id: Players) -> list:
+        """選手詳細画面用にデータを取得する
+
+        Args:
+            player_id (Players): 対象選手
+
+        Returns:
+            list: [{'year': year, 'data': PitcherTotalResults}]
+        """
         self.player_id = player_id
         pitcher_results = self.tally_from_player_results_by_year()
         pitcher_total_results_list = []
@@ -273,8 +369,15 @@ class PitcherSabrFormatter:
 
         return sorted_pitcher_total_results_list
 
-    def create_sabr_from_results_of_team(self, team_id):
-        # チーム詳細画面用にデータを取得するメソッド
+    def create_sabr_from_results_of_team(self, team_id: Teams) -> list:
+        """チーム詳細画面用にデータを取得する
+
+        Args:
+            team_id (Teams): 対象チーム
+
+        Returns:
+            list: [PitcherTotalResults]
+        """
         self.team_id = team_id
         pitcher_results = self.tally_from_player_results_of_team()
 

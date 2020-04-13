@@ -1,5 +1,7 @@
+"""チーム成績に関する処理"""
+
 from django.db import models
-from eikan.models import Games, \
+from eikan.models import Games, Teams, \
     FielderResults, PitcherResults, \
     TeamTotalResults
 from eikan.calculate_sabr import CalculateFielderSabr as f
@@ -8,15 +10,31 @@ from eikan.calculate_sabr import CalculateTeamSabr as t
 
 
 class TeamSabrFormatter:
+    """チーム成績の集計、指標計算を行う"""
+
     def __init__(self):
         self
 
     def update_team_total_results(
             self,
-            games_results,
-            fielder_results,
-            pitcher_results,
-            team_total_results):
+            games_results: dict,
+            fielder_results: dict,
+            pitcher_results: dict,
+            team_total_results: TeamTotalResults) -> TeamTotalResults:
+        """集計したGames,FielderResults,PitcherResultsをもとに更新用のTeamTotalResultsを作る
+
+        Args:
+            games_results (dict): 集計したGames
+            fielder_results (dict): 集計したFielderResults
+            pitcher_results (dict): 集計したPitcherResults
+            team_total_results (TeamTotalResults): 更新対象のTeamTotalResults
+
+        Returns:
+            TeamTotalResults: 計算した指標を代入したTeamTotalResults
+
+        Notes:
+            セイバーメトリクスはここで計算する
+        """
         team_total_results.total_win = games_results['total_win']
         team_total_results.total_lose = games_results['total_lose']
         team_total_results.total_draw = games_results['total_draw']
@@ -56,6 +74,7 @@ class TeamSabrFormatter:
             pitcher_results['strike_out__sum'],
             fielder_results['error__sum'])
 
+        # 甲子園優勝したかチェックする
         if team_total_results.is_to_win:
             pass
         else:
@@ -65,7 +84,16 @@ class TeamSabrFormatter:
 
         return team_total_results
 
-    def tally_from_game_results(self):
+    def tally_from_game_results(self) -> dict:
+        """Gamesを集計する
+
+        Returns:
+            dict: 対象チームの全てのGamesを集計した結果を返す
+
+        Notes:
+            total_win, total_lose, total_draw, score, run,
+            score_difference, update_rank
+        """
         games_results = {}
         games_results['total_win'] = self.games.filter(result=1).count()
         games_results['total_lose'] = self.games.filter(result=2).count()
@@ -81,7 +109,16 @@ class TeamSabrFormatter:
 
         return games_results
 
-    def tally_from_fielder_results(self):
+    def tally_from_fielder_results(self) -> dict:
+        """FielderResultsを集計する
+
+        Returns:
+            dict: 対象選手の全てのFielderResultsを集計した結果を返す
+
+        Notes:
+            at_bat__sum, hit__sum, two_base__sum, three_base__sum,
+            home_run__sum, bb_hbp__sum, error__sum
+        """
         fielder_results = FielderResults.objects.select_related(
             'player_id', 'game_id').filter(game_id__in=self.games).aggregate(
             models.Sum('at_bat'),
@@ -94,7 +131,16 @@ class TeamSabrFormatter:
 
         return fielder_results
 
-    def tally_from_pitcher_results(self):
+    def tally_from_pitcher_results(self) -> dict:
+        """PitcherResultsを集計する
+
+        Returns:
+            dict: 対象チームに所属する選手の全てのPitcherResultsを集計した結果を返す
+
+        Notes:
+            earned_run__sum, innings_pitched__sum, innings_pitched_fraction__sum,
+            total_batters_faced__sum, hit__sum, bb_hbp__sum, strike_out__sum, home_run__sum
+        """
         pitcher_results = PitcherResults.objects.select_related(
             'player_id', 'game_id').filter(game_id__in=self.games).aggregate(
             models.Sum('earned_run'),
@@ -108,8 +154,16 @@ class TeamSabrFormatter:
 
         return pitcher_results
 
-    def create_sabr_from_results_of_team(self, team_id):
-        # チーム詳細画面用にデータを取得するメソッド
+    def create_sabr_from_results_of_team(
+            self, team_id: Teams) -> TeamTotalResults:
+        """チーム詳細画面用にデータを取得する
+
+        Args:
+            team_id (Teams): 対象チーム
+
+        Returns:
+            TeamTotalResults: チーム総合成績を返す
+        """
         self.team_id = team_id
         self.games = Games.objects.select_related(
             'team_id').filter(team_id=self.team_id)
@@ -125,14 +179,35 @@ class TeamSabrFormatter:
 
         return team_total_results
 
-    def update_total_results(self, team_id):
-        # TeamsTotalResults更新用メソッド
+    def update_total_results(self, team_id: Teams):
+        """TeamsTotalResultsを更新する
+
+        Args:
+            team_id (Teams): 対象チーム
+
+        Returns:
+            なし
+
+        Notes:
+            対象チームのデータを集計、計算し更新する
+            対象チームのGamesが未登録の場合は更新しない
+        """
         if Games.objects.filter(team_id=team_id).exists():
             t = self.create_sabr_from_results_of_team(team_id)
             t.save()
 
     def update_all_total_results(self):
-        # 登録済みの全てのチーム総合成績を更新する
+        """登録済みの全てのチーム総合成績を更新する
+
+        Args:
+            なし
+
+        Returns:
+            なし
+
+        Notes:
+            再集計、再計算が行われる
+        """
         team_total_results = TeamTotalResults.objects.select_related(
             'team_id').all()
         update_team_results = []

@@ -10,8 +10,19 @@ from .models import Teams, Players, Games, \
     FielderTotalResults, PitcherTotalResults, TeamTotalResults
 
 
-# データ更新用メソッド
 def update_total_results(request, pk=None):
+    """TeamTotalResultsの更新
+
+    Args:
+        request
+        pk (int, optional): TeamsのPK. Defaults to None.
+
+    Returns:
+        indexまたは表示しているチーム詳細画面にリダイレクトする
+
+    Notes:
+        pkない場合はindexからの更新、あればチーム詳細からの更新
+    """
     if not Teams.objects.exists():
         return redirect('eikan:index')
 
@@ -33,8 +44,18 @@ def update_total_results(request, pk=None):
     return redirect(url)
 
 
-# 全ての選手を再計算する
 def update_all_players_total_results(request):
+    """登録されている全ての選手を再計算する
+
+    Args:
+        request
+
+    Returns:
+        indexにリダイレクトする
+
+    Notes:
+        打者→投手→チーム総合成績を計算し直してDBに登録する
+    """
     if not Players.objects.exists():
         return redirect('eikan:index')
 
@@ -48,8 +69,14 @@ def update_all_players_total_results(request):
     return redirect('eikan:index')
 
 
-# 表示用クラス
 class IndexView(TemplateView):
+    """index：現在のチーム情報を表示する
+
+    Notes:
+        team_total_result: 現在のチーム情報。
+        fielder_total_results: 現在のチームの打者総合成績。
+        pitcher_total_results: 現在のチームの投手総合成績。
+    """
     template_name = 'eikan/index.html'
 
     def get_context_data(self, **kwargs):
@@ -84,6 +111,7 @@ class IndexView(TemplateView):
 
 
 class TeamView(ListView):
+    """ チーム一覧を表示する """
     template_name = 'eikan/teams.html'
     queryset = TeamTotalResults.objects.select_related(
         'team_id').all().order_by('team_id')
@@ -92,6 +120,14 @@ class TeamView(ListView):
 
 
 class TeamDetailView(DetailView):
+    """ チーム詳細を表示する
+
+    Notes:
+        team_total_result: チーム総合成績
+        games: このチームで行われた試合一覧
+        fielder_total_results: このチームで行われた試合の打者成績
+        pitcher_total_results: このチームで行われた試合の投手成績
+    """
     model = Teams
     template_name = 'eikan/team_detail.html'
 
@@ -118,6 +154,11 @@ class TeamDetailView(DetailView):
 
 
 class FielderView(ListView):
+    """ 打者成績一覧
+
+    Notes:
+        選手詳細画面は投手と共通
+    """
     template_name = 'eikan/fielders.html'
     queryset = FielderTotalResults.objects.select_related(
         'player_id').all().order_by('-player_id')
@@ -126,6 +167,11 @@ class FielderView(ListView):
 
 
 class PitcherView(ListView):
+    """ 投手成績一覧
+
+    Notes:
+        選手詳細画面は打者と共通
+    """
     template_name = 'eikan/pitchers.html'
     queryset = PitcherTotalResults.objects.select_related(
         'player_id').all().order_by('-player_id')
@@ -134,6 +180,16 @@ class PitcherView(ListView):
 
 
 class PlayerDetailView(DetailView):
+    """選手詳細を表示する
+
+    Notes:
+        fielder_total_results: 打者総合成績（以下投手野手共通）
+        fielder_results: 1年夏から3年夏までの試合結果
+        fielder_by_year_results: 学年ごとに集計した打者総合成績
+        pitcher_total_results: 投手総合成績（以下投手のみ取得）
+        pitcher_results: 1年夏から3年夏までの試合結果
+        pitcher_by_year_results: 学年ごとに集計した投手総合成績
+    """
     model = Players
     template_name = 'eikan/player_detail.html'
 
@@ -164,6 +220,7 @@ class PlayerDetailView(DetailView):
 
 
 class GameView(ListView):
+    """ 試合一覧 """
     template_name = 'eikan/games.html'
     queryset = Games.objects.select_related(
         'team_id').all().order_by('-pk')
@@ -172,6 +229,13 @@ class GameView(ListView):
 
 
 class GameDetailView(DetailView):
+    """試合詳細を表示する
+
+    Notes:
+        game: 試合結果
+        fielder_results: その試合の打撃結果
+        pitcher_results: その試合の投球結果
+    """
     model = Games
     template_name = 'eikan/game_detail.html'
 

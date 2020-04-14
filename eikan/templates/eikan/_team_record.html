@@ -1,7 +1,9 @@
-{% if pg == 'index' %}
-    <a class="btn btn-outline-primary" href="{% url 'eikan:update_current_team' %}">チーム成績更新</a>
-{% elif pg == 'team' %}
-    <a class="btn btn-outline-primary" href="{% url 'eikan:update_team' pk=team_total_result.team_id.pk %}">チーム成績更新</a>
+{% if request.user.is_authenticated %}
+    {% if pg == 'index' %}
+        <a class="btn btn-outline-primary" href="{% url 'eikan:update_current_team' %}">チーム成績更新</a>
+    {% elif pg == 'team' %}
+        <a class="btn btn-outline-primary" href="{% url 'eikan:update_team' pk=team_total_result.team_id.pk %}">チーム成績更新</a>
+    {% endif %}
 {% endif %}
 <h3 class="mt-2">チーム成績</h3>
 <table class="table table-bordered table-hover table-sm table-responsive-md text-nowrap">

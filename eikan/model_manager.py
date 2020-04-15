@@ -190,3 +190,68 @@ class SavedValueExtractor:
             is_pitcherがTrueの場合、pitcher_resultsのプルダウンに表示される
         """
         return position == 1 or is_pitched
+
+
+class ChoicesFormatter:
+    """ ModelsのCHOICESを辞書型にしてkeyとvaluesを入れ替えて返す """
+    from django.db import models
+
+    @staticmethod
+    def competition_choices_to_dict() -> dict:
+        """COMPETITION_CHOICESを返す
+
+        Returns:
+            dict: {'選択': '', '練習試合': 1, '県大会': 2, '地区大会': 3, '甲子園': 4, 'センバツ': 5}
+        """
+        from eikan.models import Games
+        return {v: k for k, v in dict(Games.COMPETITION_CHOICES).items()}
+
+    @staticmethod
+    def round_choices_to_dict() -> dict:
+        """ROUND_CHOICESを返す
+
+        Returns:
+            dict: {'選択': '', '練習試合': 1, '1回戦': 2, '2回戦': 3, '3回戦': 4, '準々決勝': 5, '準決勝': 6, '決勝': 7}
+        """
+        from eikan.models import Games
+        return {v: k for k, v in dict(Games.ROUND_CHOICES).items()}
+
+    @staticmethod
+    def result_choices_to_dict() -> dict:
+        """RESULT_CHOICESを返す
+
+        Returns:
+            dict: {'選択': '', '勝': 1, '負': 2, '分': 3}
+        """
+        from eikan.models import Games
+        return {v: k for k, v in dict(Games.RESULT_CHOICES).items()}
+
+    @staticmethod
+    def rank_choices_to_dict() -> dict:
+        """RANK_CHOICESを返す
+
+        Returns:
+            dict: {'選択': '', '弱小': 1, 'そこそこ': 2, '中堅': 3, '強豪': 4, '名門': 5}
+        """
+        from eikan.models import Games
+        return {v: k for k, v in dict(Games.RANK_CHOICES).items()}
+
+    @staticmethod
+    def period_choices_to_dict() -> dict:
+        """PERIOD_CHOICESを返す
+
+        Returns:
+            dict: {'選択': '', '夏': 1, '秋': 2}
+        """
+        from eikan.models import Teams
+        return {v: k for k, v in dict(Teams.PERIOD_CHOICES).items()}
+
+    @staticmethod
+    def position_choices_to_dict() -> dict:
+        """POSITION_CHOICESを返す
+
+        Returns:
+            dict: {'選択': '', '投': 1, '捕': 2, '一': 3, '二': 4, '三': 5, '遊': 6, '外': 7}
+        """
+        from eikan.models import Players
+        return {v: k for k, v in dict(Players.POSITION_CHOICES).items()}

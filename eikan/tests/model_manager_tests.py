@@ -327,3 +327,38 @@ class SavedValueExtractorTests(TestCase):
         self.assertTrue(SavedValueExtractor.update_is_pitcher(self, 1, False))
         self.assertTrue(SavedValueExtractor.update_is_pitcher(self, 2, True))
         self.assertFalse(SavedValueExtractor.update_is_pitcher(self, 2, False))
+
+
+class ChoicesFormatterTests(TestCase):
+    def test_competition_choices_to_dict(self):
+        self.assertEqual(
+            ChoicesFormatter.competition_choices_to_dict(),
+            {'選択': '', '練習試合': 1, '県大会': 2, '地区大会': 3, '甲子園': 4, 'センバツ': 5})
+
+    def test_round_choices_to_dict(self):
+        self.assertEqual(
+            ChoicesFormatter.round_choices_to_dict(), {
+                '選択': '', '練習試合': 1, '1回戦': 2, '2回戦': 3, '3回戦': 4, '準々決勝': 5, '準決勝': 6, '決勝': 7})
+
+    def test_result_choices_to_dict(self):
+        self.assertEqual(
+            ChoicesFormatter.result_choices_to_dict(),
+            {'選択': '', '勝': 1, '負': 2, '分': 3}
+        )
+
+    def test_rank_choices_to_dict(self):
+        self.assertEqual(
+            ChoicesFormatter.rank_choices_to_dict(), {
+                '選択': '', '弱小': 1, 'そこそこ': 2, '中堅': 3, '強豪': 4, '名門': 5})
+
+    def test_period_choices_to_dict(self):
+        self.assertEqual(
+            ChoicesFormatter.period_choices_to_dict(),
+            {'選択': '', '夏': 1, '秋': 2}
+        )
+
+    def test_position_choices_to_dict(self):
+        self.assertEqual(
+            ChoicesFormatter.position_choices_to_dict(),
+            {'選択': '', '投': 1, '捕': 2, '一': 3, '二': 4, '三': 5, '遊': 6, '外': 7}
+        )

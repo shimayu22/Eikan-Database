@@ -83,6 +83,54 @@ class DefaultValueExtractor:
         return Teams.objects.latest('pk').id if Teams.objects.exists() else 0
 
     @staticmethod
+    def create_default_competition_type() -> int:
+        """Gamesのcompetition_typeのdefaultを設定する
+
+        Returns:
+            int: 1つ前の試合と同じcompetition_typeを返す
+
+        Notes:
+            一つ前が練習試合の場合は2(県大会)を返す
+        """
+        from eikan.models import Teams, Games
+
+        competition_choices = ChoicesFormatter.competition_choices_to_dict()
+        competition_round_choices = ChoicesFormatter.round_choices_to_dict()
+        result_choices = ChoicesFormatter.result_choices_to_dict()
+        period_choices = ChoicesFormatter.period_choices_to_dict()
+
+        if not Teams.objects.exists() or not Games.objects.exists():
+            return competition_choices['県大会']
+
+        team = Teams.objects.latest('pk')
+        if not Games.objects.filter(team_id=team).exists():
+            return competition_choices['県大会']
+        else:
+            game = Games.objects.select_related(
+                'team_id').filter(team_id=team).latest('pk')
+
+        if game.competition_type == competition_choices['練習試合']:
+            return competition_choices['県大会']
+
+        if team.period == period_choices['秋']:
+            if game.competition_type == competition_choices['県大会'] and \
+                    game.competition_round == competition_round_choices['2回戦'] and \
+                    game.result == result_choices['勝']:
+                return competition_choices['地区大会']
+
+            if game.competition_type == competition_choices['地区大会'] and \
+                    game.competition_round == competition_round_choices['2回戦'] and \
+                    game.result == result_choices['勝']:
+                return competition_choices['センバツ']
+        else:
+            if game.competition_type == competition_choices['県大会'] and \
+                    game.competition_round == competition_round_choices['決勝'] and \
+                    game.result == result_choices['勝']:
+                return competition_choices['甲子園']
+
+        return game.competition_type
+
+    @staticmethod
     def create_default_team_rank() -> int:
         """Gamesのrankのdefaultを設定する
 

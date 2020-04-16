@@ -86,17 +86,18 @@ class DefaultValueExtractorTests(TestCase):
         competition_choices = ChoicesFormatter.competition_choices_to_dict()
         round_choices = ChoicesFormatter.round_choices_to_dict()
         result_choices = ChoicesFormatter.result_choices_to_dict()
+
         self.assertEqual(
             DefaultValueExtractor.create_default_competition_type(),
             competition_choices['県大会'])
         # 夏のチーム
         Teams(year=1985, period=period['夏']).save()
-        t1 = Teams.objects.latest('pk')
 
         self.assertEqual(
             DefaultValueExtractor.create_default_competition_type(),
             competition_choices['県大会'])
 
+        t1 = Teams.objects.latest('pk')
         Games(
             team_id=t1,
             competition_type=competition_choices['練習試合'],
@@ -110,7 +111,8 @@ class DefaultValueExtractorTests(TestCase):
             team_id=t1,
             competition_type=competition_choices['県大会'],
             competition_round=round_choices['2回戦'],
-            result=result_choices['勝']
+            score=1,
+            run=0
         ).save()
         self.assertEqual(
             DefaultValueExtractor.create_default_competition_type(),
@@ -120,7 +122,8 @@ class DefaultValueExtractorTests(TestCase):
             team_id=t1,
             competition_type=competition_choices['県大会'],
             competition_round=round_choices['2回戦'],
-            result=result_choices['負']
+            score=0,
+            run=1
         ).save()
         self.assertEqual(
             DefaultValueExtractor.create_default_competition_type(),
@@ -130,7 +133,8 @@ class DefaultValueExtractorTests(TestCase):
             team_id=t1,
             competition_type=competition_choices['県大会'],
             competition_round=round_choices['決勝'],
-            result=result_choices['勝']
+            score=1,
+            run=0
         ).save()
         self.assertEqual(
             DefaultValueExtractor.create_default_competition_type(),
@@ -140,14 +144,16 @@ class DefaultValueExtractorTests(TestCase):
             team_id=t1,
             competition_type=competition_choices['県大会'],
             competition_round=round_choices['決勝'],
-            result=result_choices['負']
+            score=0,
+            run=1
         ).save()
         self.assertEqual(
             DefaultValueExtractor.create_default_competition_type(),
             competition_choices['県大会'])
 
         # 秋のチーム
-        t2 = Teams(year=1985, period=period['秋']).save()
+        Teams(year=1985, period=period['秋']).save()
+        t2 = Teams.objects.latest('pk')
         self.assertEqual(
             DefaultValueExtractor.create_default_competition_type(),
             competition_choices['県大会'])
@@ -156,7 +162,8 @@ class DefaultValueExtractorTests(TestCase):
             team_id=t2,
             competition_type=competition_choices['県大会'],
             competition_round=round_choices['2回戦'],
-            result=result_choices['負']
+            score=0,
+            run=1
         ).save()
         self.assertEqual(
             DefaultValueExtractor.create_default_competition_type(),
@@ -166,7 +173,8 @@ class DefaultValueExtractorTests(TestCase):
             team_id=t2,
             competition_type=competition_choices['県大会'],
             competition_round=round_choices['2回戦'],
-            result=result_choices['勝']
+            score=1,
+            run=0
         ).save()
         self.assertEqual(
             DefaultValueExtractor.create_default_competition_type(),
@@ -176,7 +184,8 @@ class DefaultValueExtractorTests(TestCase):
             team_id=t2,
             competition_type=competition_choices['地区大会'],
             competition_round=round_choices['2回戦'],
-            result=result_choices['負']
+            score=0,
+            run=1
         ).save()
         self.assertEqual(
             DefaultValueExtractor.create_default_competition_type(),
@@ -186,7 +195,8 @@ class DefaultValueExtractorTests(TestCase):
             team_id=t2,
             competition_type=competition_choices['地区大会'],
             competition_round=round_choices['2回戦'],
-            result=result_choices['勝']
+            score=1,
+            run=0
         ).save()
         self.assertEqual(
             DefaultValueExtractor.create_default_competition_type(),
@@ -196,7 +206,8 @@ class DefaultValueExtractorTests(TestCase):
             team_id=t2,
             competition_type=competition_choices['センバツ'],
             competition_round=round_choices['2回戦'],
-            result=result_choices['勝']
+            score=1,
+            run=0
         ).save()
         self.assertEqual(
             DefaultValueExtractor.create_default_competition_type(),

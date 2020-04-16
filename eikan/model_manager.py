@@ -22,9 +22,10 @@ class DefaultValueExtractor:
         if not Teams.objects.exists():
             return 1941
 
+        period_choices = ChoicesFormatter.period_choices_to_dict()
         period = Teams.objects.latest('pk').period
         this_year = Teams.objects.latest('pk').year
-        return this_year if period == 1 else this_year + 1
+        return this_year if period == period_choices['夏'] else this_year + 1
 
     @staticmethod
     def create_default_period() -> int:
@@ -40,7 +41,9 @@ class DefaultValueExtractor:
         if not Teams.objects.exists():
             return 1
 
-        return 1 if Teams.objects.latest('pk').period == 2 else 2
+        period_choices = ChoicesFormatter.period_choices_to_dict()
+        return 1 if Teams.objects.latest(
+            'pk').period == period_choices['秋'] else 2
 
     @staticmethod
     def create_default_prefecture() -> int:
@@ -214,8 +217,9 @@ class DefaultValueExtractor:
         if not Teams.objects.exists():
             return {}
 
+        period_choices = ChoicesFormatter.period_choices_to_dict()
         teams = Teams.objects.latest('pk')
-        if teams.period == 1:
+        if teams.period == period_choices['夏']:
             return {
                 "admission_year__gte": teams.year - 2,
                 "admission_year__lte": teams.year}
@@ -246,8 +250,9 @@ class DefaultValueExtractor:
         if not Teams.objects.exists():
             return {"is_pitcher": True}
 
+        period_choices = ChoicesFormatter.period_choices_to_dict()
         teams = Teams.objects.latest('pk')
-        if teams.period == 1:
+        if teams.period == period_choices['夏']:
             return {
                 "is_pitcher": True,
                 "admission_year__gte": teams.year - 2,
@@ -272,7 +277,8 @@ class SavedValueExtractor:
         Returns:
             int: 1（勝）,2（負）,3（分）を返す
         """
-        return 1 if score > run else 2 if score < run else 3
+        result_choices = ChoicesFormatter.result_choices_to_dict()
+        return result_choices['勝'] if score > run else result_choices['負'] if score < run else result_choices['分']
 
     def update_is_pitcher(self, position: int, is_pitched: bool) -> bool:
         """Players保存時に投手または野手で登板したかを判定する
@@ -287,7 +293,8 @@ class SavedValueExtractor:
         Notes:
             is_pitcherがTrueの場合、pitcher_resultsのプルダウンに表示される
         """
-        return position == 1 or is_pitched
+        position_choices = ChoicesFormatter.position_choices_to_dict()
+        return position == position_choices['投'] or is_pitched
 
 
 class ChoicesFormatter:

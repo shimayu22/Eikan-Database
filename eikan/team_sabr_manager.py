@@ -7,6 +7,7 @@ from eikan.models import Games, Teams, \
 from eikan.calculate_sabr import CalculateFielderSabr as f
 from eikan.calculate_sabr import CalculatePitcherSabr as p
 from eikan.calculate_sabr import CalculateTeamSabr as t
+from eikan.model_manager import ChoicesFormatter as c
 
 
 class TeamSabrFormatter:
@@ -75,11 +76,15 @@ class TeamSabrFormatter:
             fielder_results['error__sum'])
 
         # 甲子園優勝したかチェックする
+        competition_choices = c.competition_choices_to_dict()
+        competition_round_choices = c.round_choices_to_dict()
+        result_choices = c.result_choices_to_dict()
         if team_total_results.is_to_win:
             pass
         else:
             g = self.games.latest('pk')
-            if g.competition_type > 3 and g.competition_round == 7 and g.result == 1:
+            if g.competition_type > competition_choices[
+                    '地区大会'] and g.competition_round == competition_round_choices['決勝'] and g.result == result_choices['勝']:
                 team_total_results.is_to_win = True
 
         return team_total_results

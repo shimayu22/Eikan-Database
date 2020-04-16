@@ -3,6 +3,7 @@
 from django.db import models
 from eikan.models import PitcherResults, PitcherTotalResults, Players, Teams, Games
 from eikan.calculate_sabr import CalculatePitcherSabr as p
+from eikan.model_manager import ChoicesFormatter as c
 
 
 class PitcherSabrFormatter:
@@ -105,12 +106,14 @@ class PitcherSabrFormatter:
         Notes:
             練習試合、または登板していない場合は0を返す
         """
+        competition_choices = c.competition_choices_to_dict()
         # GamesとPitcherResultsは必ず存在するのでチェックしない
-        if Games.objects.latest('pk').competition_type < 2:
+        if Games.objects.latest(
+                'pk').competition_type == competition_choices['練習試合']:
             return 0
 
         previous_game = Games.objects.filter(
-            competition_type__gt=1).latest('pk')
+            competition_type__gt=competition_choices['練習試合']).latest('pk')
         pr = PitcherResults.objects.select_related(
             'player_id', 'game_id').filter(
             game_id=previous_game, player_id=self.player_id)

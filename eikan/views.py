@@ -4,6 +4,7 @@ from django.urls import reverse
 from eikan import fielder_sabr_manager as f
 from eikan import pitcher_sabr_manager as p
 from eikan import team_sabr_manager as t
+from eikan.model_manager import ChoicesFormatter as c
 from datetime import datetime, timezone, timedelta
 from .models import Teams, Players, Games, \
     FielderResults, PitcherResults, \
@@ -139,8 +140,9 @@ class TeamDetailView(DetailView):
             'team_id').get(team_id=teams)
         ctx['games'] = Games.objects.select_related(
             'team_id').filter(team_id=teams).order_by('-pk')
-        g = Games.objects.select_related(
-            'team_id').filter(team_id=teams, competition_type__gt=1)
+        competition_choices = c.competition_choices_to_dict()
+        g = Games.objects.select_related('team_id').filter(
+            team_id=teams, competition_type__gt=competition_choices['練習試合'])
         if g.exists():
             ctx['game_latest'] = g.latest('pk')
         # このチームで行った試合結果を取得する

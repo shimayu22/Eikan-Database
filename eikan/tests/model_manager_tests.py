@@ -1,6 +1,6 @@
 from django.test import TestCase
 from eikan.models import Teams, Games, ModelSettings
-from eikan.model_manager import DefaultValueExtractor, SavedValueExtractor
+from eikan.model_manager import DefaultValueExtractor, SavedValueExtractor, ChoicesFormatter
 
 
 class DefaultValueExtractorTests(TestCase):
@@ -49,12 +49,15 @@ class DefaultValueExtractorTests(TestCase):
         Teamsにレコードが存在しない場合   -> 1939(初期値)
         Teamsにレコードが存在している場合 -> 最新レコードのyearと同じ値を返す
         """
-        self.assertEqual(DefaultValueExtractor.create_default_year_for_players(), 1939)
+        self.assertEqual(
+            DefaultValueExtractor.create_default_year_for_players(), 1939)
         Teams(year=1985).save()
-        self.assertEqual(DefaultValueExtractor.create_default_year_for_players(), 1985)
+        self.assertEqual(
+            DefaultValueExtractor.create_default_year_for_players(), 1985)
         Teams(year=2040).save()
-        self.assertEqual(DefaultValueExtractor.create_default_year_for_players(), 2040)
-    
+        self.assertEqual(
+            DefaultValueExtractor.create_default_year_for_players(), 2040)
+
     def test_create_default_team_id(self):
         """
         Teamsにレコードが存在しない場合   -> 1939(初期値)
@@ -65,6 +68,295 @@ class DefaultValueExtractorTests(TestCase):
         self.assertEqual(DefaultValueExtractor.create_default_team_id(), 1)
         Teams(year=1985, period=2).save()
         self.assertEqual(DefaultValueExtractor.create_default_team_id(), 2)
+
+    def test_create_default_competition_type(self):
+        """
+        現在のチームに紐づくGamesのレコードが存在しない場合 -> 2(県大会)
+        現在のそのチームに紐づくGamesのレコードが存在する場合
+            最新が練習試合 -> 2(県大会)
+            練習試合以外 -> 基本は同じ値を設定する
+                例外:
+                    夏 and 県大会 and 決勝 and 勝　であれば次は甲子園
+                    秋 and 県大会 and ２回戦 and 勝　であれば次は地区大会
+                    秋 and 地区大会 and ２回戦　であれば次はセンバツ
+                妥協：
+                    １回戦、３回戦がない場合は考慮しない
+        """
+        period = ChoicesFormatter.period_choices_to_dict()
+        competition_choices = ChoicesFormatter.competition_choices_to_dict()
+        round_choices = ChoicesFormatter.round_choices_to_dict()
+        result_choices = ChoicesFormatter.result_choices_to_dict()
+
+        self.assertEqual(
+            DefaultValueExtractor.create_default_competition_type(),
+            competition_choices['県大会'])
+        # 夏のチーム
+        Teams(year=1985, period=period['夏']).save()
+
+        self.assertEqual(
+            DefaultValueExtractor.create_default_competition_type(),
+            competition_choices['県大会'])
+
+        t1 = Teams.objects.latest('pk')
+        Games(
+            team_id=t1,
+            competition_type=competition_choices['練習試合'],
+            competition_round=round_choices['練習試合']
+        ).save()
+        self.assertEqual(
+            DefaultValueExtractor.create_default_competition_type(),
+            competition_choices['県大会'])
+
+        Games(
+            team_id=t1,
+            competition_type=competition_choices['県大会'],
+            competition_round=round_choices['2回戦'],
+            score=1,
+            run=0
+        ).save()
+        self.assertEqual(
+            DefaultValueExtractor.create_default_competition_type(),
+            competition_choices['県大会'])
+
+        Games(
+            team_id=t1,
+            competition_type=competition_choices['県大会'],
+            competition_round=round_choices['2回戦'],
+            score=0,
+            run=1
+        ).save()
+        self.assertEqual(
+            DefaultValueExtractor.create_default_competition_type(),
+            competition_choices['県大会'])
+
+        Games(
+            team_id=t1,
+            competition_type=competition_choices['県大会'],
+            competition_round=round_choices['決勝'],
+            score=1,
+            run=0
+        ).save()
+        self.assertEqual(
+            DefaultValueExtractor.create_default_competition_type(),
+            competition_choices['甲子園'])
+
+        Games(
+            team_id=t1,
+            competition_type=competition_choices['県大会'],
+            competition_round=round_choices['決勝'],
+            score=0,
+            run=1
+        ).save()
+        self.assertEqual(
+            DefaultValueExtractor.create_default_competition_type(),
+            competition_choices['県大会'])
+
+        # 秋のチーム
+        Teams(year=1985, period=period['秋']).save()
+        t2 = Teams.objects.latest('pk')
+        self.assertEqual(
+            DefaultValueExtractor.create_default_competition_type(),
+            competition_choices['県大会'])
+
+        Games(
+            team_id=t2,
+            competition_type=competition_choices['県大会'],
+            competition_round=round_choices['2回戦'],
+            score=0,
+            run=1
+        ).save()
+        self.assertEqual(
+            DefaultValueExtractor.create_default_competition_type(),
+            competition_choices['県大会'])
+
+        Games(
+            team_id=t2,
+            competition_type=competition_choices['県大会'],
+            competition_round=round_choices['2回戦'],
+            score=1,
+            run=0
+        ).save()
+        self.assertEqual(
+            DefaultValueExtractor.create_default_competition_type(),
+            competition_choices['地区大会'])
+
+        Games(
+            team_id=t2,
+            competition_type=competition_choices['地区大会'],
+            competition_round=round_choices['2回戦'],
+            score=0,
+            run=1
+        ).save()
+        self.assertEqual(
+            DefaultValueExtractor.create_default_competition_type(),
+            competition_choices['地区大会'])
+
+        Games(
+            team_id=t2,
+            competition_type=competition_choices['地区大会'],
+            competition_round=round_choices['2回戦'],
+            score=1,
+            run=0
+        ).save()
+        self.assertEqual(
+            DefaultValueExtractor.create_default_competition_type(),
+            competition_choices['センバツ'])
+
+        Games(
+            team_id=t2,
+            competition_type=competition_choices['センバツ'],
+            competition_round=round_choices['2回戦'],
+            score=1,
+            run=0
+        ).save()
+        self.assertEqual(
+            DefaultValueExtractor.create_default_competition_type(),
+            competition_choices['センバツ'])
+
+    def test_create_default_competition_round(self):
+        """
+        現在のチームに紐づくGamesのレコードが存在しない場合 -> 2(1回戦)
+        現在のそのチームに紐づくGamesのレコードが存在する場合
+            最新が練習試合 -> 2(1回戦)
+            練習試合以外 -> 基本は前の試合で勝っていれば+1を設定する
+                例外:
+                    前の試合が負 であれば 2(1回戦)
+                    前の試合が決勝 であれば次は2(1回戦)
+                    秋 and 県大会 and ２回戦 and 勝　であれば次は2(1回戦)
+                    秋 and 地区大会 and ２回戦　であれば次は2(1回戦)
+                妥協：
+                    １回戦、３回戦がない場合は考慮しない
+        """
+        period = ChoicesFormatter.period_choices_to_dict()
+        competition_choices = ChoicesFormatter.competition_choices_to_dict()
+        round_choices = ChoicesFormatter.round_choices_to_dict()
+        result_choices = ChoicesFormatter.result_choices_to_dict()
+
+        self.assertEqual(
+            DefaultValueExtractor.create_default_competition_round(),
+            round_choices['1回戦'])
+        # 夏のチーム
+        Teams(year=1985, period=period['夏']).save()
+
+        self.assertEqual(
+            DefaultValueExtractor.create_default_competition_round(),
+            round_choices['1回戦'])
+
+        t1 = Teams.objects.latest('pk')
+        Games(
+            team_id=t1,
+            competition_type=competition_choices['練習試合'],
+            competition_round=round_choices['練習試合']
+        ).save()
+        self.assertEqual(
+            DefaultValueExtractor.create_default_competition_round(),
+            round_choices['1回戦'])
+
+        Games(
+            team_id=t1,
+            competition_type=competition_choices['県大会'],
+            competition_round=round_choices['2回戦'],
+            score=1,
+            run=0
+        ).save()
+        self.assertEqual(
+            DefaultValueExtractor.create_default_competition_round(),
+            round_choices['3回戦'])
+
+        Games(
+            team_id=t1,
+            competition_type=competition_choices['県大会'],
+            competition_round=round_choices['2回戦'],
+            score=0,
+            run=1
+        ).save()
+        self.assertEqual(
+            DefaultValueExtractor.create_default_competition_round(),
+            round_choices['1回戦'])
+
+        Games(
+            team_id=t1,
+            competition_type=competition_choices['県大会'],
+            competition_round=round_choices['決勝'],
+            score=1,
+            run=0
+        ).save()
+        self.assertEqual(
+            DefaultValueExtractor.create_default_competition_round(),
+            round_choices['1回戦'])
+
+        Games(
+            team_id=t1,
+            competition_type=competition_choices['県大会'],
+            competition_round=round_choices['決勝'],
+            score=0,
+            run=1
+        ).save()
+        self.assertEqual(
+            DefaultValueExtractor.create_default_competition_round(),
+            round_choices['1回戦'])
+
+        # 秋のチーム
+        Teams(year=1985, period=period['秋']).save()
+        t2 = Teams.objects.latest('pk')
+        self.assertEqual(
+            DefaultValueExtractor.create_default_competition_round(),
+            competition_choices['県大会'])
+
+        Games(
+            team_id=t2,
+            competition_type=competition_choices['県大会'],
+            competition_round=round_choices['2回戦'],
+            score=0,
+            run=1
+        ).save()
+        self.assertEqual(
+            DefaultValueExtractor.create_default_competition_round(),
+            round_choices['1回戦'])
+
+        Games(
+            team_id=t2,
+            competition_type=competition_choices['県大会'],
+            competition_round=round_choices['2回戦'],
+            score=1,
+            run=0
+        ).save()
+        self.assertEqual(
+            DefaultValueExtractor.create_default_competition_round(),
+            round_choices['1回戦'])
+
+        Games(
+            team_id=t2,
+            competition_type=competition_choices['地区大会'],
+            competition_round=round_choices['2回戦'],
+            score=0,
+            run=1
+        ).save()
+        self.assertEqual(
+            DefaultValueExtractor.create_default_competition_round(),
+            round_choices['1回戦'])
+
+        Games(
+            team_id=t2,
+            competition_type=competition_choices['地区大会'],
+            competition_round=round_choices['2回戦'],
+            score=1,
+            run=0
+        ).save()
+        self.assertEqual(
+            DefaultValueExtractor.create_default_competition_round(),
+            round_choices['1回戦'])
+
+        Games(
+            team_id=t2,
+            competition_type=competition_choices['センバツ'],
+            competition_round=round_choices['2回戦'],
+            score=1,
+            run=0
+        ).save()
+        self.assertEqual(
+            DefaultValueExtractor.create_default_competition_round(),
+            round_choices['3回戦'])
 
     def test_create_default_team_rank(self):
         """
@@ -99,13 +391,16 @@ class DefaultValueExtractorTests(TestCase):
         """
         self.assertEqual(DefaultValueExtractor.select_display_players(), {})
         Teams(year=1985, period=1).save()
-        self.assertEqual(DefaultValueExtractor.select_display_players(), {"admission_year__gte": 1983, "admission_year__lte": 1985})
+        self.assertEqual(DefaultValueExtractor.select_display_players(), {
+                         "admission_year__gte": 1983, "admission_year__lte": 1985})
         Teams(year=1985, period=2).save()
-        self.assertEqual(DefaultValueExtractor.select_display_players(), {"admission_year__gte": 1984, "admission_year__lte": 1985})
+        self.assertEqual(DefaultValueExtractor.select_display_players(), {
+                         "admission_year__gte": 1984, "admission_year__lte": 1985})
         ModelSettings(is_used_limit_choices_to=True).save()
         self.assertEqual(DefaultValueExtractor.select_display_players(), {})
         ModelSettings(is_used_limit_choices_to=False).save()
-        self.assertEqual(DefaultValueExtractor.select_display_players(), {"admission_year__gte": 1984, "admission_year__lte": 1985})
+        self.assertEqual(DefaultValueExtractor.select_display_players(), {
+                         "admission_year__gte": 1984, "admission_year__lte": 1985})
 
     def test_select_display_pitchers(self):
         """
@@ -125,15 +420,22 @@ class DefaultValueExtractorTests(TestCase):
                     "admission_year__lte": teams.year}
                     -> 2学年分表示させる
         """
-        self.assertEqual(DefaultValueExtractor.select_display_pitchers(), {"is_pitcher": True})
+        self.assertEqual(
+            DefaultValueExtractor.select_display_pitchers(), {
+                "is_pitcher": True})
         Teams(year=1998, period=1).save()
-        self.assertEqual(DefaultValueExtractor.select_display_pitchers(), {"is_pitcher": True, "admission_year__gte": 1996, "admission_year__lte": 1998})
+        self.assertEqual(DefaultValueExtractor.select_display_pitchers(), {
+                         "is_pitcher": True, "admission_year__gte": 1996, "admission_year__lte": 1998})
         Teams(year=1998, period=2).save()
-        self.assertEqual(DefaultValueExtractor.select_display_pitchers(), {"is_pitcher": True, "admission_year__gte": 1997, "admission_year__lte": 1998})
+        self.assertEqual(DefaultValueExtractor.select_display_pitchers(), {
+                         "is_pitcher": True, "admission_year__gte": 1997, "admission_year__lte": 1998})
         ModelSettings(is_used_limit_choices_to=True).save()
-        self.assertEqual(DefaultValueExtractor.select_display_pitchers(), {"is_pitcher": True})
+        self.assertEqual(
+            DefaultValueExtractor.select_display_pitchers(), {
+                "is_pitcher": True})
         ModelSettings(is_used_limit_choices_to=False).save()
-        self.assertEqual(DefaultValueExtractor.select_display_pitchers(), {"is_pitcher": True, "admission_year__gte": 1997, "admission_year__lte": 1998})
+        self.assertEqual(DefaultValueExtractor.select_display_pitchers(), {
+                         "is_pitcher": True, "admission_year__gte": 1997, "admission_year__lte": 1998})
 
 
 class SavedValueExtractorTests(TestCase):
@@ -170,3 +472,38 @@ class SavedValueExtractorTests(TestCase):
         self.assertTrue(SavedValueExtractor.update_is_pitcher(self, 1, False))
         self.assertTrue(SavedValueExtractor.update_is_pitcher(self, 2, True))
         self.assertFalse(SavedValueExtractor.update_is_pitcher(self, 2, False))
+
+
+class ChoicesFormatterTests(TestCase):
+    def test_competition_choices_to_dict(self):
+        self.assertEqual(
+            ChoicesFormatter.competition_choices_to_dict(),
+            {'選択': '', '練習試合': 1, '県大会': 2, '地区大会': 3, '甲子園': 4, 'センバツ': 5})
+
+    def test_round_choices_to_dict(self):
+        self.assertEqual(
+            ChoicesFormatter.round_choices_to_dict(), {
+                '選択': '', '練習試合': 1, '1回戦': 2, '2回戦': 3, '3回戦': 4, '準々決勝': 5, '準決勝': 6, '決勝': 7})
+
+    def test_result_choices_to_dict(self):
+        self.assertEqual(
+            ChoicesFormatter.result_choices_to_dict(),
+            {'選択': '', '勝': 1, '負': 2, '分': 3}
+        )
+
+    def test_rank_choices_to_dict(self):
+        self.assertEqual(
+            ChoicesFormatter.rank_choices_to_dict(), {
+                '選択': '', '弱小': 1, 'そこそこ': 2, '中堅': 3, '強豪': 4, '名門': 5})
+
+    def test_period_choices_to_dict(self):
+        self.assertEqual(
+            ChoicesFormatter.period_choices_to_dict(),
+            {'選択': '', '夏': 1, '秋': 2}
+        )
+
+    def test_position_choices_to_dict(self):
+        self.assertEqual(
+            ChoicesFormatter.position_choices_to_dict(),
+            {'選択': '', '投': 1, '捕': 2, '一': 3, '二': 4, '三': 5, '遊': 6, '外': 7}
+        )

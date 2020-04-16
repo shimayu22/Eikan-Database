@@ -83,6 +83,104 @@ class DefaultValueExtractor:
         return Teams.objects.latest('pk').id if Teams.objects.exists() else 0
 
     @staticmethod
+    def create_default_competition_type() -> int:
+        """Gamesのcompetition_typeのdefaultを設定する
+
+        Returns:
+            int: 1つ前の試合と同じcompetition_typeを返す
+
+        Notes:
+            一つ前が練習試合の場合は2(県大会)を返す
+            次の大会へ進む条件を満たせば、次の大会を返す
+        """
+        from eikan.models import Teams, Games
+
+        competition_choices = ChoicesFormatter.competition_choices_to_dict()
+        competition_round_choices = ChoicesFormatter.round_choices_to_dict()
+        result_choices = ChoicesFormatter.result_choices_to_dict()
+        period_choices = ChoicesFormatter.period_choices_to_dict()
+
+        if not Teams.objects.exists() or not Games.objects.exists():
+            return competition_choices['県大会']
+
+        team = Teams.objects.latest('pk')
+        if not Games.objects.filter(team_id=team).exists():
+            return competition_choices['県大会']
+        else:
+            game = Games.objects.select_related(
+                'team_id').filter(team_id=team).latest('pk')
+
+        if game.competition_type == competition_choices['練習試合']:
+            return competition_choices['県大会']
+
+        if team.period == period_choices['秋']:
+            if game.competition_type == competition_choices['県大会'] and \
+                    game.competition_round == competition_round_choices['2回戦'] and \
+                    game.result == result_choices['勝']:
+                return competition_choices['地区大会']
+
+            if game.competition_type == competition_choices['地区大会'] and \
+                    game.competition_round == competition_round_choices['2回戦'] and \
+                    game.result == result_choices['勝']:
+                return competition_choices['センバツ']
+        else:
+            if game.competition_type == competition_choices['県大会'] and \
+                    game.competition_round == competition_round_choices['決勝'] and \
+                    game.result == result_choices['勝']:
+                return competition_choices['甲子園']
+
+        return game.competition_type
+
+    @staticmethod
+    def create_default_competition_round() -> int:
+        """Gamesのcompetition_roundのdefaultを設定する
+
+        Returns:
+            int: 前の試合が勝なら次の試合のcompetition_typeを返す
+
+        Notes:
+            一つ前が練習試合または負の場合は2(1回戦)を返す
+            １回戦、３回戦がない場合は考慮していない
+            秋の大会は考慮している
+        """
+        from eikan.models import Teams, Games
+
+        competition_choices = ChoicesFormatter.competition_choices_to_dict()
+        competition_round_choices = ChoicesFormatter.round_choices_to_dict()
+        result_choices = ChoicesFormatter.result_choices_to_dict()
+        period_choices = ChoicesFormatter.period_choices_to_dict()
+
+        if not Teams.objects.exists() or not Games.objects.exists():
+            return competition_round_choices['1回戦']
+
+        team = Teams.objects.latest('pk')
+        if not Games.objects.filter(team_id=team).exists():
+            return competition_round_choices['1回戦']
+        else:
+            game = Games.objects.select_related(
+                'team_id').filter(team_id=team).latest('pk')
+
+        if game.competition_type == competition_choices['練習試合']:
+            return competition_round_choices['1回戦']
+
+        if game.result == result_choices['負']:
+            return competition_round_choices['1回戦']
+
+        if game.competition_round == competition_round_choices['決勝']:
+            return competition_round_choices['1回戦']
+
+        if team.period == period_choices['秋']:
+            if game.competition_type == competition_choices['県大会'] and \
+                    game.competition_round == competition_round_choices['2回戦']:
+                return competition_round_choices['1回戦']
+
+            if game.competition_type == competition_choices['地区大会'] and \
+                    game.competition_round == competition_round_choices['2回戦']:
+                return competition_round_choices['1回戦']
+
+        return game.competition_round + 1
+
+    @staticmethod
     def create_default_team_rank() -> int:
         """Gamesのrankのdefaultを設定する
 
@@ -190,3 +288,68 @@ class SavedValueExtractor:
             is_pitcherがTrueの場合、pitcher_resultsのプルダウンに表示される
         """
         return position == 1 or is_pitched
+
+
+class ChoicesFormatter:
+    """ ModelsのCHOICESを辞書型にしてkeyとvaluesを入れ替えて返す """
+    from django.db import models
+
+    @staticmethod
+    def competition_choices_to_dict() -> dict:
+        """COMPETITION_CHOICESを返す
+
+        Returns:
+            dict: {'選択': '', '練習試合': 1, '県大会': 2, '地区大会': 3, '甲子園': 4, 'センバツ': 5}
+        """
+        from eikan.models import Games
+        return {v: k for k, v in dict(Games.COMPETITION_CHOICES).items()}
+
+    @staticmethod
+    def round_choices_to_dict() -> dict:
+        """ROUND_CHOICESを返す
+
+        Returns:
+            dict: {'選択': '', '練習試合': 1, '1回戦': 2, '2回戦': 3, '3回戦': 4, '準々決勝': 5, '準決勝': 6, '決勝': 7}
+        """
+        from eikan.models import Games
+        return {v: k for k, v in dict(Games.ROUND_CHOICES).items()}
+
+    @staticmethod
+    def result_choices_to_dict() -> dict:
+        """RESULT_CHOICESを返す
+
+        Returns:
+            dict: {'選択': '', '勝': 1, '負': 2, '分': 3}
+        """
+        from eikan.models import Games
+        return {v: k for k, v in dict(Games.RESULT_CHOICES).items()}
+
+    @staticmethod
+    def rank_choices_to_dict() -> dict:
+        """RANK_CHOICESを返す
+
+        Returns:
+            dict: {'選択': '', '弱小': 1, 'そこそこ': 2, '中堅': 3, '強豪': 4, '名門': 5}
+        """
+        from eikan.models import Games
+        return {v: k for k, v in dict(Games.RANK_CHOICES).items()}
+
+    @staticmethod
+    def period_choices_to_dict() -> dict:
+        """PERIOD_CHOICESを返す
+
+        Returns:
+            dict: {'選択': '', '夏': 1, '秋': 2}
+        """
+        from eikan.models import Teams
+        return {v: k for k, v in dict(Teams.PERIOD_CHOICES).items()}
+
+    @staticmethod
+    def position_choices_to_dict() -> dict:
+        """POSITION_CHOICESを返す
+
+        Returns:
+            dict: {'選択': '', '投': 1, '捕': 2, '一': 3, '二': 4, '三': 5, '遊': 6, '外': 7}
+        """
+        from eikan.models import Players
+        return {v: k for k, v in dict(Players.POSITION_CHOICES).items()}

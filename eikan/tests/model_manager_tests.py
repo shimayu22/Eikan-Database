@@ -213,6 +213,151 @@ class DefaultValueExtractorTests(TestCase):
             DefaultValueExtractor.create_default_competition_type(),
             competition_choices['センバツ'])
 
+    def test_create_default_competition_round(self):
+        """
+        現在のチームに紐づくGamesのレコードが存在しない場合 -> 2(1回戦)
+        現在のそのチームに紐づくGamesのレコードが存在する場合
+            最新が練習試合 -> 2(1回戦)
+            練習試合以外 -> 基本は前の試合で勝っていれば+1を設定する
+                例外:
+                    前の試合が負 であれば 2(1回戦)
+                    前の試合が決勝 であれば次は2(1回戦)
+                    秋 and 県大会 and ２回戦 and 勝　であれば次は2(1回戦)
+                    秋 and 地区大会 and ２回戦　であれば次は2(1回戦)
+                妥協：
+                    １回戦、３回戦がない場合は考慮しない
+        """
+        period = ChoicesFormatter.period_choices_to_dict()
+        competition_choices = ChoicesFormatter.competition_choices_to_dict()
+        round_choices = ChoicesFormatter.round_choices_to_dict()
+        result_choices = ChoicesFormatter.result_choices_to_dict()
+
+        self.assertEqual(
+            DefaultValueExtractor.create_default_competition_round(),
+            round_choices['1回戦'])
+        # 夏のチーム
+        Teams(year=1985, period=period['夏']).save()
+
+        self.assertEqual(
+            DefaultValueExtractor.create_default_competition_round(),
+            round_choices['1回戦'])
+
+        t1 = Teams.objects.latest('pk')
+        Games(
+            team_id=t1,
+            competition_type=competition_choices['練習試合'],
+            competition_round=round_choices['練習試合']
+        ).save()
+        self.assertEqual(
+            DefaultValueExtractor.create_default_competition_round(),
+            round_choices['1回戦'])
+
+        Games(
+            team_id=t1,
+            competition_type=competition_choices['県大会'],
+            competition_round=round_choices['2回戦'],
+            score=1,
+            run=0
+        ).save()
+        self.assertEqual(
+            DefaultValueExtractor.create_default_competition_round(),
+            round_choices['3回戦'])
+
+        Games(
+            team_id=t1,
+            competition_type=competition_choices['県大会'],
+            competition_round=round_choices['2回戦'],
+            score=0,
+            run=1
+        ).save()
+        self.assertEqual(
+            DefaultValueExtractor.create_default_competition_round(),
+            round_choices['1回戦'])
+
+        Games(
+            team_id=t1,
+            competition_type=competition_choices['県大会'],
+            competition_round=round_choices['決勝'],
+            score=1,
+            run=0
+        ).save()
+        self.assertEqual(
+            DefaultValueExtractor.create_default_competition_round(),
+            round_choices['1回戦'])
+
+        Games(
+            team_id=t1,
+            competition_type=competition_choices['県大会'],
+            competition_round=round_choices['決勝'],
+            score=0,
+            run=1
+        ).save()
+        self.assertEqual(
+            DefaultValueExtractor.create_default_competition_round(),
+            round_choices['1回戦'])
+
+        # 秋のチーム
+        Teams(year=1985, period=period['秋']).save()
+        t2 = Teams.objects.latest('pk')
+        self.assertEqual(
+            DefaultValueExtractor.create_default_competition_round(),
+            competition_choices['県大会'])
+
+        Games(
+            team_id=t2,
+            competition_type=competition_choices['県大会'],
+            competition_round=round_choices['2回戦'],
+            score=0,
+            run=1
+        ).save()
+        self.assertEqual(
+            DefaultValueExtractor.create_default_competition_round(),
+            round_choices['1回戦'])
+
+        Games(
+            team_id=t2,
+            competition_type=competition_choices['県大会'],
+            competition_round=round_choices['2回戦'],
+            score=1,
+            run=0
+        ).save()
+        self.assertEqual(
+            DefaultValueExtractor.create_default_competition_round(),
+            round_choices['1回戦'])
+
+        Games(
+            team_id=t2,
+            competition_type=competition_choices['地区大会'],
+            competition_round=round_choices['2回戦'],
+            score=0,
+            run=1
+        ).save()
+        self.assertEqual(
+            DefaultValueExtractor.create_default_competition_round(),
+            round_choices['1回戦'])
+
+        Games(
+            team_id=t2,
+            competition_type=competition_choices['地区大会'],
+            competition_round=round_choices['2回戦'],
+            score=1,
+            run=0
+        ).save()
+        self.assertEqual(
+            DefaultValueExtractor.create_default_competition_round(),
+            round_choices['1回戦'])
+
+        Games(
+            team_id=t2,
+            competition_type=competition_choices['センバツ'],
+            competition_round=round_choices['2回戦'],
+            score=1,
+            run=0
+        ).save()
+        self.assertEqual(
+            DefaultValueExtractor.create_default_competition_round(),
+            round_choices['3回戦'])
+
     def test_create_default_team_rank(self):
         """
         Gamesにレコードが存在しない場合   -> 0(初期値)

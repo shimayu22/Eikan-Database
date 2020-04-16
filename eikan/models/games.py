@@ -58,7 +58,7 @@ class Games(models.Model):
     competition_round = models.PositiveSmallIntegerField(
         verbose_name="回戦",
         choices=ROUND_CHOICES,
-        default=0
+        default=d.create_default_competition_round,
     )
 
     result = models.PositiveSmallIntegerField(

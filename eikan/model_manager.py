@@ -91,6 +91,7 @@ class DefaultValueExtractor:
 
         Notes:
             一つ前が練習試合の場合は2(県大会)を返す
+            次の大会へ進む条件を満たせば、次の大会を返す
         """
         from eikan.models import Teams, Games
 
@@ -129,6 +130,55 @@ class DefaultValueExtractor:
                 return competition_choices['甲子園']
 
         return game.competition_type
+
+    @staticmethod
+    def create_default_competition_round() -> int:
+        """Gamesのcompetition_roundのdefaultを設定する
+
+        Returns:
+            int: 前の試合が勝なら次の試合のcompetition_typeを返す
+
+        Notes:
+            一つ前が練習試合または負の場合は2(1回戦)を返す
+            １回戦、３回戦がない場合は考慮していない
+            秋の大会は考慮している
+        """
+        from eikan.models import Teams, Games
+
+        competition_choices = ChoicesFormatter.competition_choices_to_dict()
+        competition_round_choices = ChoicesFormatter.round_choices_to_dict()
+        result_choices = ChoicesFormatter.result_choices_to_dict()
+        period_choices = ChoicesFormatter.period_choices_to_dict()
+
+        if not Teams.objects.exists() or not Games.objects.exists():
+            return competition_round_choices['1回戦']
+
+        team = Teams.objects.latest('pk')
+        if not Games.objects.filter(team_id=team).exists():
+            return competition_round_choices['1回戦']
+        else:
+            game = Games.objects.select_related(
+                'team_id').filter(team_id=team).latest('pk')
+
+        if game.competition_type == competition_choices['練習試合']:
+            return competition_round_choices['1回戦']
+
+        if game.result == result_choices['負']:
+            return competition_round_choices['1回戦']
+
+        if game.competition_round == competition_round_choices['決勝']:
+            return competition_round_choices['1回戦']
+
+        if team.period == period_choices['秋']:
+            if game.competition_type == competition_choices['県大会'] and \
+                    game.competition_round == competition_round_choices['2回戦']:
+                return competition_round_choices['1回戦']
+
+            if game.competition_type == competition_choices['地区大会'] and \
+                    game.competition_round == competition_round_choices['2回戦']:
+                return competition_round_choices['1回戦']
+
+        return game.competition_round + 1
 
     @staticmethod
     def create_default_team_rank() -> int:

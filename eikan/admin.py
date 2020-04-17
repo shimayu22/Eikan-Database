@@ -70,6 +70,7 @@ class GamesAdmin(admin.ModelAdmin):
     list_display = ('team_id', 'competition_type', 'competition_round',
                     'result', 'score', 'run', 'rank')
     list_editable = ('rank',)
+    list_select_related = ('team_id', 'player_id')
     inlines = [FielderResultsInline, PitcherResultsInline]
 
 
@@ -89,6 +90,7 @@ class TeamTotalResultsAdmin(admin.ModelAdmin):
         'era',
         'der',
     )
+    list_select_related = ('team_id',)
 
 
 class FielderTotalResultsAdmin(admin.ModelAdmin):
@@ -121,6 +123,7 @@ class FielderTotalResultsAdmin(admin.ModelAdmin):
         'bbhp_k',
         'p_s',
     )
+    list_select_related = ('player_id',)
 
 
 class PitcherTotalResultsAdmin(admin.ModelAdmin):
@@ -154,6 +157,7 @@ class PitcherTotalResultsAdmin(admin.ModelAdmin):
         'home_run',
         'previous_game_pitched',
     )
+    list_select_related = ('player_id',)
 
 
 admin.site.register(Teams, TeamsAdmin)

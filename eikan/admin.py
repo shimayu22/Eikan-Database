@@ -70,7 +70,7 @@ class GamesAdmin(admin.ModelAdmin):
     list_display = ('team_id', 'competition_type', 'competition_round',
                     'result', 'score', 'run', 'rank')
     list_editable = ('rank',)
-    list_select_related = ('team_id', 'player_id')
+    list_select_related = ('team_id',)
     inlines = [FielderResultsInline, PitcherResultsInline]
 
 

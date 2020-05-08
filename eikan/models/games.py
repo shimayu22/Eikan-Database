@@ -78,6 +78,11 @@ class Games(models.Model):
         default=0,
     )
 
+    is_cold_game = models.BooleanField(
+        verbose_name="コールド",
+        default=False,
+    )
+
     rank = models.PositiveSmallIntegerField(
         verbose_name="ランク",
         choices=RANK_CHOICES,

@@ -83,12 +83,9 @@ class FielderTotalResultsTests(TestCase):
         """player_id"""
         Players(admission_year=1985, name="桑田").save()
         Players(admission_year=1985, name="清原").save()
-        p1 = Players.objects.get(name="桑田")
-        p2 = Players.objects.get(name="清原")
-        FielderTotalResults(player_id=p1).save()
-        FielderTotalResults(player_id=p2).save()
-        FielderTotalResults(player_id=p2).save()
-        self.assertEqual(FielderTotalResults.objects.count(), 2)
+        p1 = Players.objects.get(name="清原")
+        with self.assertRaises(Exception):
+            FielderTotalResults(player=p1).save()
 
 
 class PitcherTotalResultsTests(TestCase):
@@ -98,11 +95,8 @@ class PitcherTotalResultsTests(TestCase):
         Players(admission_year=1985, name="桑田", position=1).save()
         Players(admission_year=1985, name="清原", position=1).save()
         p1 = Players.objects.get(name="桑田")
-        p2 = Players.objects.get(name="清原")
-        PitcherTotalResults(player_id=p1).save()
-        PitcherTotalResults(player_id=p1).save()
-        PitcherTotalResults(player_id=p2).save()
-        self.assertEqual(PitcherTotalResults.objects.count(), 2)
+        with self.assertRaises(Exception):
+            PitcherTotalResults(player=p1).save()
 
 
 class TeamsTotalResultsTests(TestCase):
@@ -113,6 +107,5 @@ class TeamsTotalResultsTests(TestCase):
         Teams(year=1985, period=period['秋']).save()
         t1 = Teams.objects.get(year=1985, period=period['夏'])
         t2 = Teams.objects.get(year=1985, period=period['秋'])
-        TeamTotalResults(team_id=t1).save()
-        TeamTotalResults(team_id=t2).save()
-        self.assertEqual(TeamTotalResults.objects.count(), 2)
+        with self.assertRaises(Exception):
+            TeamTotalResults(team=t1).save()

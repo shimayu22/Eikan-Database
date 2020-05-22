@@ -4,11 +4,12 @@ from eikan.models import Teams
 
 class TeamTotalResults(models.Model):
 
-    team_id = models.ForeignKey(
+    team = models.OneToOneField(
         Teams,
         on_delete=models.CASCADE,
         verbose_name="チーム",
         editable=False,
+        null=True,
     )
 
     total_win = models.PositiveSmallIntegerField(
@@ -110,7 +111,7 @@ class TeamTotalResults(models.Model):
     )
 
     def __str__(self):
-        return f'{self.team_id}'
+        return f'{self.team}'
 
     class Meta:
         verbose_name = "チーム総合成績"

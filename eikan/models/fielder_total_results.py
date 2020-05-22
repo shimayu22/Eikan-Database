@@ -4,11 +4,12 @@ from eikan.models import Players
 
 class FielderTotalResults(models.Model):
 
-    player_id = models.ForeignKey(
+    player = models.OneToOneField(
         Players,
         on_delete=models.CASCADE,
         verbose_name="選手",
         editable=False,
+        null=True,
     )
 
     at_bat = models.PositiveSmallIntegerField(
@@ -202,7 +203,7 @@ class FielderTotalResults(models.Model):
     )
 
     def __str__(self):
-        return f'{self.player_id}'
+        return f'{self.player}'
 
     class Meta:
         verbose_name = "打者総合成績"

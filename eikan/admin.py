@@ -76,7 +76,7 @@ class GamesAdmin(admin.ModelAdmin):
 
 class TeamTotalResultsAdmin(admin.ModelAdmin):
     list_display = (
-        'team_id',
+        'team',
         'rank',
         'total_win',
         'total_lose',
@@ -90,12 +90,12 @@ class TeamTotalResultsAdmin(admin.ModelAdmin):
         'era',
         'der',
     )
-    list_select_related = ('team_id',)
+    list_select_related = ('team',)
 
 
 class FielderTotalResultsAdmin(admin.ModelAdmin):
     list_display = (
-        'player_id',
+        'player',
         'ops',
         'slg',
         'obp',
@@ -123,12 +123,12 @@ class FielderTotalResultsAdmin(admin.ModelAdmin):
         'bbhp_k',
         'p_s',
     )
-    list_select_related = ('player_id',)
+    list_select_related = ('player',)
 
 
 class PitcherTotalResultsAdmin(admin.ModelAdmin):
     list_display = (
-        'player_id',
+        'player',
         'era',
         'whip',
         'k_bbhp',
@@ -157,7 +157,7 @@ class PitcherTotalResultsAdmin(admin.ModelAdmin):
         'home_run',
         'previous_game_pitched',
     )
-    list_select_related = ('player_id',)
+    list_select_related = ('player',)
 
 
 admin.site.register(Teams, TeamsAdmin)
@@ -173,38 +173,38 @@ admin.site.register(ModelSettings, ModelSettingsAdmin)
 def new_team_total_results(sender, instance, created, **kwargs):
     """チームを登録したら対応するTeamTotalResultsレコードを登録する"""
     if created:
-        TeamTotalResults.objects.create(team_id=instance,)
+        TeamTotalResults.objects.create(team=instance,)
 
 
 @receiver(post_save, sender=Players)
 def new_player_results(sender, instance, created, **kwargs):
-    """ 選手を登録したらFielderTotalResults,PitcherTotalResultsも対応するレコードを登録する """
+    """ 選手を登録したらFielderTotalResults,PitcherTotalResultsも対応するレコードを登録する"""
     if created:
-        FielderTotalResults.objects.create(player_id=instance)
+        FielderTotalResults.objects.create(player=instance)
     if instance.is_pitcher:
-        PitcherTotalResults.objects.get_or_create(player_id=instance)
+        PitcherTotalResults.objects.get_or_create(player=instance)
 
 
-@receiver(post_save, sender=Games)
-@receiver(post_delete, sender=Games)
-def update_teams_total_results_updated_at(sender, instance, **kwargs):
-    """ Games登録、削除時に1試合前に投げたイニングを再計算する """
-    p.PitcherSabrFormatter().update_previous_game_pitched()
+# @receiver(post_save, sender=Games)
+# @receiver(post_delete, sender=Games)
+# def update_teams_total_results_updated_at(sender, instance, **kwargs):
+#    """ Games登録、削除時に1試合前に投げたイニングを再計算する """
+#    p.PitcherSabrFormatter().update_previous_game_pitched()
 
 
-@receiver(post_save, sender=FielderResults)
-@receiver(post_delete, sender=FielderResults)
-def update_cal_fielder_results(sender, instance, **kwargs):
-    """ FielderResults の更新(追加、変更、削除）時にFielderTotalResultsを更新する"""
-    f.FielderSabrFormatter().update_total_results(instance.player_id)
+# @receiver(post_save, sender=FielderResults)
+# @receiver(post_delete, sender=FielderResults)
+# def update_cal_fielder_results(sender, instance, **kwargs):
+#    """ FielderResults の更新(追加、変更、削除）時にFielderTotalResultsを更新する"""
+#    f.FielderSabrFormatter().update_total_results(instance.player)
 
 
 # 投手成績の更新(追加、変更時に集計・登録を行う)
-@receiver(post_save, sender=PitcherResults)
-def update_cal_pitcher_results(sender, instance, **kwargs):
-    """ PitcherResultsの更新(追加、変更）時にPitcherTotalResultsを更新する
-
-    Notes:
-        1試合前の投球回数の関係で、削除時は更新しない
-    """
-    p.PitcherSabrFormatter().update_total_results(instance.player_id)
+# @receiver(post_save, sender=PitcherResults)
+# def update_cal_pitcher_results(sender, instance, **kwargs):
+#    """ PitcherResultsの更新(追加、変更）時にPitcherTotalResultsを更新する
+#
+#    Notes:
+#        1試合前の投球回数の関係で、削除時は更新しない
+#    """
+#    p.PitcherSabrFormatter().update_total_results(instance.player)

@@ -26,7 +26,7 @@ class FielderSabrFormatter:
             セイバーメトリクスはここで計算する
         """
         fielder_total_results = FielderTotalResults.objects.select_related(
-            'player_id').get(player_id=self.player_id)
+            'player').get(player=self.player_id)
         fielder_total_results.at_bat = fielder_results['at_bat__sum']
         fielder_total_results.run = fielder_results['run__sum']
         fielder_total_results.hit = fielder_results['hit__sum']
@@ -108,7 +108,7 @@ class FielderSabrFormatter:
             run_batted_in__sum, strike_out__sum, bb_hbp__sum, sacrifice_bunt__sum,
             stolen_base__sum, grounded_into_double_play__sum, error__sum
         """
-        fielder_results = FielderResults.objects.select_related('player_id').filter(
+        fielder_results = FielderResults.objects.select_related('player').filter(
             player_id=self.player_id).aggregate(
             models.Sum('at_bat'),
             models.Sum('run'),
@@ -223,11 +223,11 @@ class FielderSabrFormatter:
             再集計、再計算が行われる
         """
         fielder_total_results = FielderTotalResults.objects.select_related(
-            'player_id').all()
+            'player').all()
         update_fielder_results = []
 
         for ftr in fielder_total_results:
-            self.player_id = ftr.player_id
+            self.player_id = ftr.player
 
             fielder_results = self.tally_from_player_all_results()
             # まだ試合に出ていない選手の場合はpassする

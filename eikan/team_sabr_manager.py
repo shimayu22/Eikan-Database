@@ -179,8 +179,8 @@ class TeamSabrFormatter:
             games_results,
             fielder_results,
             pitcher_result,
-            TeamTotalResults.objects.select_related('team_id').get(
-                team_id=self.team_id))
+            TeamTotalResults.objects.select_related('team').get(
+                team=self.team_id))
 
         return team_total_results
 
@@ -214,14 +214,14 @@ class TeamSabrFormatter:
             再集計、再計算が行われる
         """
         team_total_results = TeamTotalResults.objects.select_related(
-            'team_id').all()
+            'team').all()
         update_team_results = []
 
         for ttr in team_total_results:
-            if Games.objects.filter(team_id=ttr.team_id).exists():
+            if Games.objects.filter(team=ttr.team).exists():
                 update_team_results.append(
                     self.create_sabr_from_results_of_team(
-                        ttr.team_id))
+                        ttr.team))
 
         TeamTotalResults.objects.bulk_update(
             update_team_results,

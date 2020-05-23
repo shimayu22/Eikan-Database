@@ -27,7 +27,7 @@ class PitcherSabrFormatter:
             セイバーメトリクスはここで計算する
         """
         pitcher_total_results = PitcherTotalResults.objects.select_related(
-            'player_id').get(player_id=self.player_id)
+            'player').get(player_id=self.player_id)
         pitcher_total_results.games = pitcher_results['pk__count']
         pitcher_total_results.games_started = pitcher_results['games_started']
         pitcher_total_results.number_of_pitch = pitcher_results['number_of_pitch__sum']
@@ -276,11 +276,11 @@ class PitcherSabrFormatter:
             再集計、再計算が行われる
         """
         pitcher_total_results = PitcherTotalResults.objects.select_related(
-            'player_id').all()
+            'player').all()
         update_pitcher_results = []
 
         for ptr in pitcher_total_results:
-            self.player_id = ptr.player_id
+            self.player_id = ptr.player
 
             pitcher_results = self.tally_from_player_all_results()
             # まだ試合に出ていない選手の場合はpassする
@@ -340,9 +340,9 @@ class PitcherSabrFormatter:
             is_pitcher=True, admission_year__gte=year)
 
         pitcher_total_results = PitcherTotalResults.objects.select_related(
-            'player_id').filter(player_id__in=pitchers)
+            'player').filter(player_id__in=pitchers)
         for ptr in pitcher_total_results:
-            self.player_id = ptr.player_id
+            self.player_id = ptr.player
             ptr.previous_game_pitched = self.create_previous_game_pitched()
 
         # 一括でUpdate(bulk_updateは通知がいかない)

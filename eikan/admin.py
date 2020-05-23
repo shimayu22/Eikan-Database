@@ -5,7 +5,7 @@ from django.db import models
 from django.forms import NumberInput
 from eikan import fielder_sabr_manager as f
 from eikan import pitcher_sabr_manager as p
-from eikan import team_sabr_manager as t
+
 
 # Register your models here.
 from .models import Teams, Players, Games, \
@@ -185,26 +185,25 @@ def new_player_results(sender, instance, created, **kwargs):
         PitcherTotalResults.objects.get_or_create(player=instance)
 
 
-# @receiver(post_save, sender=Games)
-# @receiver(post_delete, sender=Games)
-# def update_teams_total_results_updated_at(sender, instance, **kwargs):
-#    """ Games登録、削除時に1試合前に投げたイニングを再計算する """
-#    p.PitcherSabrFormatter().update_previous_game_pitched()
+@receiver(post_save, sender=Games)
+@receiver(post_delete, sender=Games)
+def update_teams_total_results_updated_at(sender, instance, **kwargs):
+    """ Games登録、削除時に1試合前に投げたイニングを再計算する """
+    p.PitcherSabrFormatter().update_previous_game_pitched()
 
 
-# @receiver(post_save, sender=FielderResults)
-# @receiver(post_delete, sender=FielderResults)
-# def update_cal_fielder_results(sender, instance, **kwargs):
-#    """ FielderResults の更新(追加、変更、削除）時にFielderTotalResultsを更新する"""
-#    f.FielderSabrFormatter().update_total_results(instance.player)
+@receiver(post_save, sender=FielderResults)
+@receiver(post_delete, sender=FielderResults)
+def update_cal_fielder_results(sender, instance, **kwargs):
+    """ FielderResults の更新(追加、変更、削除）時にFielderTotalResultsを更新する"""
+    f.FielderSabrFormatter().update_total_results(instance.player_id)
 
 
-# 投手成績の更新(追加、変更時に集計・登録を行う)
-# @receiver(post_save, sender=PitcherResults)
-# def update_cal_pitcher_results(sender, instance, **kwargs):
-#    """ PitcherResultsの更新(追加、変更）時にPitcherTotalResultsを更新する
-#
-#    Notes:
-#        1試合前の投球回数の関係で、削除時は更新しない
-#    """
-#    p.PitcherSabrFormatter().update_total_results(instance.player)
+@receiver(post_save, sender=PitcherResults)
+def update_cal_pitcher_results(sender, instance, **kwargs):
+    """ PitcherResultsの更新(追加、変更）時にPitcherTotalResultsを更新する
+
+    Notes:
+        1試合前の投球回数の関係で、削除時は更新しない
+    """
+    p.PitcherSabrFormatter().update_total_results(instance.player_id)

@@ -3,13 +3,13 @@
 <tbody class="text-right">
     <tr>
         {% for ptr in pitcher_total_results %}
-            <th><a href="{% url 'eikan:player_detail' ptr.player_id.pk %}">{{ ptr.player_id }}</a></th>
+            <th><a href="{% url 'eikan:player_detail' ptr.player.pk %}">{{ ptr.player }}</a></th>
             {% if pg == "index" or pg == "team" %}
                 <td class="text-center">
-                    {{ ptr.player_id.is_ob|yesno:"[OB], " }}
-                    {{ ptr.player_id.is_active|yesno:"[現役], " }}
-                    {{ ptr.player_id.is_genius|yesno:"[天才], " }}
-                    {{ ptr.player_id.remark|default:"" }}
+                    {{ ptr.player.is_ob|yesno:"[OB], " }}
+                    {{ ptr.player.is_active|yesno:"[現役], " }}
+                    {{ ptr.player.is_genius|yesno:"[天才], " }}
+                    {{ ptr.player.remark|default:"" }}
                 </td>
             {% endif %}
             {% if pg == "index" %}

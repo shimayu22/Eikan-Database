@@ -106,6 +106,5 @@ class TeamsTotalResultsTests(TestCase):
         Teams(year=1985, period=period['夏']).save()
         Teams(year=1985, period=period['秋']).save()
         t1 = Teams.objects.get(year=1985, period=period['夏'])
-        t2 = Teams.objects.get(year=1985, period=period['秋'])
         with self.assertRaises(Exception):
             TeamTotalResults(team=t1).save()

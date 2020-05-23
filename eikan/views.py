@@ -39,7 +39,7 @@ def update_total_results(request, pk=None):
 
     # 連打されてもいいように
     if TeamTotalResults.objects.get(
-            team_id=team_id).updated_at + timedelta(minutes=1) < datetime.now(timezone.utc):
+            team=team_id).updated_at + timedelta(minutes=1) < datetime.now(timezone.utc):
         t.TeamSabrFormatter().update_total_results(team_id)
 
     return redirect(url)
@@ -88,25 +88,25 @@ class IndexView(TemplateView):
         ctx = super().get_context_data(**kwargs)
         # 現在のチームを取得
         ctx['team_total_result'] = TeamTotalResults.objects.select_related(
-            'team_id').latest('pk')
+            'team').latest('pk')
 
         # 現在のチームの選手を取得
         start_year = (
-            ctx['team_total_result'].team_id.year -
-            2) if ctx['team_total_result'].team_id.period == 1 else (
-            ctx['team_total_result'].team_id.year -
+            ctx['team_total_result'].team.year -
+            2) if ctx['team_total_result'].team.period == 1 else (
+            ctx['team_total_result'].team.year -
             1)
         players = Players.objects.filter(
             admission_year__gte=start_year,
-            admission_year__lte=ctx['team_total_result'].team_id.year)
+            admission_year__lte=ctx['team_total_result'].team.year)
         pitchers = Players.objects.filter(
             admission_year__gte=start_year,
-            admission_year__lte=ctx['team_total_result'].team_id.year,
+            admission_year__lte=ctx['team_total_result'].team.year,
             is_pitcher=True)
         ctx['fielder_total_results'] = FielderTotalResults.objects.select_related(
-            'player_id').filter(player_id__in=players).order_by('-ops', '-slg', 'player_id')
+            'player').filter(player__in=players).order_by('-ops', '-slg', 'player')
         ctx['pitcher_total_results'] = PitcherTotalResults.objects.select_related(
-            'player_id').filter(player_id__in=pitchers).order_by('player_id')
+            'player').filter(player__in=pitchers).order_by('player')
 
         return ctx
 
@@ -115,7 +115,7 @@ class TeamView(ListView):
     """ チーム一覧を表示する """
     template_name = 'eikan/teams.html'
     queryset = TeamTotalResults.objects.select_related(
-        'team_id').all().order_by('team_id')
+        'team').all().order_by('team')
     context_object_name = 'team_total_results'
     paginate_by = 100
 
@@ -137,7 +137,7 @@ class TeamDetailView(DetailView):
 
         ctx = super().get_context_data(**kwargs)
         ctx['team_total_result'] = TeamTotalResults.objects.select_related(
-            'team_id').get(team_id=teams)
+            'team').get(team=teams)
         ctx['games'] = Games.objects.select_related(
             'team_id').filter(team_id=teams).order_by('-pk')
         competition_choices = c.competition_choices_to_dict()
@@ -163,7 +163,7 @@ class FielderView(ListView):
     """
     template_name = 'eikan/fielders.html'
     queryset = FielderTotalResults.objects.select_related(
-        'player_id').all().order_by('-player_id')
+        'player').all().order_by('-player')
     context_object_name = 'fielder_total_results'
     paginate_by = 100
 
@@ -176,7 +176,7 @@ class PitcherView(ListView):
     """
     template_name = 'eikan/pitchers.html'
     queryset = PitcherTotalResults.objects.select_related(
-        'player_id').all().order_by('-player_id')
+        'player').all().order_by('-player')
     context_object_name = 'pitcher_total_results'
     paginate_by = 100
 
@@ -200,7 +200,7 @@ class PlayerDetailView(DetailView):
         ctx = super().get_context_data(**kwargs)
         # 打者総合成績を取得（投手野手共通）
         ctx['fielder_total_results'] = FielderTotalResults.objects.select_related(
-            'player_id').get(player_id=player)
+            'player').get(player=player)
         # 1年生時の西暦から、3年夏までの試合結果を取得する
         ctx['fielder_results'] = FielderResults.objects.select_related(
             'game_id__team_id', 'game_id', 'player_id').filter(
@@ -211,7 +211,7 @@ class PlayerDetailView(DetailView):
         # 投手のみ以下の処理を行う
         if player.is_pitcher:
             ctx['pitcher_total_results'] = PitcherTotalResults.objects.select_related(
-                'player_id').get(player_id=player)
+                'player').get(player=player)
             ctx['pitcher_results'] = PitcherResults.objects.select_related(
                 'game_id__team_id', 'game_id', 'player_id').filter(
                 player_id=player).order_by('-pk')

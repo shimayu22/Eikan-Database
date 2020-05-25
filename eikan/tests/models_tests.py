@@ -1,5 +1,5 @@
 from django.test import TestCase
-from eikan.models import Teams, Players, Games, FielderResults, FielderTotalResults, PitcherResults, PitcherTotalResults, TeamTotalResults
+from eikan.models import Teams, Players, Games, FielderResults, FielderTotalResults, PitcherResults, PitcherTotalResults, TeamTotalResults, ModelSettings
 from eikan.model_manager import ChoicesFormatter
 
 
@@ -106,3 +106,25 @@ class TeamsTotalResultsTests(TestCase):
         t1 = Teams.objects.get(year=1985, period=period['夏'])
         with self.assertRaises(Exception):
             TeamTotalResults(team=t1).save()
+
+
+class ModelSettingsTests(TestCase):
+    def test_is_disable_auto_update(self):
+        """is_disable_auto_update=Trueの場合、各種自動更新を行わない"""
+        period = ChoicesFormatter.period_choices_to_dict()
+        ModelSettings(is_disable_auto_update=True).save()
+        Teams(year=1985, period=period['夏']).save()
+        self.assertEqual(TeamsTotalResultsTests.objects.count(), 0)
+        Players(admission_year=1985, name="桑田", position=1).save()
+        self.assertEqual(FielderTotalResults.objects.count(), 0)
+        self.assertEqual(PitcherTotalResults.objects.count(), 0)
+
+    def test_is_sable_auto_update(self):
+        """is_disable_auto_update=Falseの場合、各種自動更新を行う"""
+        period = ChoicesFormatter.period_choices_to_dict()
+        ModelSettings(is_disable_auto_update=False).save()
+        Teams(year=1985, period=period['夏']).save()
+        self.assertEqual(TeamsTotalResultsTests.objects.count(), 1)
+        Players(admission_year=1985, name="桑田", position=1).save()
+        self.assertEqual(FielderTotalResults.objects.count(), 1)
+        self.assertEqual(PitcherTotalResults.objects.count(), 1)

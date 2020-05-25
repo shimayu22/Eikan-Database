@@ -17,8 +17,8 @@ admin.site.site_header = '栄冠ナインデータベース 管理画面'
 
 
 class ModelSettingsAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'is_used_limit_choices_to',)
-    list_editable = ('is_used_limit_choices_to',)
+    list_display = ('pk', 'is_used_limit_choices_to', 'is_disable_auto_update',)
+    list_editable = ('is_used_limit_choices_to', 'is_disable_auto_update',)
 
 
 class TeamsAdmin(admin.ModelAdmin):
@@ -172,31 +172,43 @@ admin.site.register(ModelSettings, ModelSettingsAdmin)
 @receiver(post_save, sender=Teams)
 def new_team_total_results(sender, instance, created, **kwargs):
     """チームを登録したら対応するTeamTotalResultsレコードを登録する"""
-    if created:
-        TeamTotalResults.objects.create(team=instance,)
+    if ModelSettings.objects.exists() and ModelSettings.objects.latest('pk').is_disable_auto_update:
+        pass
+    else:
+        if created:
+            TeamTotalResults.objects.create(team=instance,)
 
 
 @receiver(post_save, sender=Players)
 def new_player_results(sender, instance, created, **kwargs):
     """ 選手を登録したらFielderTotalResults,PitcherTotalResultsも対応するレコードを登録する"""
-    if created:
-        FielderTotalResults.objects.create(player=instance)
-    if instance.is_pitcher:
-        PitcherTotalResults.objects.get_or_create(player=instance)
+    if ModelSettings.objects.exists() and ModelSettings.objects.latest('pk').is_disable_auto_update:
+        pass
+    else:
+        if created:
+            FielderTotalResults.objects.create(player=instance)
+        if instance.is_pitcher:
+            PitcherTotalResults.objects.get_or_create(player=instance)
 
 
 @receiver(post_save, sender=Games)
 @receiver(post_delete, sender=Games)
 def update_teams_total_results_updated_at(sender, instance, **kwargs):
     """ Games登録、削除時に1試合前に投げたイニングを再計算する """
-    p.PitcherSabrFormatter().update_previous_game_pitched()
+    if ModelSettings.objects.exists() and ModelSettings.objects.latest('pk').is_disable_auto_update:
+        pass
+    else:
+        p.PitcherSabrFormatter().update_previous_game_pitched()
 
 
 @receiver(post_save, sender=FielderResults)
 @receiver(post_delete, sender=FielderResults)
 def update_cal_fielder_results(sender, instance, **kwargs):
     """ FielderResults の更新(追加、変更、削除）時にFielderTotalResultsを更新する"""
-    f.FielderSabrFormatter().update_total_results(instance.player_id)
+    if ModelSettings.objects.exists() and ModelSettings.objects.latest('pk').is_disable_auto_update:
+        pass
+    else:
+        f.FielderSabrFormatter().update_total_results(instance.player_id)
 
 
 @receiver(post_save, sender=PitcherResults)
@@ -206,4 +218,7 @@ def update_cal_pitcher_results(sender, instance, **kwargs):
     Notes:
         1試合前の投球回数の関係で、削除時は更新しない
     """
-    p.PitcherSabrFormatter().update_total_results(instance.player_id)
+    if ModelSettings.objects.exists() and ModelSettings.objects.latest('pk').is_disable_auto_update:
+        pass
+    else:
+        p.PitcherSabrFormatter().update_total_results(instance.player_id)

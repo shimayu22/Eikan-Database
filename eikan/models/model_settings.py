@@ -8,6 +8,11 @@ class ModelSettings(models.Model):
         default=False,
     )
 
+    is_disable_auto_update = models.BooleanField(
+        verbose_name="自動更新を停止する",
+        default=False,
+    )
+
     class Meta:
         verbose_name = "設定"
         verbose_name_plural = "設定"

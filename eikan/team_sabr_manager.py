@@ -218,7 +218,7 @@ class TeamSabrFormatter:
         update_team_results = []
 
         for ttr in team_total_results:
-            if Games.objects.filter(team=ttr.team).exists():
+            if Games.objects.filter(team_id=ttr.team).exists():
                 update_team_results.append(
                     self.create_sabr_from_results_of_team(
                         ttr.team))

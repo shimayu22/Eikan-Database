@@ -128,3 +128,4 @@ class Teams(models.Model):
         verbose_name_plural = "(3)チーム情報"
         # 試合情報で入力しやすいように追加
         ordering = ['-year', '-period']
+        constraints = [models.UniqueConstraint(fields=['year', 'period'], name='unique_team'), ]

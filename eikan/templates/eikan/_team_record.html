@@ -2,7 +2,7 @@
     {% if pg == 'index' %}
         <a class="btn btn-outline-primary" href="{% url 'eikan:update_current_team' %}">チーム成績更新</a>
     {% elif pg == 'team' %}
-        <a class="btn btn-outline-primary" href="{% url 'eikan:update_team' pk=team_total_result.team_id.pk %}">チーム成績更新</a>
+        <a class="btn btn-outline-primary" href="{% url 'eikan:update_team' pk=team_total_result.team.pk %}">チーム成績更新</a>
     {% endif %}
 {% endif %}
 <h3 class="mt-2">チーム成績</h3>
@@ -27,7 +27,7 @@
     </thead>
     <tbody class="text-right">
         <tr>
-            <th class="text-center">{{ team_total_result.team_id }}</th>
+            <th class="text-center">{{ team_total_result.team }}</th>
             <td>{{ team_total_result.total_win }}</td>
             <td>{{ team_total_result.total_lose }}</td>
             <td>{{ team_total_result.total_draw }}</td>
@@ -40,7 +40,7 @@
             <td>{{ team_total_result.hr }}</td>
             <td>{{ team_total_result.era }}</td>
             <td>{{ team_total_result.der }}</td>
-            <td class="text-left">{{ team_total_result.team_id.remark|default:"" }}</td>
+            <td class="text-left">{{ team_total_result.team.remark|default:"" }}</td>
         </tr>
     </tbody>
 </table>

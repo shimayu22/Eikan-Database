@@ -96,3 +96,4 @@ class PitcherResults(models.Model):
     class Meta:
         verbose_name = "投手一覧"
         verbose_name_plural = "投手成績"
+        constraints = [models.UniqueConstraint(fields=['game_id', 'player_id'], name='unique_pitcherresult'), ]

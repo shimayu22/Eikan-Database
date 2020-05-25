@@ -97,3 +97,4 @@ class FielderResults(models.Model):
     class Meta:
         verbose_name = "打者一覧"
         verbose_name_plural = "打者成績"
+        constraints = [models.UniqueConstraint(fields=['game_id', 'player_id'], name='unique_fielderresult'), ]

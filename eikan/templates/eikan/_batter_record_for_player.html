@@ -3,12 +3,12 @@
     <tbody class="text-right">
         {% for ftr in fielder_total_results %}
             <tr>
-                <th><a href="{% url 'eikan:player_detail' ftr.player_id.pk %}">{{ ftr.player_id }}</a></th>
+                <th><a href="{% url 'eikan:player_detail' ftr.player.pk %}">{{ ftr.player }}</a></th>
                 <td class="text-left">
-                    {{ ftr.player_id.is_ob|yesno:"[OB]," }}
-                    {{ ftr.player_id.is_active|yesno:"[現役]," }}
-                    {{ ftr.player_id.is_genius|yesno:"[天才]," }}
-                    {{ ftr.player_id.remark|default:"" }}
+                    {{ ftr.player.is_ob|yesno:"[OB]," }}
+                    {{ ftr.player.is_active|yesno:"[現役]," }}
+                    {{ ftr.player.is_genius|yesno:"[天才]," }}
+                    {{ ftr.player.remark|default:"" }}
                 </td>
                 <td>{{ ftr.ops|floatformat:"3"|default:"0.000" }}</td>
                 <td>{{ ftr.slg|floatformat:"3"|default:"0.000" }}</td>

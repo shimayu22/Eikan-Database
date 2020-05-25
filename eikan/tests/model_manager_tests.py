@@ -85,8 +85,7 @@ class DefaultValueExtractorTests(TestCase):
         period = ChoicesFormatter.period_choices_to_dict()
         competition_choices = ChoicesFormatter.competition_choices_to_dict()
         round_choices = ChoicesFormatter.round_choices_to_dict()
-        result_choices = ChoicesFormatter.result_choices_to_dict()
-
+        
         self.assertEqual(
             DefaultValueExtractor.create_default_competition_type(),
             competition_choices['県大会'])
@@ -230,8 +229,7 @@ class DefaultValueExtractorTests(TestCase):
         period = ChoicesFormatter.period_choices_to_dict()
         competition_choices = ChoicesFormatter.competition_choices_to_dict()
         round_choices = ChoicesFormatter.round_choices_to_dict()
-        result_choices = ChoicesFormatter.result_choices_to_dict()
-
+        
         self.assertEqual(
             DefaultValueExtractor.create_default_competition_round(),
             round_choices['1回戦'])

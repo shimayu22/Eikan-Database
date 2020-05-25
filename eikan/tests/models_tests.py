@@ -8,24 +8,20 @@ class TeamsTests(TestCase):
         """(year, period)"""
         period = ChoicesFormatter.period_choices_to_dict()
         Teams(year=1985, period=period['夏']).save()
-        Teams(year=1985, period=period['夏']).save()
-        self.assertEqual(Teams.objects.count(), 1)
         Teams(year=1985, period=period['秋']).save()
         self.assertEqual(Teams.objects.count(), 2)
-        Teams(year=1986, period=period['夏']).save()
-        self.assertEqual(Teams.objects.count(), 3)
+        with self.assertRaises(Exception):
+            Teams(year=1985, period=period['夏']).save()
 
 
 class PlayersTests(TestCase):
     def test_unique_key_check(self):
         """(addmission_year, name)"""
         Players(admission_year=1985, name="桑田").save()
-        Players(admission_year=1985, name="桑田").save()
-        self.assertEqual(Players.objects.count(), 1)
         Players(admission_year=1985, name="清原").save()
         self.assertEqual(Players.objects.count(), 2)
-        Players(admission_year=2020, name="桑田").save()
-        self.assertEqual(Players.objects.count(), 3)
+        with self.assertRaises(Exception):
+            Players(admission_year=1985, name="桑田").save()
 
 
 class FielderResultsTests(TestCase):
@@ -37,8 +33,8 @@ class FielderResultsTests(TestCase):
         # データセット
         Teams(year=1985, period=period['夏']).save()
         t1 = Teams.objects.latest('pk')
-        Players(admission_year=1985, name="桑田").save()
-        Players(admission_year=1985, name="清原").save()
+        Players(admission_year=1985, name="桑田", position="1").save()
+        Players(admission_year=1985, name="清原", position="3").save()
         Games(team_id=t1,
               competition_type=competition_choices['県大会'],
               competition_round=round_choices['1回戦'],
@@ -49,8 +45,9 @@ class FielderResultsTests(TestCase):
         p2 = Players.objects.get(name="清原")
         FielderResults(game_id=g1, player_id=p1).save()
         FielderResults(game_id=g1, player_id=p2).save()
-        FielderResults(game_id=g1, player_id=p2).save()
         self.assertEqual(FielderResults.objects.count(), 2)
+        with self.assertRaises(Exception):
+            FielderResults(game_id=g1, player_id=p2).save()
 
 
 class PitcherResultsTests(TestCase):
@@ -73,9 +70,10 @@ class PitcherResultsTests(TestCase):
         p1 = Players.objects.get(name="桑田")
         p2 = Players.objects.get(name="清原")
         PitcherResults(game_id=g1, player_id=p1).save()
-        PitcherResults(game_id=g1, player_id=p1).save()
         PitcherResults(game_id=g1, player_id=p2).save()
         self.assertEqual(PitcherResults.objects.count(), 2)
+        with self.assertRaises(Exception):
+            PitcherResults(game_id=g1, player_id=p1).save()
 
 
 class FielderTotalResultsTests(TestCase):

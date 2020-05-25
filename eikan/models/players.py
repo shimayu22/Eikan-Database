@@ -89,3 +89,4 @@ class Players(models.Model):
         verbose_name = "選手情報"
         verbose_name_plural = "(2)選手情報"
         ordering = ['admission_year', 'position']
+        constraints = [models.UniqueConstraint(fields=['admission_year', 'name'], name='unique_player'), ]

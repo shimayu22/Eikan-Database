@@ -295,6 +295,34 @@ class SavedValueExtractor:
         """
         position_choices = ChoicesFormatter.position_choices_to_dict()
         return position == position_choices['投'] or is_pitched
+    
+    def check_is_cold_game(self, is_cold_game: bool, competition_type: int, competition_round: int) -> bool:
+        """Games保存時に、コールドゲームになりうる試合か判定する
+
+        Args:
+            is_cold_game (bool): 入力されたis_cold_game
+            competition_type (int): 大会
+            competition_round (int): 回戦
+
+        Returns:
+            bool: 判定後のis_cold_game
+        
+        Notes:
+            県大会決勝、甲子園、センバツの場合はFalseを返す
+        """
+        competition_choices = ChoicesFormatter.competition_choices_to_dict()
+        round_choices = ChoicesFormatter.round_choices_to_dict()
+        
+        if not is_cold_game:
+            return False
+        
+        if competition_type >= competition_choices['甲子園']:
+            return False
+        
+        if competition_type == competition_choices['県大会'] and competition_round == round_choices['決勝']:
+            return False
+        
+        return True
 
 
 class ChoicesFormatter:

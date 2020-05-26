@@ -106,6 +106,7 @@ class Games(models.Model):
 
     def save(self, *args, **kwargs):
         self.result = s.create_game_results(self, self.score, self.run)
+        self.is_cold_game = s.check_is_cold_game(self, self.is_cold_game, self.competition_type, self.competition_round)
         super().save(*args, **kwargs)
 
     def __str__(self):

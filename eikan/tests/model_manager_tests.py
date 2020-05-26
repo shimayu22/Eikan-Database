@@ -471,6 +471,25 @@ class SavedValueExtractorTests(TestCase):
         self.assertTrue(SavedValueExtractor.update_is_pitcher(self, 2, True))
         self.assertFalse(SavedValueExtractor.update_is_pitcher(self, 2, False))
 
+    def test_check_is_cold_game(self):
+        """
+        県大会決勝、甲子園の場合はis_cold_gameがTrueだった場合、Falseに修正して保存する
+        """
+        self.assertTrue(SavedValueExtractor.check_is_cold_game(self, True, 1, 1))
+        self.assertFalse(SavedValueExtractor.check_is_cold_game(self, False, 1, 1))
+        self.assertTrue(SavedValueExtractor.check_is_cold_game(self, True, 2, 2))
+        self.assertFalse(SavedValueExtractor.check_is_cold_game(self, False, 2, 2))
+        self.assertTrue(SavedValueExtractor.check_is_cold_game(self, True, 2, 6))
+        self.assertFalse(SavedValueExtractor.check_is_cold_game(self, False, 2, 6))
+        self.assertFalse(SavedValueExtractor.check_is_cold_game(self, True, 2, 7))
+        self.assertFalse(SavedValueExtractor.check_is_cold_game(self, False, 2, 7))
+        self.assertTrue(SavedValueExtractor.check_is_cold_game(self, True, 3, 1))
+        self.assertFalse(SavedValueExtractor.check_is_cold_game(self, False, 3, 1))
+        self.assertFalse(SavedValueExtractor.check_is_cold_game(self, True, 4, 1))
+        self.assertFalse(SavedValueExtractor.check_is_cold_game(self, False, 4, 1))
+        self.assertFalse(SavedValueExtractor.check_is_cold_game(self, True, 5, 1))
+        self.assertFalse(SavedValueExtractor.check_is_cold_game(self, False, 5, 1))
+
 
 class ChoicesFormatterTests(TestCase):
     def test_competition_choices_to_dict(self):

@@ -1,54 +1,54 @@
 {% extends './_base.html' %}
 {% block content %}
 <div class="container">
+{% if team_total_results %}
     <h3 class="mt-2">チーム一覧</h3>
-    {% if team_total_results %}
-        <table class="table table-bordered table-hover table-sm table-responsive-lg text-nowrap">
-            <thead class="thead-light text-center">
-                <tr>
-                    <th>年度:期間:地区</th>
-                    <th>ランク</th>
-                    <th>勝</th>
-                    <th>負</th>
-                    <th>分</th>
-                    <th>得点</th>
-                    <th>失点</th>
-                    <th>得失</th>
-                    <th>打率</th>
-                    <th>OPS</th>
-                    <th>HR</th>
-                    <th>ERA</th>
-                    <th><abbr title="(対戦打者-被安打-与四死球-奪三振-失策)/(対戦打者-被本塁打-与四死球-奪三振)">DER</abbr></th>
-                    <th>方針</th>
-                    <th>指名</th>
-                    <th>備考</th>
+    <table class="table table-bordered table-hover table-sm table-responsive-lg text-nowrap">
+        <thead class="thead-light text-center">
+            <tr>
+                <th>年度:期間:地区</th>
+                <th>ランク</th>
+                <th>勝</th>
+                <th>負</th>
+                <th>分</th>
+                <th>得点</th>
+                <th>失点</th>
+                <th>得失</th>
+                <th>打率</th>
+                <th>OPS</th>
+                <th>HR</th>
+                <th>ERA</th>
+                <th><abbr title="(対戦打者-被安打-与四死球-奪三振-失策)/(対戦打者-被本塁打-与四死球-奪三振)">DER</abbr></th>
+                <th>方針</th>
+                <th>指名</th>
+                <th>備考</th>
+            </tr>
+        </thead>
+        <tbody class="text-right">
+            {% for ttr in team_total_results %}
+                <tr class="{{ ttr.is_to_win|yesno:'table-danger,' }}">
+                    <th class="text-center"><a href="{% url 'eikan:team_detail' ttr.team.pk %}">{{ ttr.team }}</a></th>
+                    <td>{{ ttr.rank|default:"未" }}</td>
+                    <td>{{ ttr.total_win }}</td>
+                    <td>{{ ttr.total_lose }}</td>
+                    <td>{{ ttr.total_draw }}</td>
+                    <td>{{ ttr.score }}</td>
+                    <td>{{ ttr.run }}</td>
+                    <td>{{ ttr.score_difference }}</td>
+                    <td>{{ ttr.batting_average }}</td>
+                    <td>{{ ttr.ops }}</td>
+                    <td>{{ ttr.hr }}</td>
+                    <td>{{ ttr.era }}</td>
+                    <td>{{ ttr.der }}</td>
+                    <td>{{ ttr.team.get_training_policy_display }}</td>
+                    <td>{{ ttr.team.draft_nomination }}</td>
+                    <td class="text-left">{{ ttr.team.remark|default:"" }}</td>
                 </tr>
-            </thead>
-            <tbody class="text-right">
-                {% for ttr in team_total_results %}
-                    <tr class="{{ ttr.is_to_win|yesno:'table-danger,' }}">
-                        <th class="text-center"><a href="{% url 'eikan:team_detail' ttr.team.pk %}">{{ ttr.team }}</a></th>
-                        <td>{{ ttr.rank|default:"未" }}</td>
-                        <td>{{ ttr.total_win }}</td>
-                        <td>{{ ttr.total_lose }}</td>
-                        <td>{{ ttr.total_draw }}</td>
-                        <td>{{ ttr.score }}</td>
-                        <td>{{ ttr.run }}</td>
-                        <td>{{ ttr.score_difference }}</td>
-                        <td>{{ ttr.batting_average }}</td>
-                        <td>{{ ttr.ops }}</td>
-                        <td>{{ ttr.hr }}</td>
-                        <td>{{ ttr.era }}</td>
-                        <td>{{ ttr.der }}</td>
-                        <td>{{ ttr.team.get_training_policy_display }}</td>
-                        <td>{{ ttr.team.draft_nomination }}</td>
-                        <td class="text-left">{{ ttr.team.remark|default:"" }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% include "./_paginate.html" %}
-    {% else %}
+            {% endfor %}
+        </tbody>
+    </table>
+    {% include "./_paginate.html" %}
+{% else %}
     <div class="text-center">
         <h4>（登録データが）ないです</h4>
         <p><a href="{% url 'admin:eikan_teams_add' %}">管理画面</a>からデータを登録してください。</p>

@@ -81,14 +81,14 @@ class IndexView(TemplateView):
     template_name = 'eikan/index.html'
 
     def get_context_data(self, **kwargs):
-        # 雑な404
-        get_list_or_404(Teams)
-        get_list_or_404(Players)
 
         ctx = super().get_context_data(**kwargs)
         # 現在のチームを取得
-        ctx['team_total_result'] = TeamTotalResults.objects.select_related(
-            'team').latest('pk')
+        if TeamTotalResults.objects.exists():
+            ctx['team_total_result'] = TeamTotalResults.objects.select_related(
+                'team').latest('pk')
+        else:
+            return ctx
 
         # 現在のチームの選手を取得
         start_year = (

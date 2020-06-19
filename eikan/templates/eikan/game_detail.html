@@ -1,18 +1,35 @@
 {% extends './_base.html' %}
 {% block content %}
 <hr class="mt-5">
-<div class="row h4 text-nowrap">
-    <div class="col text-right">チーム：</div>
-    <div class="col">{{ games.team_id }}</div>
-    <div class="col text-right">大会：</div>
-    <div class="col">{{ games.get_competition_type_display }}{{ games.get_competition_round_display|cut:"練習試合" }}</div>
-    <div class="col text-right">勝敗：</div>
-    <div class="col">{{ games.get_result_display }}</div>
-    <div class="col text-right">スコア：</div>
-    <div class="col">{{ games.score }} - {{ games.run }}</div>
-    <div class="col text-right">ランク：</div>
-    <div class="col">{{ games.get_rank_display }}</div>
-</div>
+<table class="table table-bordered table-hover table-sm text-nowrap">
+    <thead class="thead-light text-center">
+        <tr>
+            <th>チーム</th>
+            <th>大会</th>
+            <th>勝敗</th>
+            <th>スコア</th>
+            <th>コールド</th>
+            <th>マモノ</th>
+            <th>ランク</th>
+        </tr>
+    </thead>
+    <tbody class="text-center">
+        <tr>
+            <td>{{ games.team_id }}</td>
+            <td>{{ games.get_competition_type_display }}{{ games.get_competition_round_display|cut:"練習試合" }}</td>
+            <td>{{ games.get_result_display }}</td>
+            <td>{{ games.score }} - {{ games.run }}</td>
+            <td>{% if games.is_cold_game %}
+                コールド
+            {% else %}
+                -
+            {% endif %}</td>
+            <td>{{ games.mamono_count }}</td>
+            <td>{{ games.get_rank_display }}</td>
+        </tr>
+    </tbody>
+</table>
+
 <hr class="mb-5">
 
     {# 打者試合成績(fielder_results) #}

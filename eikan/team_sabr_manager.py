@@ -99,7 +99,7 @@ class TeamSabrFormatter:
 
         Notes:
             total_win, total_lose, total_draw, score, run,
-            score_difference, update_rank
+            score_difference, update_rank, cold_game, mamono_count
         """
         games_results = {}
         games_results['total_win'] = self.games.filter(result=1).count()
@@ -114,7 +114,7 @@ class TeamSabrFormatter:
         games_results['update_rank'] = ["-", "弱小", "そこそこ",
                                         "中堅", "強豪", "名門"][self.games.latest('pk').rank]
         games_results['cold_game'] = self.games.filter(is_cold_game=True).count()
-        games_results['mamono_count'] = self.games.aggregate(models.Sum('mamono_count'))
+        games_results['mamono_count'] = self.games.aggregate(models.Sum('mamono_count'))['mamono_count__sum']
 
         return games_results
 
@@ -242,6 +242,8 @@ class TeamSabrFormatter:
                 'era',
                 'der',
                 'rank',
-                'is_to_win', ],
+                'is_to_win',
+                'cold_game',
+                'mamono_count', ],
             batch_size=10000)
         print("チーム総合成績を更新")

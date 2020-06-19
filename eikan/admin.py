@@ -89,6 +89,8 @@ class TeamTotalResultsAdmin(admin.ModelAdmin):
         'hr',
         'era',
         'der',
+        'cold_game',
+        'mamono_count',
     )
     list_select_related = ('team',)
 

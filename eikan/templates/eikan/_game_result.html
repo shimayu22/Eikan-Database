@@ -8,6 +8,8 @@
             <th>大会</th>
             <th>勝敗</th>
             <th>スコア</th>
+            <th>コールド</th>
+            <th>マモノ</th>
             <th>ランク</th>
         </tr>
     </thead>
@@ -26,6 +28,14 @@
             </th>
             <td>{{ g.get_result_display }}</td>
             <td>{{ g.score }} - {{ g.run }}</td>
+            <td>
+                {% if g.is_cold_game %}
+                    コールド
+                {% else %}
+                    -
+                {% endif %}
+            </td>
+            <td>{{ g.mamono_count }}</td>
             <td>{{ g.get_rank_display }}</td>
         </tr>
         {% endfor %}

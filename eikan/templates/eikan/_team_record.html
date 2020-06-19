@@ -22,6 +22,8 @@
             <th>HR</th>
             <th>防御率</th>
             <th><abbr title="(対戦打者-被安打-与四死球-奪三振-失策)/(対戦打者-被本塁打-与四死球-奪三振)">DER</abbr></th>
+            <th>コールド</th>
+            <th>マモノ</th>
             <th>備考</th>
         </tr>
     </thead>
@@ -40,6 +42,8 @@
             <td>{{ team_total_result.hr }}</td>
             <td>{{ team_total_result.era }}</td>
             <td>{{ team_total_result.der }}</td>
+            <td>{{ team_total_result.cold_game }}</td>
+            <td>{{ team_total_result.mamono_count }}</td>
             <td class="text-left">{{ team_total_result.team.remark|default:"" }}</td>
         </tr>
     </tbody>

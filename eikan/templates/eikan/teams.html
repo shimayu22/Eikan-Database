@@ -44,9 +44,9 @@
                     <td>{{ ttr.der }}</td>
                     <td>{{ ttr.team.get_training_policy_display }}</td>
                     <td>{{ ttr.team.draft_nomination }}</td>
-                    <td class="text-left">{{ ttr.team.remark|default:"" }}</td>
                     <td>{{ ttr.cold_game }}</td>
                     <td>{{ ttr.mamono_count }}</td>
+                    <td class="text-left">{{ ttr.team.remark|default:"" }}</td>
                 </tr>
             {% endfor %}
         </tbody>

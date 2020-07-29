@@ -80,10 +80,10 @@ class DefaultValueExtractor:
             int: 現在のチームのidを返す
 
         Notes:
-            Teamsにレコードがなければ0を返す
+            Teamsにレコードがなければ''を返す
         """
         from eikan.models import Teams
-        return Teams.objects.latest('pk').id if Teams.objects.exists() else 0
+        return Teams.objects.latest('pk').id if Teams.objects.exists() else ''
 
     @staticmethod
     def create_default_competition_type() -> int:

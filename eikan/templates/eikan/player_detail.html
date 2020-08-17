@@ -35,6 +35,7 @@
             <td>{{ pitcher_total_results.earned_run }}</td>
             <td>{{ pitcher_total_results.wild_pitch }}</td>
             <td>{{ pitcher_total_results.home_run }}</td>
+            <td>{{ pitcher_total_results.fip|floatformat:2 }}</td>
             <td>{{ pitcher_total_results.era|floatformat:2 }}</td>
             <td>{{ pitcher_total_results.ura|floatformat:2 }}</td>
             <td>{{ pitcher_total_results.whip|floatformat:2 }}</td>
@@ -73,6 +74,7 @@
             <td>{{ pitcher_result.data.earned_run|default:"0" }}</td>
             <td>{{ pitcher_result.data.wild_pitch|default:"0" }}</td>
             <td>{{ pitcher_result.data.home_run|default:"0" }}</td>
+            <td>{{ pitcher_result.data.fip|floatformat:"2"|default:"0.00" }}</td>
             <td>{{ pitcher_result.data.era|floatformat:"2"|default:"0.00" }}</td>
             <td>{{ pitcher_result.data.ura|floatformat:"2"|default:"0.00" }}</td>
             <td>{{ pitcher_result.data.whip|floatformat:"2"|default:"0.00" }}</td>

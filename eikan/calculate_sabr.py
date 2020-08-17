@@ -503,6 +503,26 @@ class CalculatePitcherSabr:
         return (number_of_pitch * 3) / sum_innings_pitched \
             if sum_innings_pitched > 0 else 0
 
+    @staticmethod
+    def fielding_independent_pitching(
+            sum_innings_pitched: float,
+            home_run: int,
+            bb_hbp: int,
+            strike_out: int) -> float:
+        """Calculate FIP
+
+        Args:
+            sum_innings_pitched (float): 投球回数
+            home_run (int): 被本塁打
+            bb_hbp (int): 与四死球
+            strike_out (int): 奪三振数
+
+        Returns:
+            float: FIP = ((被本塁打 * 13 + 与四死球 * 3 - 奪三振数 * 2) * 3) / (投球回数 * 3)
+        """
+        return ((home_run * 13 + bb_hbp * 3 - strike_out * 2) * 3) / \
+            sum_innings_pitched + 3.0 if sum_innings_pitched > 0 else 0.0
+
 
 class CalculateTeamSabr:
     """チームのセイバーメトリクスの指標を計算する

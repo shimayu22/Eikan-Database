@@ -47,6 +47,11 @@ class PitcherSabrFormatter:
         pitcher_total_results.innings_pitched = p.innings_conversion_for_display(
             pitcher_results['innings_pitched__sum'],
             pitcher_results['innings_pitched_fraction__sum'])
+        pitcher_total_results.fip = p.fielding_independent_pitching(
+            sum_innings_pitched,
+            pitcher_results['home_run__sum'],
+            pitcher_results['bb_hbp__sum'],
+            pitcher_results['strike_out__sum'])
         pitcher_total_results.era = p.earned_runs_average(
             sum_innings_pitched,
             pitcher_results['earned_run__sum'])
@@ -305,6 +310,7 @@ class PitcherSabrFormatter:
                 'earned_run',
                 'wild_pitch',
                 'home_run',
+                'fip',
                 'era',
                 'ura',
                 'whip',

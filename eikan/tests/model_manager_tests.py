@@ -63,7 +63,7 @@ class DefaultValueExtractorTests(TestCase):
         Teamsにレコードが存在しない場合   -> 1939(初期値)
         Teamsにレコードが存在している場合 -> 最新レコードのidと同じ値を返す
         """
-        self.assertEqual(DefaultValueExtractor.create_default_team_id(), 0)
+        self.assertEqual(DefaultValueExtractor.create_default_team_id(), '')
         Teams(year=1985, period=1).save()
         self.assertEqual(DefaultValueExtractor.create_default_team_id(), 1)
         Teams(year=1985, period=2).save()
@@ -85,7 +85,7 @@ class DefaultValueExtractorTests(TestCase):
         period = ChoicesFormatter.period_choices_to_dict()
         competition_choices = ChoicesFormatter.competition_choices_to_dict()
         round_choices = ChoicesFormatter.round_choices_to_dict()
-        
+
         self.assertEqual(
             DefaultValueExtractor.create_default_competition_type(),
             competition_choices['県大会'])
@@ -229,7 +229,7 @@ class DefaultValueExtractorTests(TestCase):
         period = ChoicesFormatter.period_choices_to_dict()
         competition_choices = ChoicesFormatter.competition_choices_to_dict()
         round_choices = ChoicesFormatter.round_choices_to_dict()
-        
+
         self.assertEqual(
             DefaultValueExtractor.create_default_competition_round(),
             round_choices['1回戦'])
@@ -475,20 +475,48 @@ class SavedValueExtractorTests(TestCase):
         """
         県大会決勝、甲子園の場合はis_cold_gameがTrueだった場合、Falseに修正して保存する
         """
-        self.assertTrue(SavedValueExtractor.check_is_cold_game(self, True, 1, 1))
-        self.assertFalse(SavedValueExtractor.check_is_cold_game(self, False, 1, 1))
-        self.assertTrue(SavedValueExtractor.check_is_cold_game(self, True, 2, 2))
-        self.assertFalse(SavedValueExtractor.check_is_cold_game(self, False, 2, 2))
-        self.assertTrue(SavedValueExtractor.check_is_cold_game(self, True, 2, 6))
-        self.assertFalse(SavedValueExtractor.check_is_cold_game(self, False, 2, 6))
-        self.assertFalse(SavedValueExtractor.check_is_cold_game(self, True, 2, 7))
-        self.assertFalse(SavedValueExtractor.check_is_cold_game(self, False, 2, 7))
-        self.assertTrue(SavedValueExtractor.check_is_cold_game(self, True, 3, 1))
-        self.assertFalse(SavedValueExtractor.check_is_cold_game(self, False, 3, 1))
-        self.assertFalse(SavedValueExtractor.check_is_cold_game(self, True, 4, 1))
-        self.assertFalse(SavedValueExtractor.check_is_cold_game(self, False, 4, 1))
-        self.assertFalse(SavedValueExtractor.check_is_cold_game(self, True, 5, 1))
-        self.assertFalse(SavedValueExtractor.check_is_cold_game(self, False, 5, 1))
+        self.assertTrue(
+            SavedValueExtractor.check_is_cold_game(
+                self, True, 1, 1))
+        self.assertFalse(
+            SavedValueExtractor.check_is_cold_game(
+                self, False, 1, 1))
+        self.assertTrue(
+            SavedValueExtractor.check_is_cold_game(
+                self, True, 2, 2))
+        self.assertFalse(
+            SavedValueExtractor.check_is_cold_game(
+                self, False, 2, 2))
+        self.assertTrue(
+            SavedValueExtractor.check_is_cold_game(
+                self, True, 2, 6))
+        self.assertFalse(
+            SavedValueExtractor.check_is_cold_game(
+                self, False, 2, 6))
+        self.assertFalse(
+            SavedValueExtractor.check_is_cold_game(
+                self, True, 2, 7))
+        self.assertFalse(
+            SavedValueExtractor.check_is_cold_game(
+                self, False, 2, 7))
+        self.assertTrue(
+            SavedValueExtractor.check_is_cold_game(
+                self, True, 3, 1))
+        self.assertFalse(
+            SavedValueExtractor.check_is_cold_game(
+                self, False, 3, 1))
+        self.assertFalse(
+            SavedValueExtractor.check_is_cold_game(
+                self, True, 4, 1))
+        self.assertFalse(
+            SavedValueExtractor.check_is_cold_game(
+                self, False, 4, 1))
+        self.assertFalse(
+            SavedValueExtractor.check_is_cold_game(
+                self, True, 5, 1))
+        self.assertFalse(
+            SavedValueExtractor.check_is_cold_game(
+                self, False, 5, 1))
 
 
 class ChoicesFormatterTests(TestCase):

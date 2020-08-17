@@ -17,7 +17,11 @@ admin.site.site_header = '栄冠ナインデータベース 管理画面'
 
 
 class ModelSettingsAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'is_used_limit_choices_to', 'is_disable_auto_update',)
+    list_display = (
+        'pk',
+        'is_used_limit_choices_to',
+        'is_disable_auto_update',
+    )
     list_editable = ('is_used_limit_choices_to', 'is_disable_auto_update',)
 
 
@@ -67,8 +71,16 @@ class PitcherResultsInline(admin.TabularInline):
 class GamesAdmin(admin.ModelAdmin):
     fields = ('team_id', ('competition_type', 'competition_round'),
               ('score', 'run', 'mamono_count'), 'is_cold_game', 'rank')
-    list_display = ('team_id', 'competition_type', 'competition_round',
-                    'result', 'score', 'run', 'is_cold_game', 'mamono_count', 'rank')
+    list_display = (
+        'team_id',
+        'competition_type',
+        'competition_round',
+        'result',
+        'score',
+        'run',
+        'is_cold_game',
+        'mamono_count',
+        'rank')
     list_editable = ('rank',)
     list_select_related = ('team_id',)
     inlines = [FielderResultsInline, PitcherResultsInline]
@@ -131,6 +143,7 @@ class FielderTotalResultsAdmin(admin.ModelAdmin):
 class PitcherTotalResultsAdmin(admin.ModelAdmin):
     list_display = (
         'player',
+        'fip',
         'era',
         'whip',
         'k_bbhp',
@@ -174,7 +187,8 @@ admin.site.register(ModelSettings, ModelSettingsAdmin)
 @receiver(post_save, sender=Teams)
 def new_team_total_results(sender, instance, created, **kwargs):
     """チームを登録したら対応するTeamTotalResultsレコードを登録する"""
-    if ModelSettings.objects.exists() and ModelSettings.objects.latest('pk').is_disable_auto_update:
+    if ModelSettings.objects.exists() and ModelSettings.objects.latest(
+            'pk').is_disable_auto_update:
         pass
     else:
         if created:
@@ -184,7 +198,8 @@ def new_team_total_results(sender, instance, created, **kwargs):
 @receiver(post_save, sender=Players)
 def new_player_results(sender, instance, created, **kwargs):
     """ 選手を登録したらFielderTotalResults,PitcherTotalResultsも対応するレコードを登録する"""
-    if ModelSettings.objects.exists() and ModelSettings.objects.latest('pk').is_disable_auto_update:
+    if ModelSettings.objects.exists() and ModelSettings.objects.latest(
+            'pk').is_disable_auto_update:
         pass
     else:
         if created:
@@ -197,7 +212,8 @@ def new_player_results(sender, instance, created, **kwargs):
 @receiver(post_delete, sender=Games)
 def update_teams_total_results_updated_at(sender, instance, **kwargs):
     """ Games登録、削除時に1試合前に投げたイニングを再計算する """
-    if ModelSettings.objects.exists() and ModelSettings.objects.latest('pk').is_disable_auto_update:
+    if ModelSettings.objects.exists() and ModelSettings.objects.latest(
+            'pk').is_disable_auto_update:
         pass
     else:
         p.PitcherSabrFormatter().update_previous_game_pitched()
@@ -207,7 +223,8 @@ def update_teams_total_results_updated_at(sender, instance, **kwargs):
 @receiver(post_delete, sender=FielderResults)
 def update_cal_fielder_results(sender, instance, **kwargs):
     """ FielderResults の更新(追加、変更、削除）時にFielderTotalResultsを更新する"""
-    if ModelSettings.objects.exists() and ModelSettings.objects.latest('pk').is_disable_auto_update:
+    if ModelSettings.objects.exists() and ModelSettings.objects.latest(
+            'pk').is_disable_auto_update:
         pass
     else:
         f.FielderSabrFormatter().update_total_results(instance.player_id)
@@ -220,7 +237,8 @@ def update_cal_pitcher_results(sender, instance, **kwargs):
     Notes:
         1試合前の投球回数の関係で、削除時は更新しない
     """
-    if ModelSettings.objects.exists() and ModelSettings.objects.latest('pk').is_disable_auto_update:
+    if ModelSettings.objects.exists() and ModelSettings.objects.latest(
+            'pk').is_disable_auto_update:
         pass
     else:
         p.PitcherSabrFormatter().update_total_results(instance.player_id)

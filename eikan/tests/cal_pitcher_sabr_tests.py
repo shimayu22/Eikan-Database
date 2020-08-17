@@ -161,7 +161,7 @@ class CalculatePitcherSabrTests(TestCase):
 
     def test_fielding_independent_pitching(self):
         self.assertAlmostEqual(
-            cps.fielding_independent_pitching(6, 23, 63, 51.2), 3.406, 2
+            cps.fielding_independent_pitching(6, 23, 63, 155), 3.406, 2
         )
         self.assertEqual(
             cps.fielding_independent_pitching(6, 23, 63, 0), 0.0

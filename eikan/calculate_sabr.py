@@ -521,7 +521,7 @@ class CalculatePitcherSabr:
             float: FIP = (被本塁打 * 13 + 与四死球 * 3 - 奪三振数 * 2) / (投球回数 * 3)
         """
         return ((home_run * 13 + bb_hbp * 3 - strike_out * 2) * 3) / \
-            (sum_innings_pitched * 3) + 3.0 if sum_innings_pitched > 0 else 0.0
+            sum_innings_pitched + 3.0 if sum_innings_pitched > 0 else 0.0
 
 
 class CalculateTeamSabr:

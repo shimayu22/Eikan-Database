@@ -84,6 +84,14 @@ class PitcherTotalResults(models.Model):
         editable=False,
     )
 
+    fip = models.DecimalField(
+        verbose_name="FIP",
+        max_digits=6,
+        decimal_places=3,
+        default=0.00,
+        editable=False,
+    )
+
     era = models.DecimalField(
         verbose_name="防御率",
         max_digits=6,

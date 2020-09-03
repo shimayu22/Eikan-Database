@@ -21,4 +21,5 @@ urlpatterns = [
     path('', views.IndexView.as_view(), name='index'),
     path('admin/', admin.site.urls),
     path('eikan/', include('eikan.urls')),
+    path('api/', include('apiv1.urls')),
 ]

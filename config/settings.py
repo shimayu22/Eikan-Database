@@ -26,7 +26,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'eikan.apps.EikanConfig',
-    'eikan.apps.Apiv1Config',
+    'apiv1.apps.Apiv1Config',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

@@ -1,12 +1,8 @@
 from django.urls import path, include
 from rest_framework import routers
-from apiv1 import views
-
-
-router = routers.DefaultRouter()
-router.register('games', views.GameViewSet)
+from apiv1.views import *
 
 app_name = 'apiv1'
 urlpatterns = [
-    path('', include(router.urls))
+    path('games/', GamesList.as_view()),
 ]

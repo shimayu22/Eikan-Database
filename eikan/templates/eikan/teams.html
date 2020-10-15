@@ -1,6 +1,6 @@
 {% extends './_base.html' %}
 {% block content %}
-<div class="container">
+
 {% if team_total_results %}
     {% include "./_team_record.html" with pg='teams' %}
     {% include "./_paginate.html" %}
@@ -10,5 +10,4 @@
         <p><a href="{% url 'admin:eikan_teams_add' %}">管理画面</a>からデータを登録してください。</p>
     </div>
 {% endif %}
-</div>
 {% endblock %}

@@ -89,6 +89,7 @@ class GamesAdmin(admin.ModelAdmin):
 class TeamTotalResultsAdmin(admin.ModelAdmin):
     list_display = (
         'team',
+        'game_record',
         'rank',
         'total_win',
         'total_lose',

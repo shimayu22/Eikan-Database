@@ -89,11 +89,13 @@ class TeamTotalResults(models.Model):
     cold_game = models.PositiveSmallIntegerField(
         verbose_name="コールド",
         default=0,
+        editable=False,
     )
 
     mamono_count = models.PositiveSmallIntegerField(
         verbose_name="魔物使用回数",
         default=0,
+        editable=False,
     )
 
     rank = models.CharField(
@@ -107,6 +109,14 @@ class TeamTotalResults(models.Model):
     is_to_win = models.BooleanField(
         verbose_name="優勝",
         default=False,
+        editable=False,
+    )
+
+    game_record = models.CharField(
+        verbose_name="戦績",
+        max_length=8,
+        blank=True,
+        null=True,
         editable=False,
     )
 

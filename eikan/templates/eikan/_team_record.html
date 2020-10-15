@@ -5,18 +5,26 @@
         <a class="btn btn-outline-primary" href="{% url 'eikan:update_team' pk=team_total_result.team.pk %}">チーム成績更新</a>
     {% endif %}
 {% endif %}
-<h3 class="mt-2">チーム成績</h3>
+<h3 class="mt-2">
+{% if pg == 'teams' %}
+    チーム一覧
+{% else %}
+    チーム成績
+{% endif %}
+</h3>
 <table class="table table-bordered table-hover table-sm table-responsive-md text-nowrap">
     <thead class="thead-light text-center">
         <tr>
             <th>年度:期間:地区</th>
+            <th>方針</th>
+            <th>戦績</th>
+            <th>ランク</th>
             <th>勝</th>
             <th>負</th>
             <th>分</th>
             <th>得点</th>
             <th>失点</th>
             <th>得失</th>
-            <th>ランク</th>
             <th>打率</th>
             <th>OPS</th>
             <th>HR</th>
@@ -24,27 +32,17 @@
             <th><abbr title="(対戦打者-被安打-与四死球-奪三振-失策)/(対戦打者-被本塁打-与四死球-奪三振)">DER</abbr></th>
             <th>コールド</th>
             <th>マモノ</th>
+            <th>指名人数</th>
             <th>備考</th>
         </tr>
     </thead>
     <tbody class="text-right">
-        <tr>
-            <th class="text-center">{{ team_total_result.team }}</th>
-            <td>{{ team_total_result.total_win }}</td>
-            <td>{{ team_total_result.total_lose }}</td>
-            <td>{{ team_total_result.total_draw }}</td>
-            <td>{{ team_total_result.score }}</td>
-            <td>{{ team_total_result.run }}</td>
-            <td>{{ team_total_result.score_difference }}</td>
-            <td>{{ team_total_result.rank|default:"未" }}</td>
-            <td>{{ team_total_result.batting_average }}</td>
-            <td>{{ team_total_result.ops }}</td>
-            <td>{{ team_total_result.hr }}</td>
-            <td>{{ team_total_result.era }}</td>
-            <td>{{ team_total_result.der }}</td>
-            <td>{{ team_total_result.cold_game }}</td>
-            <td>{{ team_total_result.mamono_count }}</td>
-            <td class="text-left">{{ team_total_result.team.remark|default:"" }}</td>
-        </tr>
+        {% if pg == 'teams' %}
+            {% for team_total_result in team_total_results %}
+                {% include "./_team_record_column.html" %}
+            {% endfor %}
+        {% else %}
+            {% include "./_team_record_column.html" %}
+        {% endif %}
     </tbody>
 </table>

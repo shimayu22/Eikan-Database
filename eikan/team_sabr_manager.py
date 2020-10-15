@@ -1,6 +1,7 @@
 """チーム成績に関する処理"""
 
 from django.db import models
+from django.db.models import Max
 from eikan.models import Games, Teams, \
     FielderResults, PitcherResults, \
     TeamTotalResults
@@ -81,13 +82,27 @@ class TeamSabrFormatter:
         competition_choices = c.competition_choices_to_dict()
         competition_round_choices = c.round_choices_to_dict()
         result_choices = c.result_choices_to_dict()
+
+        # 一番勝ち進んだ試合を取得する
+        competition_max = self.games.aggregate(
+            Max('competition_type'), Max('competition_round'))
+
+        g = self.games.get(
+            competition_type=competition_max['competition_type__max'],
+            competition_round=competition_max['competition_round__max'])
+
+        # 優勝した判定
+        team_total_results.is_to_win = g.competition_type > competition_choices[
+            '地区大会'] and g.competition_round == competition_round_choices['決勝'] and g.result == result_choices['勝']
+
+        # 一番勝ち進んだ戦績を登録する
+        team_total_results.game_record = Games.COMPETITION_CHOICES[
+            competition_max['competition_type__max']][1]
         if team_total_results.is_to_win:
-            pass
+            team_total_results.game_record += "優勝"
         else:
-            g = self.games.latest('pk')
-            if g.competition_type > competition_choices[
-                    '地区大会'] and g.competition_round == competition_round_choices['決勝'] and g.result == result_choices['勝']:
-                team_total_results.is_to_win = True
+            team_total_results.game_record += Games.ROUND_CHOICES[
+                competition_max['competition_round__max']][1]
 
         return team_total_results
 
@@ -113,8 +128,10 @@ class TeamSabrFormatter:
             games_results['run']
         games_results['update_rank'] = ["-", "弱小", "そこそこ",
                                         "中堅", "強豪", "名門"][self.games.latest('pk').rank]
-        games_results['cold_game'] = self.games.filter(is_cold_game=True).count()
-        games_results['mamono_count'] = self.games.aggregate(models.Sum('mamono_count'))['mamono_count__sum']
+        games_results['cold_game'] = self.games.filter(
+            is_cold_game=True).count()
+        games_results['mamono_count'] = self.games.aggregate(
+            models.Sum('mamono_count'))['mamono_count__sum']
 
         return games_results
 

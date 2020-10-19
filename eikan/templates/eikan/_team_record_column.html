@@ -1,4 +1,8 @@
-<tr>
+{% if pg == 'teams' %}
+<tr class="{{ team_total_result.is_to_win|yesno:'table-danger,' }}">
+{% else %}
+  <tr>
+{% endif %}
     <th class="text-center"><a href="{% url 'eikan:team_detail' team_total_result.team.pk %}">{{ team_total_result.team }}</a></th>
     <td>{{ team_total_result.team.get_training_policy_display }}</td>
     <td>{{ team_total_result.game_record|default:"未" }}</td>

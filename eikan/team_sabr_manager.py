@@ -265,6 +265,7 @@ class TeamSabrFormatter:
                 'der',
                 'rank',
                 'is_to_win',
+                'game_record',
                 'cold_game',
                 'mamono_count', ],
             batch_size=10000)

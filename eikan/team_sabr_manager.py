@@ -84,25 +84,30 @@ class TeamSabrFormatter:
         result_choices = c.result_choices_to_dict()
 
         # 一番勝ち進んだ試合を取得する
-        competition_max = self.games.aggregate(
-            Max('competition_type'), Max('competition_round'))
+        competition_type_max = self.games.aggregate(
+            Max('competition_type'))
+
+        competition_round_max = self.games.filter(competition_type=competition_type_max['competition_type__max']).aggregate(
+            Max('competition_round'))
 
         g = self.games.get(
-            competition_type=competition_max['competition_type__max'],
-            competition_round=competition_max['competition_round__max'])
+            competition_type=competition_type_max['competition_type__max'],
+            competition_round=competition_round_max['competition_round__max'])
 
         # 優勝した判定
         team_total_results.is_to_win = g.competition_type > competition_choices[
             '地区大会'] and g.competition_round == competition_round_choices['決勝'] and g.result == result_choices['勝']
 
         # 一番勝ち進んだ戦績を登録する
-        team_total_results.game_record = Games.COMPETITION_CHOICES[
-            competition_max['competition_type__max']][1]
+        game_record = Games.COMPETITION_CHOICES[
+            competition_type_max['competition_type__max']][1]
         if team_total_results.is_to_win:
-            team_total_results.game_record += "優勝"
+            game_record += "優勝"
         else:
-            team_total_results.game_record += Games.ROUND_CHOICES[
-                competition_max['competition_round__max']][1]
+            game_record += Games.ROUND_CHOICES[
+                competition_round_max['competition_round__max']][1]
+        print(game_record)
+        team_total_results.game_record = game_record
 
         return team_total_results
 

@@ -103,7 +103,7 @@ class TeamSabrFormatter:
             game_record = game_record = Games.COMPETITION_CHOICES[
             competition_type_max['competition_type__max']][1] + "優勝"
         elif competition_type_max['competition_type__max'] == competition_choices['練習試合']:
-            pass
+            game_record = ""
         else:
             game_record = game_record = Games.COMPETITION_CHOICES[
             competition_type_max['competition_type__max']][1] + Games.ROUND_CHOICES[

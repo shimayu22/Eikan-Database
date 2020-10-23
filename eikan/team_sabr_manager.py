@@ -103,12 +103,11 @@ class TeamSabrFormatter:
             competition_type_max['competition_type__max']][1]
         if team_total_results.is_to_win:
             game_record += "優勝"
-        elif game_record == "練習試合":
+        elif competition_type_max['competition_type__max'] == competition_choices['練習試合']:
             game_record = ""
         else:
             game_record += Games.ROUND_CHOICES[
                 competition_round_max['competition_round__max']][1]
-        print(game_record)
         team_total_results.game_record = game_record
 
         return team_total_results

@@ -90,9 +90,9 @@ class TeamSabrFormatter:
         competition_round_max = self.games.filter(competition_type=competition_type_max['competition_type__max']).aggregate(
             Max('competition_round'))
 
-        g = self.games.get(
+        g = self.games.filter(
             competition_type=competition_type_max['competition_type__max'],
-            competition_round=competition_round_max['competition_round__max'])
+            competition_round=competition_round_max['competition_round__max']).latest('pk')
 
         # 優勝した判定
         team_total_results.is_to_win = g.competition_type > competition_choices[

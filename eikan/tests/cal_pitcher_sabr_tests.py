@@ -168,9 +168,9 @@ class CalculatePitcherSabrTests(TestCase):
         )
 
     def test_fip_subtracting_era(self):
-        self.assertEqual(
+        self.assertAlmostEqual(
             cps.fip_subtracting_era(2.37, 2.01), 0.36
         )
-        self.assertEqual(
+        self.assertAlmostEqual(
             cps.fip_subtracting_era(3.00, 3.34), -0.34
         )

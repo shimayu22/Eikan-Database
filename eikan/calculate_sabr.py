@@ -522,7 +522,25 @@ class CalculatePitcherSabr:
         """
         return ((home_run * 13 + bb_hbp * 3 - strike_out * 2) * 3) / \
             sum_innings_pitched + 3.0 if sum_innings_pitched > 0 else 0.0
+    
+    @staticmethod
+    def fip_subtracting_era(
+        fip: float,
+        era: float) -> float:
+        """FIP substracting ERA
 
+        Args:
+            fip (float): FIP
+            era (float): ERA: 防御率
+
+        Returns:
+            float: FIP - ERA
+        
+        Notes:
+            FIP-ERA<0であれば、防御率が改善する可能性がある
+            FIP-ERA>0であれば、防御率が悪化する可能性がある
+        """
+        return fip - era
 
 class CalculateTeamSabr:
     """チームのセイバーメトリクスの指標を計算する
@@ -557,3 +575,4 @@ class CalculateTeamSabr:
         b = batters_faced - suffer_home_run - bb_hbp - strike_out
 
         return a / b if b > 0 else 0
+

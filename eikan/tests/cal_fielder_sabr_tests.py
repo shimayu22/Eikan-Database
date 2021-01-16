@@ -72,6 +72,9 @@ class CalculateFielderSabrTests(TestCase):
         self.assertAlmostEqual(
             cfs.bb_hbp_per_so(110, 33), 0.3000, 3
         )
+        self.assertAlmostEqual(
+            cfs.bb_hbp_per_so(1,15), 15.0000, 1
+        )
         self.assertEqual(cfs.bb_hbp_per_so(1, 0), 0)
         self.assertEqual(cfs.bb_hbp_per_so(0, 1), 0)
 

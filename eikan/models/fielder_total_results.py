@@ -178,7 +178,7 @@ class FielderTotalResults(models.Model):
 
     bbhp_k = models.DecimalField(
         verbose_name="BBHP/K",
-        max_digits=4,
+        max_digits=5,
         decimal_places=3,
         default=0.00,
         editable=False,

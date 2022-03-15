@@ -43,6 +43,7 @@
                     {{ p.player_id.is_active|yesno:"[現役], " }}
                     {{ p.player_id.is_genius|yesno:"[天才], " }}
                     {{ p.player_id.is_scout|yesno:"[ス], " }}
+                    {{ ftr.player.is_two_way|yesno:"[二]," }}
                     {{ p.player_id.remark|default:"" }}
                 </td>
             {% endif %}

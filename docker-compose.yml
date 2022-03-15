@@ -1,0 +1,20 @@
+version: '3'
+services:
+  django:
+    #  このコンテナの名前
+    container_name: eikan-database
+
+    # Dockerfileの場所
+    build: Docker/Django
+
+    # ホスト上のディレクトリを、コンテナ内にあるディレクトリにマウントする
+    volumes:
+      - .:/usr/local/src
+    
+    # 起動時に実行するコマンド
+    command: sh docker-init-setup.sh
+
+    tty: true
+
+    ports:
+      - "8000:8000"

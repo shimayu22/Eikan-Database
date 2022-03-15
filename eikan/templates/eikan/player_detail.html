@@ -13,6 +13,7 @@
         {{ players.is_ob|yesno:"[OB], " }}
         {{ players.is_active|yesno:"[現役], " }}
         {{ players.is_genius|yesno:"[天才], " }}
+        {{ players.is_scout|yesno:"[ス], " }}
         {{ players.remark|default:"" }}
     </div>
 </div>

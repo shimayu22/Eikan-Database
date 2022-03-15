@@ -8,6 +8,7 @@
                     {{ ftr.player.is_ob|yesno:"[OB]," }}
                     {{ ftr.player.is_active|yesno:"[現役]," }}
                     {{ ftr.player.is_genius|yesno:"[天才]," }}
+                    {{ ftr.player.is_scout|yesno:"[ス]," }}
                     {{ ftr.player.remark|default:"" }}
                 </td>
                 <td>{{ ftr.ops|floatformat:"3"|default:"0.000" }}</td>

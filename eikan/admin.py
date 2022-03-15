@@ -41,10 +41,11 @@ class PlayersAdmin(admin.ModelAdmin):
         ('is_pitched',
          'is_ob',
          'is_active',
-         'is_genius'),
+         'is_genius',
+         'is_scout'),
         'remark')
     list_display = ('name', 'admission_year', 'position', 'is_ob',
-                    'is_active', 'is_genius', 'remark')
+                    'is_active', 'is_genius', 'is_scout', 'remark')
     list_editable = ('position', 'remark',)
 
 

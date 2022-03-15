@@ -9,6 +9,7 @@
                     {{ ptr.player.is_ob|yesno:"[OB], " }}
                     {{ ptr.player.is_active|yesno:"[現役], " }}
                     {{ ptr.player.is_genius|yesno:"[天才], " }}
+                    {{ ptr.player.is_scout|yesno:"[ス], " }}
                     {{ ptr.player.remark|default:"" }}
                 </td>
             {% endif %}

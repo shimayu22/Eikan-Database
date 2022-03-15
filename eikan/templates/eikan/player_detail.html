@@ -14,6 +14,7 @@
         {{ players.is_active|yesno:"[現役], " }}
         {{ players.is_genius|yesno:"[天才], " }}
         {{ players.is_scout|yesno:"[ス], " }}
+        {{ players.is_two_way|yesno:"[二], " }}
         {{ players.remark|default:"" }}
     </div>
 </div>

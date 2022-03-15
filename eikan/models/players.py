@@ -39,6 +39,11 @@ class Players(models.Model):
         default=False,
     )
 
+    is_two_way = models.BooleanField(
+        verbose_name="二刀流",
+        default=False,
+    )
+
     is_ob = models.BooleanField(
         verbose_name="OB",
         default=False,

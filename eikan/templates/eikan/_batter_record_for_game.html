@@ -44,6 +44,7 @@
                     {{ f.player_id.is_ob|yesno:"[OB], " }}
                     {{ f.player_id.is_active|yesno:"[現役], " }}
                     {{ f.player_id.is_genius|yesno:"[天才], " }}
+                    {{ f.player_id.is_scout|yesno:"[ス], " }}
                     {{ f.player_id.remark|default:"" }}
                 </td>
             {% endif %}

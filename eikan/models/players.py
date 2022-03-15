@@ -54,6 +54,11 @@ class Players(models.Model):
         default=False,
     )
 
+    is_scout = models.BooleanField(
+        verbose_name="スカウト",
+        default=False,
+    )
+
     remark = models.CharField(
         verbose_name="備考",
         max_length=100,

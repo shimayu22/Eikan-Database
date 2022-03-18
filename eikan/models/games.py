@@ -88,6 +88,11 @@ class Games(models.Model):
         default=0,
     )
 
+    mamono_score = models.PositiveSmallIntegerField(
+        verbose_name="魔物使用得点",
+        default=0,
+    )
+
     rank = models.PositiveSmallIntegerField(
         verbose_name="ランク",
         choices=RANK_CHOICES,

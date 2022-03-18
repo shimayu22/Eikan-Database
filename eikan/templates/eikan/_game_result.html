@@ -10,6 +10,7 @@
             <th>スコア</th>
             <th>コールド</th>
             <th>マモノ</th>
+            <th>マモノ得点</th>
             <th>ランク</th>
         </tr>
     </thead>
@@ -36,6 +37,7 @@
                 {% endif %}
             </td>
             <td>{{ g.mamono_count }}</td>
+            <td>{{ g.mamono_score }}</td>
             <td>{{ g.get_rank_display }}</td>
         </tr>
         {% endfor %}

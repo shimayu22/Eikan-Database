@@ -72,7 +72,7 @@ class PitcherResultsInline(admin.TabularInline):
 
 class GamesAdmin(admin.ModelAdmin):
     fields = ('team_id', ('competition_type', 'competition_round'),
-              ('score', 'run', 'mamono_count'), 'is_cold_game', 'rank')
+              ('score', 'run', 'is_cold_game'), ('mamono_count', 'mamono_score'), 'rank')
     list_display = (
         'team_id',
         'competition_type',
@@ -82,6 +82,7 @@ class GamesAdmin(admin.ModelAdmin):
         'run',
         'is_cold_game',
         'mamono_count',
+        'mamono_score',
         'rank')
     list_editable = ('rank',)
     list_select_related = ('team_id',)
@@ -106,6 +107,7 @@ class TeamTotalResultsAdmin(admin.ModelAdmin):
         'der',
         'cold_game',
         'mamono_count',
+        'mamono_score',
     )
     list_select_related = ('team',)
 

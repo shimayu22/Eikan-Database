@@ -98,6 +98,12 @@ class TeamTotalResults(models.Model):
         editable=False,
     )
 
+    mamono_score = models.PositiveSmallIntegerField(
+        verbose_name="魔物使用得点",
+        default=0,
+        editable=False,
+    )
+
     rank = models.CharField(
         verbose_name="ランク",
         max_length=4,

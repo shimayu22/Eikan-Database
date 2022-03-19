@@ -1,5 +1,6 @@
 """チーム成績に関する処理"""
 
+from dataclasses import field
 from django.db import models
 from django.db.models import Max
 from eikan.models import Games, Teams, \
@@ -65,6 +66,14 @@ class TeamSabrFormatter:
             fielder_results['at_bat__sum'], team_tb)
         team_total_results.ops = f.on_base_plus_slugging(
             team_obp, team_slg)
+        team_total_results.br = f.batting_runs(
+            fielder_results['hit__sum'],
+            fielder_results['two_base__sum'],
+            fielder_results['three_base__sum'],
+            fielder_results['home_run__sum'],
+            fielder_results['bb_hbp__sum'],
+            fielder_results['at_bat__sum'],
+        )
 
         total_sum_pi = (pitcher_results['innings_pitched__sum'] + (
             pitcher_results['innings_pitched_fraction__sum'] / 3)) * 3

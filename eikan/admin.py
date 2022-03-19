@@ -103,6 +103,7 @@ class TeamTotalResultsAdmin(admin.ModelAdmin):
         'batting_average',
         'ops',
         'hr',
+        'br',
         'era',
         'der',
         'cold_game',

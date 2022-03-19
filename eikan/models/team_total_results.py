@@ -70,6 +70,14 @@ class TeamTotalResults(models.Model):
         editable=False,
     )
 
+    br = models.DecimalField(
+        verbose_name="BR",
+        max_digits=4,
+        decimal_places=1,
+        default=0.0,
+        editable=False,
+    )
+
     era = models.DecimalField(
         verbose_name="防御率",
         max_digits=5,

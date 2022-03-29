@@ -1,6 +1,5 @@
 """チーム成績に関する処理"""
 
-from dataclasses import field
 from django.db import models
 from django.db.models import Max
 from eikan.models import Games, Teams, \

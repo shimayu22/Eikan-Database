@@ -2,7 +2,7 @@
 {% include "./_pitcher_record_tableheader.html" with pg=pg %}
 <tbody class="text-right">
     <tr>
-        {% for ptr in pitcher_total_results %}
+        {% for ptr in pitcher_total_results|dictsortreversed:"innings_pitched" %}
             <th><a href="{% url 'eikan:player_detail' ptr.player.pk %}">{{ ptr.player }}</a></th>
             {% if pg == "index" or pg == "team" %}
                 <td class="text-center">

@@ -51,20 +51,27 @@ class TeamSabrFormatter:
 
         team_total_results.batting_average = f.batting_average(
             fielder_results['at_bat__sum'],
-            fielder_results['hit__sum'])
+            fielder_results['hit__sum']
+        )
         team_obp = f.on_base_percentage(
             fielder_results['at_bat__sum'],
             fielder_results['bb_hbp__sum'],
-            fielder_results['hit__sum'])
+            fielder_results['hit__sum']
+        )
         team_tb = f.total_bases(
             fielder_results['hit__sum'],
             fielder_results['two_base__sum'],
             fielder_results['three_base__sum'],
-            fielder_results['home_run__sum'],)
+            fielder_results['home_run__sum'],
+        )
         team_slg = f.slugging_percentage(
-            fielder_results['at_bat__sum'], team_tb)
+            fielder_results['at_bat__sum'], 
+            team_tb
+        )
         team_total_results.ops = f.on_base_plus_slugging(
-            team_obp, team_slg)
+            team_obp, 
+            team_slg
+        )
         team_total_results.br = f.batting_runs(
             fielder_results['hit__sum'],
             fielder_results['two_base__sum'],
@@ -164,13 +171,14 @@ class TeamSabrFormatter:
         """
         fielder_results = FielderResults.objects.select_related(
             'player_id', 'game_id').filter(game_id__in=self.games).aggregate(
-            models.Sum('at_bat'),
-            models.Sum('hit'),
-            models.Sum('two_base'),
-            models.Sum('three_base'),
-            models.Sum('home_run'),
-            models.Sum('bb_hbp'),
-            models.Sum('error'))
+                models.Sum('at_bat'),
+                models.Sum('hit'),
+                models.Sum('two_base'),
+                models.Sum('three_base'),
+                models.Sum('home_run'),
+                models.Sum('bb_hbp'),
+                models.Sum('error')
+            )
 
         return fielder_results
 
@@ -186,14 +194,15 @@ class TeamSabrFormatter:
         """
         pitcher_results = PitcherResults.objects.select_related(
             'player_id', 'game_id').filter(game_id__in=self.games).aggregate(
-            models.Sum('earned_run'),
-            models.Sum('innings_pitched'),
-            models.Sum('innings_pitched_fraction'),
-            models.Sum('total_batters_faced'),
-            models.Sum('hit'),
-            models.Sum('bb_hbp'),
-            models.Sum('strike_out'),
-            models.Sum('home_run'))
+                models.Sum('earned_run'),
+                models.Sum('innings_pitched'),
+                models.Sum('innings_pitched_fraction'),
+                models.Sum('total_batters_faced'),
+                models.Sum('hit'),
+                models.Sum('bb_hbp'),
+                models.Sum('strike_out'),
+                models.Sum('home_run')
+            )
 
         return pitcher_results
 
@@ -212,11 +221,11 @@ class TeamSabrFormatter:
             'team_id').filter(team_id=self.team_id)
         games_results = self.tally_from_game_results()
         fielder_results = self.tally_from_fielder_results()
-        pitcher_result = self.tally_from_pitcher_results()
+        pitcher_results = self.tally_from_pitcher_results()
         team_total_results = self.update_team_total_results(
             games_results,
             fielder_results,
-            pitcher_result,
+            pitcher_results,
             TeamTotalResults.objects.select_related('team').get(
                 team=self.team_id))
 

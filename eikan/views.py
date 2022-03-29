@@ -104,9 +104,9 @@ class IndexView(TemplateView):
             admission_year__lte=ctx['team_total_result'].team.year,
             is_pitcher=True)
         ctx['fielder_total_results'] = FielderTotalResults.objects.select_related(
-            'player').filter(player__in=players).order_by('-ops', '-slg', 'player')
+            'player').filter(player__in=players).order_by('-ops', '-slg', '-obp', 'player')
         ctx['pitcher_total_results'] = PitcherTotalResults.objects.select_related(
-            'player').filter(player__in=pitchers).order_by('player')
+            'player').filter(player__in=pitchers).order_by('-innings_pitched', 'player')
 
         return ctx
 

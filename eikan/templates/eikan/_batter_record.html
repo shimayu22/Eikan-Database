@@ -1,7 +1,8 @@
 {# 打者成績 #}
 {% include "./_batter_record_tableheader.html" %}
     <tbody class="text-right">
-        {% for ftr in fielder_total_results %}
+        {% comment %} {% for ftr in fielder_total_results|dictsortreversed:"ops" %} {% endcomment %}
+        {% for ftr in fielder_total_results|dictsortreversed:"obp"|dictsortreversed:"slg"|dictsortreversed:"ops" %}
             <tr>
                 <th><a href="{% url 'eikan:player_detail' ftr.player.pk %}">{{ ftr.player }}</a></th>
                 <td class="text-left">

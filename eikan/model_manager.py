@@ -125,12 +125,25 @@ class DefaultValueExtractor:
             if game.competition_type == competition_choices['地区大会'] and \
                     game.competition_round == competition_round_choices['2回戦'] and \
                     game.result == result_choices['勝']:
+                return competition_choices['全国大会']
+            
+            if game.competition_type == competition_choices['全国大会'] and \
+                game.result == result_choices['負']:
                 return competition_choices['センバツ']
+            
+            if game.competition_type == competition_choices['全国大会'] and \
+                game.competition_round == competition_round_choices['決勝'] and \
+                game.result == result_choices['勝']:
+                return competition_choices['センバツ']
+
         else:
             if game.competition_type == competition_choices['県大会'] and \
                     game.competition_round == competition_round_choices['決勝'] and \
                     game.result == result_choices['勝']:
                 return competition_choices['甲子園']
+        
+        if game.result == result_choices['負']:
+            return competition_choices['県大会']
 
         return game.competition_type
 
@@ -176,10 +189,18 @@ class DefaultValueExtractor:
             if game.competition_type == competition_choices['県大会'] and \
                     game.competition_round == competition_round_choices['2回戦']:
                 return competition_round_choices['1回戦']
-
+            
             if game.competition_type == competition_choices['地区大会'] and \
                     game.competition_round == competition_round_choices['2回戦']:
-                return competition_round_choices['1回戦']
+                if game.result == result_choices['勝']:
+                    return competition_round_choices['2回戦']
+                else:
+                    return competition_round_choices['1回戦']
+
+            if game.competition_type == competition_choices['全国大会'] and \
+                    game.competition_round == competition_round_choices['2回戦']:
+                if game.result == result_choices['勝']:
+                    return competition_round_choices['準決勝']
 
         return game.competition_round + 1
 

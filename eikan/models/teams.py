@@ -99,7 +99,7 @@ class Teams(models.Model):
     draft_nomination = models.PositiveSmallIntegerField(
         verbose_name="指名人数",
         validators=[MinValueValidator(0),
-                    MaxValueValidator(5)],
+                    MaxValueValidator(6)],
         default=0,
     )
 
@@ -129,3 +129,4 @@ class Teams(models.Model):
         # 試合情報で入力しやすいように追加
         ordering = ['-year', '-period']
         constraints = [models.UniqueConstraint(fields=['year', 'period'], name='unique_team'), ]
+

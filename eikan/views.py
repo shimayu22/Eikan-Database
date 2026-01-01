@@ -1,11 +1,14 @@
+from datetime import datetime, timezone, timedelta
+
 from django.shortcuts import get_list_or_404, redirect
 from django.views.generic import TemplateView, DetailView, ListView
 from django.urls import reverse
+
 from eikan import fielder_sabr_manager as f
 from eikan import pitcher_sabr_manager as p
 from eikan import team_sabr_manager as t
 from eikan.model_manager import ChoicesFormatter as c
-from datetime import datetime, timezone, timedelta
+from eikan.constants import SUMMER_PERIOD, YEARS_BACK_FOR_SUMMER, YEARS_BACK_FOR_AUTUMN
 from .models import Teams, Players, Games, \
     FielderResults, PitcherResults, \
     FielderTotalResults, PitcherTotalResults, TeamTotalResults
@@ -91,11 +94,11 @@ class IndexView(TemplateView):
             return ctx
 
         # 現在のチームの選手を取得
-        start_year = (
-            ctx['team_total_result'].team.year -
-            2) if ctx['team_total_result'].team.period == 1 else (
-            ctx['team_total_result'].team.year -
-            1)
+        team = ctx['team_total_result'].team
+        if team.period == SUMMER_PERIOD:
+            start_year = team.year - YEARS_BACK_FOR_SUMMER
+        else:
+            start_year = team.year - YEARS_BACK_FOR_AUTUMN
         players = Players.objects.filter(
             admission_year__gte=start_year,
             admission_year__lte=ctx['team_total_result'].team.year)

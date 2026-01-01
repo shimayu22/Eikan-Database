@@ -4,6 +4,12 @@ Notes:
     循環importを回避するため、django.apps.apps.get_model()を使用してモデルを取得している
 """
 from django.apps import apps
+from eikan.constants import (
+    DEFAULT_START_YEAR_TEAMS,
+    DEFAULT_START_YEAR_PLAYERS,
+    YEARS_BACK_FOR_SUMMER,
+    YEARS_BACK_FOR_AUTUMN,
+)
 
 
 # ============================================================================
@@ -81,11 +87,11 @@ def create_default_year_for_teams() -> int:
         int: 前チームの期間(period)が夏(1)なら前チームと同じ年、秋(2)なら翌年を返す
     
     Notes:
-        初めて登録する場合は1941を返す
+        初めて登録する場合はDEFAULT_START_YEAR_TEAMSを返す
     """
     Teams = apps.get_model('eikan', 'Teams')
     if not Teams.objects.exists():
-        return 1941
+        return DEFAULT_START_YEAR_TEAMS
     
     latest_team = Teams.objects.latest('pk')
     period_choices = period_choices_to_dict()
@@ -133,10 +139,10 @@ def create_default_year_for_players() -> int:
         int: 現在のチームのyearを返す
     
     Notes:
-        初めて登録する場合は1939を返す
+        初めて登録する場合はDEFAULT_START_YEAR_PLAYERSを返す
     """
     Teams = apps.get_model('eikan', 'Teams')
-    return Teams.objects.latest('pk').year if Teams.objects.exists() else 1939
+    return Teams.objects.latest('pk').year if Teams.objects.exists() else DEFAULT_START_YEAR_PLAYERS
 
 
 # ============================================================================
@@ -319,11 +325,11 @@ def select_display_players() -> dict:
     teams = Teams.objects.latest('pk')
     if teams.period == period_choices['夏']:
         return {
-            "admission_year__gte": teams.year - 2,
+            "admission_year__gte": teams.year - YEARS_BACK_FOR_SUMMER,
             "admission_year__lte": teams.year}
     else:
         return {
-            "admission_year__gte": teams.year - 1,
+            "admission_year__gte": teams.year - YEARS_BACK_FOR_AUTUMN,
             "admission_year__lte": teams.year}
 
 
@@ -356,11 +362,11 @@ def select_display_pitchers() -> dict:
     if teams.period == period_choices['夏']:
         return {
             "is_pitcher": True,
-            "admission_year__gte": teams.year - 2,
+            "admission_year__gte": teams.year - YEARS_BACK_FOR_SUMMER,
             "admission_year__lte": teams.year}
     else:
         return {
             "is_pitcher": True,
-            "admission_year__gte": teams.year - 1,
+            "admission_year__gte": teams.year - YEARS_BACK_FOR_AUTUMN,
             "admission_year__lte": teams.year}
 

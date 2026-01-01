@@ -1,6 +1,7 @@
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from eikan import defaults
+from eikan.constants import DEFAULT_START_YEAR_TEAMS
 
 
 class Teams(models.Model):
@@ -74,7 +75,7 @@ class Teams(models.Model):
 
     year = models.PositiveSmallIntegerField(
         verbose_name="年度",
-        validators=[MinValueValidator(1941)],
+        validators=[MinValueValidator(DEFAULT_START_YEAR_TEAMS)],
         default=defaults.create_default_year_for_teams,
     )
 

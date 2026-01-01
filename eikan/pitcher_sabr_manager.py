@@ -3,6 +3,7 @@
 from django.db import models
 from eikan.models import PitcherResults, PitcherTotalResults, Players, Teams, Games
 from eikan import sabr_calculations
+from eikan.constants import YEARS_BACK_FOR_SUMMER
 from eikan.model_manager import ChoicesFormatter as c
 
 class PitcherSabrFormatter:
@@ -337,7 +338,7 @@ class PitcherSabrFormatter:
         Notes:
             PitcherTotalResultsのprevious_game_pitchedのみを更新する
         """
-        year = Teams.objects.latest('pk').year - 2
+        year = Teams.objects.latest('pk').year - YEARS_BACK_FOR_SUMMER
         pitchers = Players.objects.filter(
             is_pitcher=True, admission_year__gte=year)
 

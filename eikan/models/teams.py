@@ -99,7 +99,7 @@ class Teams(models.Model):
     draft_nomination = models.PositiveSmallIntegerField(
         verbose_name="指名人数",
         validators=[MinValueValidator(0),
-                    MaxValueValidator(6)],
+                    MaxValueValidator(10)],
         default=0,
     )
 

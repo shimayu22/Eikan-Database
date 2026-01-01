@@ -30,15 +30,13 @@ def update_total_results(request, pk=None):
     if not Teams.objects.exists():
         return redirect('eikan:index')
 
-    team_id = Teams.objects.latest('pk')
-    redirect_url = reverse('eikan:index')
-    url = redirect_url
-
     # pkがある=チーム詳細からの更新、ない=indexからの更新
     if pk and Teams.objects.filter(pk=pk).exists():
         team_id = Teams.objects.get(pk=pk)
-        redirect_url = reverse('eikan:teams')
-        url = f'{redirect_url}/{str(pk)}/'
+        url = f"{reverse('eikan:teams')}/{pk}/"
+    else:
+        team_id = Teams.objects.latest('pk')
+        url = reverse('eikan:index')
 
     # 連打されてもいいように
     if TeamTotalResults.objects.get(

@@ -5,6 +5,38 @@ from django.db import models
 from eikan import sabr_calculations
 from eikan.models import FielderResults, FielderTotalResults, Players, Teams
 
+
+# bulk_updateで使用するフィールドリスト
+FIELDER_TOTAL_RESULTS_UPDATE_FIELDS = [
+    'at_bat',
+    'run',
+    'hit',
+    'two_base',
+    'three_base',
+    'home_run',
+    'run_batted_in',
+    'strike_out',
+    'bb_hbp',
+    'sacrifice_bunt',
+    'stolen_base',
+    'grounded_into_double_play',
+    'error',
+    'total_bases',
+    'slg',
+    'obp',
+    'ops',
+    'br',
+    'woba',
+    'gpa',
+    'batting_average',
+    'bbhp_percent',
+    'isod',
+    'isop',
+    'bbhp_k',
+    'p_s',
+]
+
+
 class FielderSabrFormatter:
     """主にFielderResults,FielderTotalResultsを操作する"""
 
@@ -223,36 +255,11 @@ class FielderSabrFormatter:
             update_fielder_results.append(
                 self.create_fielder_total_results(fielder_results))
 
-        FielderTotalResults.objects.bulk_update(
-            update_fielder_results,
-            fields=[
-                'at_bat',
-                'run',
-                'hit',
-                'two_base',
-                'three_base',
-                'home_run',
-                'run_batted_in',
-                'strike_out',
-                'bb_hbp',
-                'sacrifice_bunt',
-                'stolen_base',
-                'grounded_into_double_play',
-                'error',
-                'total_bases',
-                'slg',
-                'obp',
-                'ops',
-                'br',
-                'woba',
-                'gpa',
-                'batting_average',
-                'bbhp_percent',
-                'isod',
-                'isop',
-                'bbhp_k',
-                'p_s'],
-            batch_size=10000)
+        if update_fielder_results:
+            FielderTotalResults.objects.bulk_update(
+                update_fielder_results,
+                fields=FIELDER_TOTAL_RESULTS_UPDATE_FIELDS,
+                batch_size=1000)
 
     def create_sabr_from_results_by_year(self, player_id: Players) -> list:
         """選手詳細画面用にデータを取得する

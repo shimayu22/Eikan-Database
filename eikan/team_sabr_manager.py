@@ -13,6 +13,29 @@ from eikan.models import (
     Teams,
 )
 
+
+# bulk_updateで使用するフィールドリスト
+TEAM_TOTAL_RESULTS_UPDATE_FIELDS = [
+    'total_win',
+    'total_lose',
+    'total_draw',
+    'score',
+    'run',
+    'score_difference',
+    'batting_average',
+    'ops',
+    'hr',
+    'era',
+    'der',
+    'rank',
+    'is_to_win',
+    'game_record',
+    'cold_game',
+    'mamono_count',
+    'mamono_score',
+]
+
+
 class TeamSabrFormatter:
     """チーム成績の集計、指標計算を行う"""
 
@@ -263,25 +286,9 @@ class TeamSabrFormatter:
                     self.create_sabr_from_results_of_team(
                         ttr.team))
 
-        TeamTotalResults.objects.bulk_update(
-            update_team_results,
-            fields=[
-                'total_win',
-                'total_lose',
-                'total_draw',
-                'score',
-                'run',
-                'score_difference',
-                'batting_average',
-                'ops',
-                'hr',
-                'era',
-                'der',
-                'rank',
-                'is_to_win',
-                'game_record',
-                'cold_game',
-                'mamono_count',
-                'mamono_score' ],
-            batch_size=10000)
-        print("チーム総合成績を更新")
+        if update_team_results:
+            TeamTotalResults.objects.bulk_update(
+                update_team_results,
+                fields=TEAM_TOTAL_RESULTS_UPDATE_FIELDS,
+                batch_size=1000)
+            print("チーム総合成績を更新")

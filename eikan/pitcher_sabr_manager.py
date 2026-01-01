@@ -7,6 +7,40 @@ from eikan.constants import YEARS_BACK_FOR_SUMMER
 from eikan.model_manager import ChoicesFormatter as c
 from eikan.models import Games, PitcherResults, PitcherTotalResults, Players, Teams
 
+
+# bulk_updateで使用するフィールドリスト
+PITCHER_TOTAL_RESULTS_UPDATE_FIELDS = [
+    'games',
+    'games_started',
+    'innings_pitched',
+    'number_of_pitch',
+    'total_batters_faced',
+    'hit',
+    'strike_out',
+    'bb_hbp',
+    'run',
+    'earned_run',
+    'wild_pitch',
+    'home_run',
+    'fip',
+    'era',
+    'ura',
+    'whip',
+    'k_bbhp',
+    'k_9',
+    'k_percent',
+    'bbhp_9',
+    'p_bbhp_percent',
+    'h_9',
+    'h_percent',
+    'hr_9',
+    'hr_percent',
+    'lob_percent',
+    'p_ip',
+    'previous_game_pitched',
+]
+
+
 class PitcherSabrFormatter:
     """主にPitcherResults,PitcherTotalResultsを操作する"""
 
@@ -286,39 +320,12 @@ class PitcherSabrFormatter:
             update_pitcher_results.append(
                 self.create_pitcher_total_results(pitcher_results))
 
-        PitcherTotalResults.objects.bulk_update(
-            update_pitcher_results,
-            fields=[
-                'games',
-                'games_started',
-                'innings_pitched',
-                'number_of_pitch',
-                'total_batters_faced',
-                'hit',
-                'strike_out',
-                'bb_hbp',
-                'run',
-                'earned_run',
-                'wild_pitch',
-                'home_run',
-                'fip',
-                'era',
-                'ura',
-                'whip',
-                'k_bbhp',
-                'k_9',
-                'k_percent',
-                'bbhp_9',
-                'p_bbhp_percent',
-                'h_9',
-                'h_percent',
-                'hr_9',
-                'hr_percent',
-                'lob_percent',
-                'p_ip',
-                'previous_game_pitched'],
-            batch_size=10000)
-        print("投手総合成績を更新")
+        if update_pitcher_results:
+            PitcherTotalResults.objects.bulk_update(
+                update_pitcher_results,
+                fields=PITCHER_TOTAL_RESULTS_UPDATE_FIELDS,
+                batch_size=1000)
+            print("投手総合成績を更新")
 
     def update_previous_game_pitched(self):
         """PitcherTotalResultsのprevious_game_pitchedを更新する

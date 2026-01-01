@@ -24,73 +24,62 @@ class FielderSabrFormatter:
         """
         fielder_total_results = FielderTotalResults.objects.select_related(
             'player').get(player=self.player_id)
-        fielder_total_results.at_bat = fielder_results['at_bat__sum']
-        fielder_total_results.run = fielder_results['run__sum']
-        fielder_total_results.hit = fielder_results['hit__sum']
-        fielder_total_results.two_base = fielder_results['two_base__sum']
-        fielder_total_results.three_base = fielder_results['three_base__sum']
-        fielder_total_results.home_run = fielder_results['home_run__sum']
-        fielder_total_results.run_batted_in = fielder_results['run_batted_in__sum']
-        fielder_total_results.strike_out = fielder_results['strike_out__sum']
-        fielder_total_results.bb_hbp = fielder_results['bb_hbp__sum']
-        fielder_total_results.sacrifice_bunt = fielder_results['sacrifice_bunt__sum']
-        fielder_total_results.stolen_base = fielder_results['stolen_base__sum']
-        fielder_total_results.grounded_into_double_play = fielder_results[
-            'grounded_into_double_play__sum']
-        fielder_total_results.error = fielder_results['error__sum']
+        
+        # 集計結果を安全に取得（Noneの場合は0を返す）
+        at_bat = fielder_results.get('at_bat__sum') or 0
+        run = fielder_results.get('run__sum') or 0
+        hit = fielder_results.get('hit__sum') or 0
+        two_base = fielder_results.get('two_base__sum') or 0
+        three_base = fielder_results.get('three_base__sum') or 0
+        home_run = fielder_results.get('home_run__sum') or 0
+        run_batted_in = fielder_results.get('run_batted_in__sum') or 0
+        strike_out = fielder_results.get('strike_out__sum') or 0
+        bb_hbp = fielder_results.get('bb_hbp__sum') or 0
+        sacrifice_bunt = fielder_results.get('sacrifice_bunt__sum') or 0
+        stolen_base = fielder_results.get('stolen_base__sum') or 0
+        grounded_into_double_play = fielder_results.get('grounded_into_double_play__sum') or 0
+        error = fielder_results.get('error__sum') or 0
+        
+        fielder_total_results.at_bat = at_bat
+        fielder_total_results.run = run
+        fielder_total_results.hit = hit
+        fielder_total_results.two_base = two_base
+        fielder_total_results.three_base = three_base
+        fielder_total_results.home_run = home_run
+        fielder_total_results.run_batted_in = run_batted_in
+        fielder_total_results.strike_out = strike_out
+        fielder_total_results.bb_hbp = bb_hbp
+        fielder_total_results.sacrifice_bunt = sacrifice_bunt
+        fielder_total_results.stolen_base = stolen_base
+        fielder_total_results.grounded_into_double_play = grounded_into_double_play
+        fielder_total_results.error = error
+        
         fielder_total_results.total_bases = sabr_calculations.calculate_total_bases(
-            fielder_results['hit__sum'],
-            fielder_results['two_base__sum'],
-            fielder_results['three_base__sum'],
-            fielder_results['home_run__sum'])
+            hit, two_base, three_base, home_run)
         fielder_total_results.slg = sabr_calculations.calculate_slugging_percentage(
-            fielder_results['at_bat__sum'],
-            fielder_total_results.total_bases)
+            at_bat, fielder_total_results.total_bases)
         fielder_total_results.obp = sabr_calculations.calculate_on_base_percentage(
-            fielder_results['at_bat__sum'],
-            fielder_results['bb_hbp__sum'],
-            fielder_results['hit__sum'])
+            at_bat, bb_hbp, hit)
         fielder_total_results.ops = sabr_calculations.calculate_on_base_plus_slugging(
-            fielder_total_results.obp,
-            fielder_total_results.slg)
+            fielder_total_results.obp, fielder_total_results.slg)
         fielder_total_results.br = sabr_calculations.calculate_batting_runs(
-            fielder_results['hit__sum'],
-            fielder_results['two_base__sum'],
-            fielder_results['three_base__sum'],
-            fielder_results['home_run__sum'],
-            fielder_results['bb_hbp__sum'],
-            fielder_results['at_bat__sum']
-        )
+            hit, two_base, three_base, home_run, bb_hbp, at_bat)
         fielder_total_results.woba = sabr_calculations.calculate_weighted_on_base_average(
-            fielder_results['hit__sum'],
-            fielder_results['two_base__sum'],
-            fielder_results['three_base__sum'],
-            fielder_results['home_run__sum'],
-            fielder_results['bb_hbp__sum'],
-            fielder_results['at_bat__sum']
-        )
+            hit, two_base, three_base, home_run, bb_hbp, at_bat)
         fielder_total_results.gpa = sabr_calculations.calculate_gross_production_average(
-            fielder_total_results.obp,
-            fielder_total_results.slg)
+            fielder_total_results.obp, fielder_total_results.slg)
         fielder_total_results.batting_average = sabr_calculations.calculate_batting_average(
-            fielder_results['at_bat__sum'],
-            fielder_results['hit__sum'])
+            at_bat, hit)
         fielder_total_results.bbhp_percent = sabr_calculations.calculate_bb_hp_percentage(
-            fielder_results['at_bat__sum'],
-            fielder_results['bb_hbp__sum'],
-            fielder_results['sacrifice_bunt__sum'])
+            at_bat, bb_hbp, sacrifice_bunt)
         fielder_total_results.isod = sabr_calculations.calculate_isolated_discipline(
-            fielder_total_results.obp,
-            fielder_total_results.batting_average)
+            fielder_total_results.obp, fielder_total_results.batting_average)
         fielder_total_results.isop = sabr_calculations.calculate_isolated_power(
-            fielder_total_results.slg,
-            fielder_total_results.batting_average)
+            fielder_total_results.slg, fielder_total_results.batting_average)
         fielder_total_results.bbhp_k = sabr_calculations.calculate_bb_hbp_per_so(
-            fielder_results['strike_out__sum'],
-            fielder_results['bb_hbp__sum'])
+            strike_out, bb_hbp)
         fielder_total_results.p_s = sabr_calculations.calculate_power_speed_number(
-            fielder_results['home_run__sum'],
-            fielder_results['stolen_base__sum'])
+            home_run, stolen_base)
 
         return fielder_total_results
 

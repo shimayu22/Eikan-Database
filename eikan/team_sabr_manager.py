@@ -36,62 +36,56 @@ class TeamSabrFormatter:
         Notes:
             セイバーメトリクスはここで計算する
         """
-        team_total_results.total_win = games_results['total_win']
-        team_total_results.total_lose = games_results['total_lose']
-        team_total_results.total_draw = games_results['total_draw']
-        team_total_results.score = games_results['score']
-        team_total_results.run = games_results['run']
-        team_total_results.score_difference = games_results['score_difference']
-        team_total_results.hr = fielder_results['home_run__sum']
-        team_total_results.rank = games_results['update_rank']
-        team_total_results.cold_game = games_results['cold_game']
-        team_total_results.mamono_count = games_results['mamono_count']
-        team_total_results.mamono_score = games_results['mamono_score']
+        # 集計結果を安全に取得
+        team_total_results.total_win = games_results.get('total_win', 0)
+        team_total_results.total_lose = games_results.get('total_lose', 0)
+        team_total_results.total_draw = games_results.get('total_draw', 0)
+        team_total_results.score = games_results.get('score', 0)
+        team_total_results.run = games_results.get('run', 0)
+        team_total_results.score_difference = games_results.get('score_difference', 0)
+        team_total_results.rank = games_results.get('update_rank', 0)
+        team_total_results.cold_game = games_results.get('cold_game', 0)
+        team_total_results.mamono_count = games_results.get('mamono_count', 0)
+        team_total_results.mamono_score = games_results.get('mamono_score', 0)
+        
+        # 打者成績を安全に取得（Noneの場合は0を返す）
+        f_at_bat = fielder_results.get('at_bat__sum') or 0
+        f_hit = fielder_results.get('hit__sum') or 0
+        f_two_base = fielder_results.get('two_base__sum') or 0
+        f_three_base = fielder_results.get('three_base__sum') or 0
+        f_home_run = fielder_results.get('home_run__sum') or 0
+        f_bb_hbp = fielder_results.get('bb_hbp__sum') or 0
+        f_error = fielder_results.get('error__sum') or 0
+        
+        team_total_results.hr = f_home_run
 
         team_total_results.batting_average = sabr_calculations.calculate_batting_average(
-            fielder_results['at_bat__sum'],
-            fielder_results['hit__sum']
-        )
+            f_at_bat, f_hit)
         team_obp = sabr_calculations.calculate_on_base_percentage(
-            fielder_results['at_bat__sum'],
-            fielder_results['bb_hbp__sum'],
-            fielder_results['hit__sum']
-        )
+            f_at_bat, f_bb_hbp, f_hit)
         team_tb = sabr_calculations.calculate_total_bases(
-            fielder_results['hit__sum'],
-            fielder_results['two_base__sum'],
-            fielder_results['three_base__sum'],
-            fielder_results['home_run__sum'],
-        )
-        team_slg = sabr_calculations.calculate_slugging_percentage(
-            fielder_results['at_bat__sum'], 
-            team_tb
-        )
+            f_hit, f_two_base, f_three_base, f_home_run)
+        team_slg = sabr_calculations.calculate_slugging_percentage(f_at_bat, team_tb)
         team_total_results.ops = sabr_calculations.calculate_on_base_plus_slugging(
-            team_obp, 
-            team_slg
-        )
+            team_obp, team_slg)
         team_total_results.br = sabr_calculations.calculate_batting_runs(
-            fielder_results['hit__sum'],
-            fielder_results['two_base__sum'],
-            fielder_results['three_base__sum'],
-            fielder_results['home_run__sum'],
-            fielder_results['bb_hbp__sum'],
-            fielder_results['at_bat__sum'],
-        )
+            f_hit, f_two_base, f_three_base, f_home_run, f_bb_hbp, f_at_bat)
 
-        total_sum_pi = (pitcher_results['innings_pitched__sum'] + (
-            pitcher_results['innings_pitched_fraction__sum'] / 3)) * 3
+        # 投手成績を安全に取得（Noneの場合は0を返す）
+        p_innings_pitched = pitcher_results.get('innings_pitched__sum') or 0
+        p_innings_pitched_fraction = pitcher_results.get('innings_pitched_fraction__sum') or 0
+        p_earned_run = pitcher_results.get('earned_run__sum') or 0
+        p_total_batters_faced = pitcher_results.get('total_batters_faced__sum') or 0
+        p_hit = pitcher_results.get('hit__sum') or 0
+        p_home_run = pitcher_results.get('home_run__sum') or 0
+        p_bb_hbp = pitcher_results.get('bb_hbp__sum') or 0
+        p_strike_out = pitcher_results.get('strike_out__sum') or 0
+        
+        total_sum_pi = (p_innings_pitched + (p_innings_pitched_fraction / 3)) * 3
         team_total_results.era = sabr_calculations.calculate_earned_runs_average(
-            total_sum_pi,
-            pitcher_results['earned_run__sum'])
+            total_sum_pi, p_earned_run)
         team_total_results.der = sabr_calculations.calculate_team_der(
-            pitcher_results['total_batters_faced__sum'],
-            pitcher_results['hit__sum'],
-            pitcher_results['home_run__sum'],
-            pitcher_results['bb_hbp__sum'],
-            pitcher_results['strike_out__sum'],
-            fielder_results['error__sum'])
+            p_total_batters_faced, p_hit, p_home_run, p_bb_hbp, p_strike_out, f_error)
 
         # 甲子園優勝したかチェックする
         competition_choices = c.competition_choices_to_dict()

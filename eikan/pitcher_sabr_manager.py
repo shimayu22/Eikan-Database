@@ -26,77 +26,70 @@ class PitcherSabrFormatter:
         """
         pitcher_total_results = PitcherTotalResults.objects.select_related(
             'player').get(player_id=self.player_id)
-        pitcher_total_results.games = pitcher_results['pk__count']
-        pitcher_total_results.games_started = pitcher_results['games_started']
-        pitcher_total_results.number_of_pitch = pitcher_results['number_of_pitch__sum']
-        pitcher_total_results.total_batters_faced = pitcher_results['total_batters_faced__sum']
-        pitcher_total_results.hit = pitcher_results['hit__sum']
-        pitcher_total_results.strike_out = pitcher_results['strike_out__sum']
-        pitcher_total_results.bb_hbp = pitcher_results['bb_hbp__sum']
-        pitcher_total_results.run = pitcher_results['run__sum']
-        pitcher_total_results.earned_run = pitcher_results['earned_run__sum']
-        pitcher_total_results.wild_pitch = pitcher_results['wild_pitch__sum']
-        pitcher_total_results.home_run = pitcher_results['home_run__sum']
-        pitcher_total_results.previous_game_pitched = pitcher_results['previous_game_pitched']
+        
+        # 集計結果を安全に取得（Noneの場合は0を返す）
+        games = pitcher_results.get('pk__count') or 0
+        games_started = pitcher_results.get('games_started') or 0
+        number_of_pitch = pitcher_results.get('number_of_pitch__sum') or 0
+        total_batters_faced = pitcher_results.get('total_batters_faced__sum') or 0
+        hit = pitcher_results.get('hit__sum') or 0
+        strike_out = pitcher_results.get('strike_out__sum') or 0
+        bb_hbp = pitcher_results.get('bb_hbp__sum') or 0
+        run = pitcher_results.get('run__sum') or 0
+        earned_run = pitcher_results.get('earned_run__sum') or 0
+        wild_pitch = pitcher_results.get('wild_pitch__sum') or 0
+        home_run = pitcher_results.get('home_run__sum') or 0
+        previous_game_pitched = pitcher_results.get('previous_game_pitched') or 0.0
+        innings_pitched = pitcher_results.get('innings_pitched__sum') or 0
+        innings_pitched_fraction = pitcher_results.get('innings_pitched_fraction__sum') or 0
+        
+        pitcher_total_results.games = games
+        pitcher_total_results.games_started = games_started
+        pitcher_total_results.number_of_pitch = number_of_pitch
+        pitcher_total_results.total_batters_faced = total_batters_faced
+        pitcher_total_results.hit = hit
+        pitcher_total_results.strike_out = strike_out
+        pitcher_total_results.bb_hbp = bb_hbp
+        pitcher_total_results.run = run
+        pitcher_total_results.earned_run = earned_run
+        pitcher_total_results.wild_pitch = wild_pitch
+        pitcher_total_results.home_run = home_run
+        pitcher_total_results.previous_game_pitched = previous_game_pitched
 
         sum_innings_pitched = sabr_calculations.innings_conversion_for_calculate(
-            pitcher_results['innings_pitched__sum'],
-            pitcher_results['innings_pitched_fraction__sum'])
+            innings_pitched, innings_pitched_fraction)
         pitcher_total_results.innings_pitched = sabr_calculations.innings_conversion_for_display(
-            pitcher_results['innings_pitched__sum'],
-            pitcher_results['innings_pitched_fraction__sum'])
+            innings_pitched, innings_pitched_fraction)
         pitcher_total_results.fip = sabr_calculations.calculate_fielding_independent_pitching(
-            sum_innings_pitched,
-            pitcher_results['home_run__sum'],
-            pitcher_results['bb_hbp__sum'],
-            pitcher_results['strike_out__sum'])
+            sum_innings_pitched, home_run, bb_hbp, strike_out)
         pitcher_total_results.era = sabr_calculations.calculate_earned_runs_average(
-            sum_innings_pitched,
-            pitcher_results['earned_run__sum'])
+            sum_innings_pitched, earned_run)
         pitcher_total_results.ura = sabr_calculations.calculate_runs_average(
-            sum_innings_pitched,
-            pitcher_results['run__sum'])
+            sum_innings_pitched, run)
         pitcher_total_results.whip = sabr_calculations.calculate_walks_plus_hits_per_inning_pitched(
-            sum_innings_pitched,
-            pitcher_results['hit__sum'],
-            pitcher_results['bb_hbp__sum'])
+            sum_innings_pitched, hit, bb_hbp)
         pitcher_total_results.k_bbhp = sabr_calculations.calculate_strike_out_per_bbhp(
-            pitcher_results['bb_hbp__sum'],
-            pitcher_results['strike_out__sum'])
+            bb_hbp, strike_out)
         pitcher_total_results.k_9 = sabr_calculations.calculate_strike_out_per_game(
-            sum_innings_pitched,
-            pitcher_results['strike_out__sum'])
+            sum_innings_pitched, strike_out)
         pitcher_total_results.k_percent = sabr_calculations.calculate_strike_out_percentage(
-            pitcher_results['total_batters_faced__sum'],
-            pitcher_results['strike_out__sum'])
+            total_batters_faced, strike_out)
         pitcher_total_results.bbhp_9 = sabr_calculations.calculate_bbhp_per_game(
-            sum_innings_pitched,
-            pitcher_results['bb_hbp__sum'])
+            sum_innings_pitched, bb_hbp)
         pitcher_total_results.p_bbhp_percent = sabr_calculations.calculate_bbhp_percentage(
-            pitcher_results['total_batters_faced__sum'],
-            pitcher_results['bb_hbp__sum'])
+            total_batters_faced, bb_hbp)
         pitcher_total_results.h_9 = sabr_calculations.calculate_hit_per_game(
-            sum_innings_pitched,
-            pitcher_results['hit__sum']
-        )
+            sum_innings_pitched, hit)
         pitcher_total_results.h_percent = sabr_calculations.calculate_hit_percentage(
-            pitcher_results['total_batters_faced__sum'],
-            pitcher_results['hit__sum']
-        )
+            total_batters_faced, hit)
         pitcher_total_results.hr_9 = sabr_calculations.calculate_home_run_per_game(
-            sum_innings_pitched,
-            pitcher_results['home_run__sum'])
+            sum_innings_pitched, home_run)
         pitcher_total_results.hr_percent = sabr_calculations.calculate_home_run_percentage(
-            pitcher_results['total_batters_faced__sum'],
-            pitcher_results['home_run__sum'])
+            total_batters_faced, home_run)
         pitcher_total_results.lob_percent = sabr_calculations.calculate_left_on_base_percentage(
-            pitcher_results['hit__sum'],
-            pitcher_results['bb_hbp__sum'],
-            pitcher_results['home_run__sum'],
-            pitcher_results['run__sum'])
+            hit, bb_hbp, home_run, run)
         pitcher_total_results.p_ip = sabr_calculations.calculate_pitch_per_inning(
-            sum_innings_pitched,
-            pitcher_results['number_of_pitch__sum'])
+            sum_innings_pitched, number_of_pitch)
 
         return pitcher_total_results
 

@@ -4,12 +4,8 @@ from django.db import models
 from eikan.models import FielderResults, FielderTotalResults, Teams, Players
 from eikan.calculate_sabr import CalculateFielderSabr as f
 
-
 class FielderSabrFormatter:
     """主にFielderResults,FielderTotalResultsを操作する"""
-
-    def __init__(self):
-        self
 
     def create_fielder_total_results(
             self,

@@ -10,12 +10,8 @@ from eikan.calculate_sabr import CalculatePitcherSabr as p
 from eikan.calculate_sabr import CalculateTeamSabr as t
 from eikan.model_manager import ChoicesFormatter as c
 
-
 class TeamSabrFormatter:
     """チーム成績の集計、指標計算を行う"""
-
-    def __init__(self):
-        self
 
     def update_team_total_results(
             self,

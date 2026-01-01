@@ -5,12 +5,8 @@ from eikan.models import PitcherResults, PitcherTotalResults, Players, Teams, Ga
 from eikan.calculate_sabr import CalculatePitcherSabr as p
 from eikan.model_manager import ChoicesFormatter as c
 
-
 class PitcherSabrFormatter:
     """主にPitcherResults,PitcherTotalResultsを操作する"""
-
-    def __init__(self):
-        self
 
     def create_pitcher_total_results(
             self,

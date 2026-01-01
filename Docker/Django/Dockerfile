@@ -1,4 +1,4 @@
-FROM python:3.10-buster
+FROM python:3.10-bookworm
 
 # updateとvimのインストールを行う
 RUN apt-get update && \
@@ -8,7 +8,7 @@ RUN apt-get update && \
 WORKDIR /usr/local/src
 
 # タイムゾーンをUTCからJSTに変更する
-RUN ln -sf /usr/share/zeneinfo/Asia/Tokyo /etc/localtime
+RUN ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
 
 # 環境設定
 # ローカルIPアドレスをDjangoに割り振るために指定

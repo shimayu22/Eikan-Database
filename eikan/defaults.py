@@ -150,6 +150,299 @@ def create_default_year_for_players() -> int:
 # Games モデルのdefault値を設定する関数群
 # ============================================================================
 
+# ============================================================================
+# 共通ヘルパー関数
+# ============================================================================
+
+def _get_latest_game_for_team(team, Games):
+    """チームの最新試合を取得する
+    
+    Args:
+        team: Teamsモデルのインスタンス
+        Games: Gamesモデルクラス
+    
+    Returns:
+        Games: 最新の試合、存在しない場合はNone
+    """
+    if not Games.objects.filter(team_id=team).exists():
+        return None
+    return Games.objects.select_related('team_id').filter(team_id=team).latest('pk')
+
+
+# ============================================================================
+# 夏の大会の進出ロジック
+# ============================================================================
+
+def _get_next_competition_for_summer(game, choices) -> int:
+    """夏の大会の次の大会を決定する
+    
+    Args:
+        game: 最新の試合（Gamesモデル）
+        choices: 各種choicesの辞書
+    
+    Returns:
+        int: 次の大会のcompetition_type
+    
+    Notes:
+        進出ルール:
+        - 県大会決勝で勝利 → 甲子園
+        - 敗戦 → 県大会（リセット）
+        - それ以外 → 同じ大会を継続
+    """
+    competition_choices = choices['competition']
+    competition_round_choices = choices['round']
+    result_choices = choices['result']
+    
+    # 県大会決勝で勝利 → 甲子園
+    if (game.competition_type == competition_choices['県大会'] and
+            game.competition_round == competition_round_choices['決勝'] and
+            game.result == result_choices['勝']):
+        return competition_choices['甲子園']
+    
+    # 敗戦 → 県大会（リセット）
+    if game.result == result_choices['負']:
+        return competition_choices['県大会']
+    
+    # それ以外 → 同じ大会を継続
+    return game.competition_type
+
+
+# ============================================================================
+# 秋の大会の進出ロジック
+# ============================================================================
+
+def _get_next_competition_for_autumn_prefecture(game, choices) -> int:
+    """秋の県大会の次の大会を決定する
+    
+    Args:
+        game: 最新の試合（Gamesモデル）
+        choices: 各種choicesの辞書
+    
+    Returns:
+        int: 次の大会のcompetition_type
+    
+    Notes:
+        進出ルール:
+        - 2回戦で勝利 → 地区大会
+        - 敗戦 → 県大会（リセット）
+        - それ以外 → 県大会を継続
+    """
+    competition_choices = choices['competition']
+    competition_round_choices = choices['round']
+    result_choices = choices['result']
+    
+    # 2回戦で勝利 → 地区大会
+    if (game.competition_round == competition_round_choices['2回戦'] and
+            game.result == result_choices['勝']):
+        return competition_choices['地区大会']
+    
+    # 敗戦 → 県大会（リセット）
+    if game.result == result_choices['負']:
+        return competition_choices['県大会']
+    
+    # それ以外 → 県大会を継続
+    return competition_choices['県大会']
+
+
+def _get_next_competition_for_autumn_regional(game, choices) -> int:
+    """秋の地区大会の次の大会を決定する
+    
+    Args:
+        game: 最新の試合（Gamesモデル）
+        choices: 各種choicesの辞書
+    
+    Returns:
+        int: 次の大会のcompetition_type
+    
+    Notes:
+        進出ルール:
+        - 2回戦で勝利 → 全国大会
+        - 2回戦で敗戦 → センバツ（確率で出場可能、現在は未実装）
+        - それ以外 → 県大会（リセット）
+    """
+    competition_choices = choices['competition']
+    competition_round_choices = choices['round']
+    result_choices = choices['result']
+    
+    # 2回戦で勝利 → 全国大会
+    if (game.competition_round == competition_round_choices['2回戦'] and
+            game.result == result_choices['勝']):
+        return competition_choices['全国大会']
+    
+    # 2回戦で敗戦 → センバツ（確率で出場可能）
+    # 現在は未実装のため、県大会にリセット
+    # TODO: 確率判定を実装する場合はここに追加
+    if (game.competition_round == competition_round_choices['2回戦'] and
+            game.result == result_choices['負']):
+        return competition_choices['県大会']  # 将来的にセンバツに変更可能
+    
+    # それ以外 → 県大会（リセット）
+    if game.result == result_choices['負']:
+        return competition_choices['県大会']
+    
+    # それ以外 → 地区大会を継続
+    return competition_choices['地区大会']
+
+
+def _get_next_competition_for_autumn_national(game, choices) -> int:
+    """秋の全国大会の次の大会を決定する
+    
+    Args:
+        game: 最新の試合（Gamesモデル）
+        choices: 各種choicesの辞書
+    
+    Returns:
+        int: 次の大会のcompetition_type
+    
+    Notes:
+        進出ルール:
+        - 敗戦 → センバツ（確定）
+        - 決勝で勝利 → センバツ（確定）
+        - それ以外 → 全国大会を継続
+    """
+    competition_choices = choices['competition']
+    competition_round_choices = choices['round']
+    result_choices = choices['result']
+    
+    # 敗戦 → センバツ（確定）
+    if game.result == result_choices['負']:
+        return competition_choices['センバツ']
+    
+    # 決勝で勝利 → センバツ（確定）
+    if (game.competition_round == competition_round_choices['決勝'] and
+            game.result == result_choices['勝']):
+        return competition_choices['センバツ']
+    
+    # それ以外 → 全国大会を継続
+    return competition_choices['全国大会']
+
+
+def _get_next_competition_for_autumn(game, team, choices) -> int:
+    """秋の大会の次の大会を決定する（統合関数）
+    
+    Args:
+        game: 最新の試合（Gamesモデル）
+        team: チーム（Teamsモデル）
+        choices: 各種choicesの辞書
+    
+    Returns:
+        int: 次の大会のcompetition_type
+    """
+    competition_choices = choices['competition']
+    
+    if game.competition_type == competition_choices['県大会']:
+        return _get_next_competition_for_autumn_prefecture(game, choices)
+    elif game.competition_type == competition_choices['地区大会']:
+        return _get_next_competition_for_autumn_regional(game, choices)
+    elif game.competition_type == competition_choices['全国大会']:
+        return _get_next_competition_for_autumn_national(game, choices)
+    elif game.competition_type == competition_choices['センバツ']:
+        # センバツは最後の大会なので、継続
+        return competition_choices['センバツ']
+    else:
+        # その他の大会 → 県大会（リセット）
+        return competition_choices['県大会']
+
+
+# ============================================================================
+# 回戦決定のロジック
+# ============================================================================
+
+def _get_next_round_for_summer(game, choices) -> int:
+    """夏の大会の次の回戦を決定する
+    
+    Args:
+        game: 最新の試合（Gamesモデル）
+        choices: 各種choicesの辞書
+    
+    Returns:
+        int: 次の回戦のcompetition_round
+    
+    Notes:
+        進出ルール:
+        - 決勝で勝利 → 次の大会の1回戦
+        - 敗戦 → 1回戦（リセット）
+        - それ以外 → 次の回戦（+1）
+    """
+    competition_round_choices = choices['round']
+    result_choices = choices['result']
+    
+    # 決勝で勝利 → 次の大会の1回戦
+    if (game.competition_round == competition_round_choices['決勝'] and
+            game.result == result_choices['勝']):
+        return competition_round_choices['1回戦']
+    
+    # 敗戦 → 1回戦（リセット）
+    if game.result == result_choices['負']:
+        return competition_round_choices['1回戦']
+    
+    # それ以外 → 次の回戦（+1）
+    return game.competition_round + 1
+
+
+def _get_next_round_for_autumn(game, team, choices) -> int:
+    """秋の大会の次の回戦を決定する
+    
+    Args:
+        game: 最新の試合（Gamesモデル）
+        team: チーム（Teamsモデル）
+        choices: 各種choicesの辞書
+    
+    Returns:
+        int: 次の回戦のcompetition_round
+    
+    Notes:
+        進出ルール:
+        - 県大会2回戦で勝利 → 地区大会1回戦
+        - 地区大会2回戦で勝利 → 全国大会2回戦
+        - 地区大会2回戦で敗戦 → センバツ1回戦（確率、現在は未実装）
+        - 全国大会2回戦で勝利 → 準決勝
+        - 決勝で勝利 → 次の大会の1回戦
+        - 敗戦 → 1回戦（リセット）
+        - それ以外 → 次の回戦（+1）
+    """
+    competition_choices = choices['competition']
+    competition_round_choices = choices['round']
+    result_choices = choices['result']
+    
+    # 県大会2回戦で勝利 → 地区大会1回戦
+    if (game.competition_type == competition_choices['県大会'] and
+            game.competition_round == competition_round_choices['2回戦']):
+        return competition_round_choices['1回戦']
+    
+    # 地区大会2回戦で勝利 → 全国大会2回戦
+    if (game.competition_type == competition_choices['地区大会'] and
+            game.competition_round == competition_round_choices['2回戦']):
+        if game.result == result_choices['勝']:
+            return competition_round_choices['2回戦']  # 全国大会2回戦
+        else:
+            # 敗戦 → センバツ1回戦（確率、現在は未実装）
+            # TODO: 確率判定を実装する場合はここに追加
+            return competition_round_choices['1回戦']
+    
+    # 全国大会2回戦で勝利 → 準決勝
+    if (game.competition_type == competition_choices['全国大会'] and
+            game.competition_round == competition_round_choices['2回戦']):
+        if game.result == result_choices['勝']:
+            return competition_round_choices['準決勝']
+    
+    # 決勝で勝利 → 次の大会の1回戦
+    if (game.competition_round == competition_round_choices['決勝'] and
+            game.result == result_choices['勝']):
+        return competition_round_choices['1回戦']
+    
+    # 敗戦 → 1回戦（リセット）
+    if game.result == result_choices['負']:
+        return competition_round_choices['1回戦']
+    
+    # それ以外 → 次の回戦（+1）
+    return game.competition_round + 1
+
+
+# ============================================================================
+# 公開関数
+# ============================================================================
+
 def create_default_team_id() -> int:
     """Gamesのteam_idのdefaultを設定する
     
@@ -172,114 +465,97 @@ def create_default_competition_type() -> int:
     Notes:
         一つ前が練習試合の場合は2(県大会)を返す
         次の大会へ進む条件を満たせば、次の大会を返す
+        
+        進出ルール:
+        夏: 県大会決勝で勝利 → 甲子園
+        秋: 県大会2回戦で勝利 → 地区大会 → 全国大会 → センバツ
     """
     Teams = apps.get_model('eikan', 'Teams')
     Games = apps.get_model('eikan', 'Games')
     
     competition_choices = competition_choices_to_dict()
-    competition_round_choices = round_choices_to_dict()
-    result_choices = result_choices_to_dict()
     period_choices = period_choices_to_dict()
     
+    # 初期チェック
     if not Teams.objects.exists() or not Games.objects.exists():
         return competition_choices['県大会']
     
     team = Teams.objects.latest('pk')
-    if not Games.objects.filter(team_id=team).exists():
-        return competition_choices['県大会']
-    else:
-        game = Games.objects.select_related('team_id').filter(team_id=team).latest('pk')
+    game = _get_latest_game_for_team(team, Games)
     
+    if game is None:
+        return competition_choices['県大会']
+    
+    # 練習試合は大会に影響しない
     if game.competition_type == competition_choices['練習試合']:
         return competition_choices['県大会']
     
+    # choicesを辞書にまとめる
+    choices = {
+        'competition': competition_choices,
+        'round': round_choices_to_dict(),
+        'result': result_choices_to_dict(),
+        'period': period_choices,
+    }
+    
+    # 期間で分岐
     if team.period == period_choices['秋']:
-        if game.competition_type == competition_choices['県大会'] and \
-                game.competition_round == competition_round_choices['2回戦'] and \
-                game.result == result_choices['勝']:
-            return competition_choices['地区大会']
-        
-        if game.competition_type == competition_choices['地区大会'] and \
-                game.competition_round == competition_round_choices['2回戦'] and \
-                game.result == result_choices['勝']:
-            return competition_choices['全国大会']
-        
-        if game.competition_type == competition_choices['全国大会'] and \
-            game.result == result_choices['負']:
-            return competition_choices['センバツ']
-        
-        if game.competition_type == competition_choices['全国大会'] and \
-            game.competition_round == competition_round_choices['決勝'] and \
-            game.result == result_choices['勝']:
-            return competition_choices['センバツ']
-    
+        return _get_next_competition_for_autumn(game, team, choices)
     else:
-        if game.competition_type == competition_choices['県大会'] and \
-                game.competition_round == competition_round_choices['決勝'] and \
-                game.result == result_choices['勝']:
-            return competition_choices['甲子園']
-    
-    if game.result == result_choices['負']:
-        return competition_choices['県大会']
-    
-    return game.competition_type
+        return _get_next_competition_for_summer(game, choices)
 
 
 def create_default_competition_round() -> int:
     """Gamesのcompetition_roundのdefaultを設定する
     
     Returns:
-        int: 前の試合が勝なら次の試合のcompetition_typeを返す
+        int: 前の試合が勝なら次の試合のcompetition_roundを返す
     
     Notes:
         一つ前が練習試合または負の場合は2(1回戦)を返す
         １回戦、３回戦がない場合は考慮していない
         秋の大会は考慮している
+        
+        進出ルール:
+        夏: 通常の回戦進行（1回戦→2回戦→...→決勝）
+        秋: 県大会2回戦で勝利 → 地区大会1回戦
+            地区大会2回戦で勝利 → 全国大会2回戦
+            全国大会2回戦で勝利 → 準決勝
     """
     Teams = apps.get_model('eikan', 'Teams')
     Games = apps.get_model('eikan', 'Games')
     
     competition_choices = competition_choices_to_dict()
     competition_round_choices = round_choices_to_dict()
-    result_choices = result_choices_to_dict()
     period_choices = period_choices_to_dict()
     
+    # 初期チェック
     if not Teams.objects.exists() or not Games.objects.exists():
         return competition_round_choices['1回戦']
     
     team = Teams.objects.latest('pk')
-    if not Games.objects.filter(team_id=team).exists():
-        return competition_round_choices['1回戦']
-    else:
-        game = Games.objects.select_related('team_id').filter(team_id=team).latest('pk')
+    game = _get_latest_game_for_team(team, Games)
     
+    if game is None:
+        return competition_round_choices['1回戦']
+    
+    # 練習試合は回戦に影響しない
     if game.competition_type == competition_choices['練習試合']:
         return competition_round_choices['1回戦']
     
-    if game.result == result_choices['負']:
-        return competition_round_choices['1回戦']
+    # choicesを辞書にまとめる
+    choices = {
+        'competition': competition_choices,
+        'round': competition_round_choices,
+        'result': result_choices_to_dict(),
+        'period': period_choices,
+    }
     
-    if game.competition_round == competition_round_choices['決勝']:
-        return competition_round_choices['1回戦']
-    
+    # 期間で分岐
     if team.period == period_choices['秋']:
-        if game.competition_type == competition_choices['県大会'] and \
-                game.competition_round == competition_round_choices['2回戦']:
-            return competition_round_choices['1回戦']
-        
-        if game.competition_type == competition_choices['地区大会'] and \
-                game.competition_round == competition_round_choices['2回戦']:
-            if game.result == result_choices['勝']:
-                return competition_round_choices['2回戦']
-            else:
-                return competition_round_choices['1回戦']
-        
-        if game.competition_type == competition_choices['全国大会'] and \
-                game.competition_round == competition_round_choices['2回戦']:
-            if game.result == result_choices['勝']:
-                return competition_round_choices['準決勝']
-    
-    return game.competition_round + 1
+        return _get_next_round_for_autumn(game, team, choices)
+    else:
+        return _get_next_round_for_summer(game, choices)
 
 
 def create_default_team_rank() -> int:

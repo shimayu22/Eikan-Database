@@ -87,10 +87,9 @@ def create_default_year_for_teams() -> int:
     if not Teams.objects.exists():
         return 1941
     
+    latest_team = Teams.objects.latest('pk')
     period_choices = period_choices_to_dict()
-    period = Teams.objects.latest('pk').period
-    this_year = Teams.objects.latest('pk').year
-    return this_year if period == period_choices['夏'] else this_year + 1
+    return latest_team.year if latest_team.period == period_choices['夏'] else latest_team.year + 1
 
 
 def create_default_period() -> int:
@@ -307,8 +306,11 @@ def select_display_players() -> dict:
     Teams = apps.get_model('eikan', 'Teams')
     ModelSettings = apps.get_model('eikan', 'ModelSettings')
     
-    if ModelSettings.objects.exists() and ModelSettings.objects.latest('pk').is_used_limit_choices_to:
-        return {}
+    # ModelSettingsの存在チェックと設定取得を1回のクエリで実行
+    if ModelSettings.objects.exists():
+        latest_setting = ModelSettings.objects.latest('pk')
+        if latest_setting.is_used_limit_choices_to:
+            return {}
     
     if not Teams.objects.exists():
         return {}
@@ -340,8 +342,11 @@ def select_display_pitchers() -> dict:
     Teams = apps.get_model('eikan', 'Teams')
     ModelSettings = apps.get_model('eikan', 'ModelSettings')
     
-    if ModelSettings.objects.exists() and ModelSettings.objects.latest('pk').is_used_limit_choices_to:
-        return {"is_pitcher": True}
+    # ModelSettingsの存在チェックと設定取得を1回のクエリで実行
+    if ModelSettings.objects.exists():
+        latest_setting = ModelSettings.objects.latest('pk')
+        if latest_setting.is_used_limit_choices_to:
+            return {"is_pitcher": True}
     
     if not Teams.objects.exists():
         return {"is_pitcher": True}

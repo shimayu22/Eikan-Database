@@ -245,12 +245,21 @@ def new_player_results(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=Games)
 def update_teams_total_results_on_save(sender, instance, created, **kwargs):
-    """Games登録時に1試合前に投げたイニングを再計算する"""
+    """Games登録時に1試合前に投げたイニングを再計算する
+    
+    Notes:
+        TeamTotalResultsの更新は、FielderResults/PitcherResultsのpost_saveで行う。
+        これにより、インラインデータが保存された後にチーム成績が更新される。
+        ただし、Gamesのみが更新された場合（インラインがない場合）は、
+        FielderResults/PitcherResultsのpost_saveが発火しないため、
+        更新時（created=False）のみチーム成績も更新する。
+    """
     if is_auto_update_disabled():
         return
     
     p.PitcherSabrFormatter().update_previous_game_pitched()
     # 試合が更新された場合（既存の試合の変更）、チーム成績も更新
+    # 新規作成時は、インラインデータが保存されるまで待つため更新しない
     if not created:
         t.TeamSabrFormatter().update_total_results(instance.team_id)
 

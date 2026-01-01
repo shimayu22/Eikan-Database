@@ -88,8 +88,7 @@ class Players(models.Model):
     )
 
     def save(self, *args, **kwargs):
-        self.is_pitcher = s.update_is_pitcher(
-            self, self.position, self.is_pitched)
+        self.is_pitcher = s.update_is_pitcher(self.position, self.is_pitched)
         super().save(*args, **kwargs)
 
     def __str__(self):

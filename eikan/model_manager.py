@@ -8,9 +8,14 @@ from eikan import defaults
 
 
 class SavedValueExtractor:
-    """save時に行う処理"""
+    """save時に行う処理
+    
+    Notes:
+        すべてのメソッドはstaticmethodです。インスタンス化する必要はありません。
+    """
 
-    def create_game_results(self, score: int, run: int) -> int:
+    @staticmethod
+    def create_game_results(score: int, run: int) -> int:
         """試合結果（勝負分）を判定する
 
         Args:
@@ -23,7 +28,8 @@ class SavedValueExtractor:
         result_choices = defaults.result_choices_to_dict()
         return result_choices['勝'] if score > run else result_choices['負'] if score < run else result_choices['分']
 
-    def update_is_pitcher(self, position: int, is_pitched: bool) -> bool:
+    @staticmethod
+    def update_is_pitcher(position: int, is_pitched: bool) -> bool:
         """Players保存時に投手または野手で登板したかを判定する
 
         Args:
@@ -39,7 +45,8 @@ class SavedValueExtractor:
         position_choices = defaults.position_choices_to_dict()
         return position == position_choices['投'] or is_pitched
     
-    def check_is_cold_game(self, is_cold_game: bool, competition_type: int, competition_round: int) -> bool:
+    @staticmethod
+    def check_is_cold_game(is_cold_game: bool, competition_type: int, competition_round: int) -> bool:
         """Games保存時に、コールドゲームになりうる試合か判定する
 
         Args:

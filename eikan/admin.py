@@ -6,6 +6,7 @@ from django.forms import NumberInput
 
 from eikan import fielder_sabr_manager as f
 from eikan import pitcher_sabr_manager as p
+from eikan import team_sabr_manager as t
 
 # Register your models here.
 from .models import (
@@ -243,13 +244,26 @@ def new_player_results(sender, instance, created, **kwargs):
 
 
 @receiver(post_save, sender=Games)
-@receiver(post_delete, sender=Games)
-def update_teams_total_results_updated_at(sender, instance, **kwargs):
-    """Games登録、削除時に1試合前に投げたイニングを再計算する"""
+def update_teams_total_results_on_save(sender, instance, created, **kwargs):
+    """Games登録時に1試合前に投げたイニングを再計算する"""
     if is_auto_update_disabled():
         return
     
     p.PitcherSabrFormatter().update_previous_game_pitched()
+    # 試合が更新された場合（既存の試合の変更）、チーム成績も更新
+    if not created:
+        t.TeamSabrFormatter().update_total_results(instance.team_id)
+
+
+@receiver(post_delete, sender=Games)
+def update_teams_total_results_on_delete(sender, instance, **kwargs):
+    """Games削除時に1試合前に投げたイニングを再計算し、チーム成績も更新する"""
+    if is_auto_update_disabled():
+        return
+    
+    p.PitcherSabrFormatter().update_previous_game_pitched()
+    # 試合が削除された場合、チーム成績も更新
+    t.TeamSabrFormatter().update_total_results(instance.team_id)
 
 
 @receiver(post_save, sender=FielderResults)
@@ -260,6 +274,8 @@ def update_cal_fielder_results(sender, instance, **kwargs):
         return
     
     f.FielderSabrFormatter().update_total_results(instance.player_id)
+    # チーム成績も自動更新
+    t.TeamSabrFormatter().update_total_results(instance.game_id.team_id)
 
 
 @receiver(post_save, sender=PitcherResults)
@@ -273,3 +289,5 @@ def update_cal_pitcher_results(sender, instance, **kwargs):
         return
     
     p.PitcherSabrFormatter().update_total_results(instance.player_id)
+    # チーム成績も自動更新
+    t.TeamSabrFormatter().update_total_results(instance.game_id.team_id)

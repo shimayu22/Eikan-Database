@@ -263,7 +263,6 @@ class FielderSabrFormatter:
                 'bbhp_k',
                 'p_s'],
             batch_size=10000)
-        print("打者総合成績を更新")
 
     def create_sabr_from_results_by_year(self, player_id: Players) -> list:
         """選手詳細画面用にデータを取得する

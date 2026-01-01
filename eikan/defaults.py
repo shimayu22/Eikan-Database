@@ -362,7 +362,8 @@ def _get_next_round_for_summer(game, choices) -> int:
         進出ルール:
         - 決勝で勝利 → 次の大会の1回戦
         - 敗戦 → 1回戦（リセット）
-        - それ以外 → 次の回戦（+1）
+        - 引き分け → 同じ回戦（再試合）
+        - それ以外（勝利） → 次の回戦（+1）
     """
     competition_round_choices = choices['round']
     result_choices = choices['result']
@@ -376,7 +377,11 @@ def _get_next_round_for_summer(game, choices) -> int:
     if game.result == result_choices['負']:
         return competition_round_choices['1回戦']
     
-    # それ以外 → 次の回戦（+1）
+    # 引き分け → 同じ回戦（再試合）
+    if game.result == result_choices['分']:
+        return game.competition_round
+    
+    # それ以外（勝利） → 次の回戦（+1）
     return game.competition_round + 1
 
 
@@ -399,7 +404,8 @@ def _get_next_round_for_autumn(game, team, choices) -> int:
         - 全国大会2回戦で勝利 → 準決勝
         - 決勝で勝利 → 次の大会の1回戦
         - 敗戦 → 1回戦（リセット）
-        - それ以外 → 次の回戦（+1）
+        - 引き分け → 同じ回戦（再試合）
+        - それ以外（勝利） → 次の回戦（+1）
     """
     competition_choices = choices['competition']
     competition_round_choices = choices['round']
@@ -407,7 +413,8 @@ def _get_next_round_for_autumn(game, team, choices) -> int:
     
     # 県大会2回戦で勝利 → 地区大会1回戦
     if (game.competition_type == competition_choices['県大会'] and
-            game.competition_round == competition_round_choices['2回戦']):
+            game.competition_round == competition_round_choices['2回戦'] and
+            game.result == result_choices['勝']):
         return competition_round_choices['1回戦']
     
     # 地区大会2回戦で勝利 → 全国大会2回戦
@@ -435,7 +442,11 @@ def _get_next_round_for_autumn(game, team, choices) -> int:
     if game.result == result_choices['負']:
         return competition_round_choices['1回戦']
     
-    # それ以外 → 次の回戦（+1）
+    # 引き分け → 同じ回戦（再試合）
+    if game.result == result_choices['分']:
+        return game.competition_round
+    
+    # それ以外（勝利） → 次の回戦（+1）
     return game.competition_round + 1
 
 

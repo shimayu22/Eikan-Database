@@ -186,6 +186,33 @@ class DefaultValueExtractorTests(TestCase):
             defaults.create_default_competition_type(),
             competition_choices['県大会'])
 
+        # ========================================================================
+        # 引き分けのテストケース（夏のチーム）
+        # ========================================================================
+        # 夏の県大会で引き分け → 県大会継続
+        Games(
+            team_id=t1,
+            competition_type=competition_choices['県大会'],
+            competition_round=round_choices['2回戦'],
+            score=1,
+            run=1
+        ).save()
+        self.assertEqual(
+            defaults.create_default_competition_type(),
+            competition_choices['県大会'])
+
+        # 夏の甲子園で引き分け → 甲子園継続
+        Games(
+            team_id=t1,
+            competition_type=competition_choices['甲子園'],
+            competition_round=round_choices['1回戦'],
+            score=1,
+            run=1
+        ).save()
+        self.assertEqual(
+            defaults.create_default_competition_type(),
+            competition_choices['甲子園'])
+
         # 秋のチーム
         Teams(year=1985, period=period['秋']).save()
         t2 = Teams.objects.latest('pk')
@@ -271,6 +298,153 @@ class DefaultValueExtractorTests(TestCase):
         self.assertEqual(
             defaults.create_default_competition_type(),
             competition_choices['センバツ'])
+
+        # ========================================================================
+        # 引き分けのテストケース（秋のチーム）
+        # ========================================================================
+        # 秋の県大会で引き分け → 県大会継続
+        Games(
+            team_id=t2,
+            competition_type=competition_choices['県大会'],
+            competition_round=round_choices['1回戦'],
+            score=1,
+            run=1
+        ).save()
+        self.assertEqual(
+            defaults.create_default_competition_type(),
+            competition_choices['県大会'])
+
+        # 秋の地区大会で引き分け → 地区大会継続
+        Games(
+            team_id=t2,
+            competition_type=competition_choices['地区大会'],
+            competition_round=round_choices['1回戦'],
+            score=1,
+            run=1
+        ).save()
+        self.assertEqual(
+            defaults.create_default_competition_type(),
+            competition_choices['地区大会'])
+
+        # 秋の全国大会で引き分け → 全国大会継続
+        Games(
+            team_id=t2,
+            competition_type=competition_choices['全国大会'],
+            competition_round=round_choices['準決勝'],
+            score=1,
+            run=1
+        ).save()
+        self.assertEqual(
+            defaults.create_default_competition_type(),
+            competition_choices['全国大会'])
+
+        # 秋のセンバツで引き分け → センバツ継続
+        Games(
+            team_id=t2,
+            competition_type=competition_choices['センバツ'],
+            competition_round=round_choices['1回戦'],
+            score=1,
+            run=1
+        ).save()
+        self.assertEqual(
+            defaults.create_default_competition_type(),
+            competition_choices['センバツ'])
+
+        # ========================================================================
+        # 秋の県大会1回戦のテストケース
+        # ========================================================================
+        # 秋の県大会1回戦で勝利 → 県大会継続
+        Games(
+            team_id=t2,
+            competition_type=competition_choices['県大会'],
+            competition_round=round_choices['1回戦'],
+            score=1,
+            run=0
+        ).save()
+        self.assertEqual(
+            defaults.create_default_competition_type(),
+            competition_choices['県大会'])
+
+        # ========================================================================
+        # 秋の地区大会1回戦のテストケース
+        # ========================================================================
+        # 秋の地区大会1回戦で勝利 → 地区大会継続
+        Games(
+            team_id=t2,
+            competition_type=competition_choices['地区大会'],
+            competition_round=round_choices['1回戦'],
+            score=1,
+            run=0
+        ).save()
+        self.assertEqual(
+            defaults.create_default_competition_type(),
+            competition_choices['地区大会'])
+
+        # 秋の地区大会1回戦で敗戦 → 県大会（リセット）
+        Games(
+            team_id=t2,
+            competition_type=competition_choices['地区大会'],
+            competition_round=round_choices['1回戦'],
+            score=0,
+            run=1
+        ).save()
+        self.assertEqual(
+            defaults.create_default_competition_type(),
+            competition_choices['県大会'])
+
+        # ========================================================================
+        # 秋の全国大会の継続テストケース
+        # ========================================================================
+        # 秋の全国大会2回戦で勝利 → 全国大会継続（回戦は準決勝に進む）
+        Games(
+            team_id=t2,
+            competition_type=competition_choices['全国大会'],
+            competition_round=round_choices['2回戦'],
+            score=1,
+            run=0
+        ).save()
+        self.assertEqual(
+            defaults.create_default_competition_type(),
+            competition_choices['全国大会'])
+
+        # 秋の全国大会準決勝で勝利 → 全国大会継続（回戦は決勝に進む）
+        Games(
+            team_id=t2,
+            competition_type=competition_choices['全国大会'],
+            competition_round=round_choices['準決勝'],
+            score=1,
+            run=0
+        ).save()
+        self.assertEqual(
+            defaults.create_default_competition_type(),
+            competition_choices['全国大会'])
+
+        # 秋の全国大会準決勝で引き分け → 全国大会継続
+        Games(
+            team_id=t2,
+            competition_type=competition_choices['全国大会'],
+            competition_round=round_choices['準決勝'],
+            score=1,
+            run=1
+        ).save()
+        self.assertEqual(
+            defaults.create_default_competition_type(),
+            competition_choices['全国大会'])
+
+        # ========================================================================
+        # 秋の県大会1回戦で敗戦のテストケース
+        # ========================================================================
+        # 秋の県大会1回戦で敗戦 → 県大会（リセット）
+        Games(
+            team_id=t2,
+            competition_type=competition_choices['県大会'],
+            competition_round=round_choices['1回戦'],
+            score=0,
+            run=1
+        ).save()
+        self.assertEqual(
+            defaults.create_default_competition_type(),
+            competition_choices['県大会'])
 
     def test_create_default_competition_round(self):
         """
@@ -389,6 +563,108 @@ class DefaultValueExtractorTests(TestCase):
             defaults.create_default_competition_round(),
             round_choices['1回戦'])
 
+        # ========================================================================
+        # 引き分けのテストケース（夏のチーム）
+        # ========================================================================
+        # 夏の県大会で引き分け → 同じ回戦（再試合）
+        Games(
+            team_id=t1,
+            competition_type=competition_choices['県大会'],
+            competition_round=round_choices['1回戦'],
+            score=1,
+            run=1
+        ).save()
+        self.assertEqual(
+            defaults.create_default_competition_round(),
+            round_choices['1回戦'])
+
+        # 夏の甲子園で引き分け → 同じ回戦（再試合）
+        Games(
+            team_id=t1,
+            competition_type=competition_choices['甲子園'],
+            competition_round=round_choices['準々決勝'],
+            score=1,
+            run=1
+        ).save()
+        self.assertEqual(
+            defaults.create_default_competition_round(),
+            round_choices['準々決勝'])
+
+        # ========================================================================
+        # 夏の回戦進行の通常パターンの追加テストケース
+        # ========================================================================
+        # 夏の県大会3回戦で勝利 → 準々決勝
+        Games(
+            team_id=t1,
+            competition_type=competition_choices['県大会'],
+            competition_round=round_choices['3回戦'],
+            score=1,
+            run=0
+        ).save()
+        self.assertEqual(
+            defaults.create_default_competition_round(),
+            round_choices['準々決勝'])
+
+        # 夏の県大会準々決勝で勝利 → 準決勝
+        Games(
+            team_id=t1,
+            competition_type=competition_choices['県大会'],
+            competition_round=round_choices['準々決勝'],
+            score=1,
+            run=0
+        ).save()
+        self.assertEqual(
+            defaults.create_default_competition_round(),
+            round_choices['準決勝'])
+
+        # 夏の県大会準決勝で勝利 → 決勝
+        Games(
+            team_id=t1,
+            competition_type=competition_choices['県大会'],
+            competition_round=round_choices['準決勝'],
+            score=1,
+            run=0
+        ).save()
+        self.assertEqual(
+            defaults.create_default_competition_round(),
+            round_choices['決勝'])
+
+        # 夏の甲子園3回戦で勝利 → 準々決勝
+        Games(
+            team_id=t1,
+            competition_type=competition_choices['甲子園'],
+            competition_round=round_choices['3回戦'],
+            score=1,
+            run=0
+        ).save()
+        self.assertEqual(
+            defaults.create_default_competition_round(),
+            round_choices['準々決勝'])
+
+        # 夏の甲子園準々決勝で勝利 → 準決勝
+        Games(
+            team_id=t1,
+            competition_type=competition_choices['甲子園'],
+            competition_round=round_choices['準々決勝'],
+            score=1,
+            run=0
+        ).save()
+        self.assertEqual(
+            defaults.create_default_competition_round(),
+            round_choices['準決勝'])
+
+        # 夏の甲子園準決勝で勝利 → 決勝
+        Games(
+            team_id=t1,
+            competition_type=competition_choices['甲子園'],
+            competition_round=round_choices['準決勝'],
+            score=1,
+            run=0
+        ).save()
+        self.assertEqual(
+            defaults.create_default_competition_round(),
+            round_choices['決勝'])
+
         # 秋のチーム
         Teams(year=1985, period=period['秋']).save()
         t2 = Teams.objects.latest('pk')
@@ -505,6 +781,147 @@ class DefaultValueExtractorTests(TestCase):
             competition_round=round_choices['決勝'],
             score=1,
             run=0
+        ).save()
+        self.assertEqual(
+            defaults.create_default_competition_round(),
+            round_choices['1回戦'])
+
+        # ========================================================================
+        # 引き分けのテストケース（秋のチーム）
+        # ========================================================================
+        # 秋の県大会で引き分け → 同じ回戦（再試合）
+        Games(
+            team_id=t2,
+            competition_type=competition_choices['県大会'],
+            competition_round=round_choices['1回戦'],
+            score=1,
+            run=1
+        ).save()
+        self.assertEqual(
+            defaults.create_default_competition_round(),
+            round_choices['1回戦'])
+
+        # 秋の地区大会で引き分け → 同じ回戦（再試合）
+        Games(
+            team_id=t2,
+            competition_type=competition_choices['地区大会'],
+            competition_round=round_choices['1回戦'],
+            score=1,
+            run=1
+        ).save()
+        self.assertEqual(
+            defaults.create_default_competition_round(),
+            round_choices['1回戦'])
+
+        # 秋の全国大会で引き分け → 同じ回戦（再試合）
+        Games(
+            team_id=t2,
+            competition_type=competition_choices['全国大会'],
+            competition_round=round_choices['準決勝'],
+            score=1,
+            run=1
+        ).save()
+        self.assertEqual(
+            defaults.create_default_competition_round(),
+            round_choices['準決勝'])
+
+        # 秋のセンバツで引き分け → 同じ回戦（再試合）
+        Games(
+            team_id=t2,
+            competition_type=competition_choices['センバツ'],
+            competition_round=round_choices['3回戦'],
+            score=1,
+            run=1
+        ).save()
+        self.assertEqual(
+            defaults.create_default_competition_round(),
+            round_choices['3回戦'])
+
+        # ========================================================================
+        # 秋の回戦進行の通常パターンのテストケース
+        # ========================================================================
+        # 秋の県大会1回戦で勝利 → 2回戦
+        Games(
+            team_id=t2,
+            competition_type=competition_choices['県大会'],
+            competition_round=round_choices['1回戦'],
+            score=1,
+            run=0
+        ).save()
+        self.assertEqual(
+            defaults.create_default_competition_round(),
+            round_choices['2回戦'])
+
+        # 秋の地区大会1回戦で勝利 → 2回戦
+        Games(
+            team_id=t2,
+            competition_type=competition_choices['地区大会'],
+            competition_round=round_choices['1回戦'],
+            score=1,
+            run=0
+        ).save()
+        self.assertEqual(
+            defaults.create_default_competition_round(),
+            round_choices['2回戦'])
+
+        # 秋の全国大会準決勝で勝利 → 決勝
+        Games(
+            team_id=t2,
+            competition_type=competition_choices['全国大会'],
+            competition_round=round_choices['準決勝'],
+            score=1,
+            run=0
+        ).save()
+        self.assertEqual(
+            defaults.create_default_competition_round(),
+            round_choices['決勝'])
+
+        # 秋のセンバツ3回戦で勝利 → 準々決勝
+        Games(
+            team_id=t2,
+            competition_type=competition_choices['センバツ'],
+            competition_round=round_choices['3回戦'],
+            score=1,
+            run=0
+        ).save()
+        self.assertEqual(
+            defaults.create_default_competition_round(),
+            round_choices['準々決勝'])
+
+        # 秋のセンバツ準々決勝で勝利 → 準決勝
+        Games(
+            team_id=t2,
+            competition_type=competition_choices['センバツ'],
+            competition_round=round_choices['準々決勝'],
+            score=1,
+            run=0
+        ).save()
+        self.assertEqual(
+            defaults.create_default_competition_round(),
+            round_choices['準決勝'])
+
+        # 秋のセンバツ準決勝で勝利 → 決勝
+        Games(
+            team_id=t2,
+            competition_type=competition_choices['センバツ'],
+            competition_round=round_choices['準決勝'],
+            score=1,
+            run=0
+        ).save()
+        self.assertEqual(
+            defaults.create_default_competition_round(),
+            round_choices['決勝'])
+
+        # ========================================================================
+        # 全国大会2回戦で敗戦のテストケース（回戦）
+        # ========================================================================
+        # 秋の全国大会2回戦で敗戦 → 1回戦（リセット）
+        Games(
+            team_id=t2,
+            competition_type=competition_choices['全国大会'],
+            competition_round=round_choices['2回戦'],
+            score=0,
+            run=1
         ).save()
         self.assertEqual(
             defaults.create_default_competition_round(),

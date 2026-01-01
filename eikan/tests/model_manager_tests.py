@@ -188,7 +188,7 @@ class DefaultValueExtractorTests(TestCase):
         ).save()
         self.assertEqual(
             DefaultValueExtractor.create_default_competition_type(),
-            competition_choices['地区大会'])
+            competition_choices['県大会'])
 
         Games(
             team_id=t2,
@@ -199,7 +199,7 @@ class DefaultValueExtractorTests(TestCase):
         ).save()
         self.assertEqual(
             DefaultValueExtractor.create_default_competition_type(),
-            competition_choices['センバツ'])
+            competition_choices['全国大会'])
 
         Games(
             team_id=t2,
@@ -343,18 +343,18 @@ class DefaultValueExtractorTests(TestCase):
         ).save()
         self.assertEqual(
             DefaultValueExtractor.create_default_competition_round(),
-            round_choices['1回戦'])
+            round_choices['2回戦'])
 
         Games(
             team_id=t2,
-            competition_type=competition_choices['センバツ'],
+            competition_type=competition_choices['全国大会'],
             competition_round=round_choices['2回戦'],
             score=1,
             run=0
         ).save()
         self.assertEqual(
             DefaultValueExtractor.create_default_competition_round(),
-            round_choices['3回戦'])
+            round_choices['準決勝'])
 
     def test_create_default_team_rank(self):
         """
@@ -505,7 +505,7 @@ class SavedValueExtractorTests(TestCase):
         self.assertFalse(
             SavedValueExtractor.check_is_cold_game(
                 self, False, 3, 1))
-        self.assertFalse(
+        self.assertTrue(
             SavedValueExtractor.check_is_cold_game(
                 self, True, 4, 1))
         self.assertFalse(
@@ -517,13 +517,19 @@ class SavedValueExtractorTests(TestCase):
         self.assertFalse(
             SavedValueExtractor.check_is_cold_game(
                 self, False, 5, 1))
+        self.assertFalse(
+            SavedValueExtractor.check_is_cold_game(
+                self, True, 6, 1))
+        self.assertFalse(
+            SavedValueExtractor.check_is_cold_game(
+                self, False, 6, 1))
 
 
 class ChoicesFormatterTests(TestCase):
     def test_competition_choices_to_dict(self):
         self.assertEqual(
             ChoicesFormatter.competition_choices_to_dict(),
-            {'選択': '', '練習試合': 1, '県大会': 2, '地区大会': 3, '甲子園': 4, 'センバツ': 5})
+            {'選択': '', '練習試合': 1, '県大会': 2, '地区大会': 3, '全国大会': 4, '甲子園': 5, 'センバツ': 6})
 
     def test_round_choices_to_dict(self):
         self.assertEqual(

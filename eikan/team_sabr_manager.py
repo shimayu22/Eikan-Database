@@ -5,9 +5,7 @@ from django.db.models import Max
 from eikan.models import Games, Teams, \
     FielderResults, PitcherResults, \
     TeamTotalResults
-from eikan.calculate_sabr import CalculateFielderSabr as f
-from eikan.calculate_sabr import CalculatePitcherSabr as p
-from eikan.calculate_sabr import CalculateTeamSabr as t
+from eikan import sabr_calculations
 from eikan.model_manager import ChoicesFormatter as c
 
 class TeamSabrFormatter:
@@ -45,30 +43,30 @@ class TeamSabrFormatter:
         team_total_results.mamono_count = games_results['mamono_count']
         team_total_results.mamono_score = games_results['mamono_score']
 
-        team_total_results.batting_average = f.batting_average(
+        team_total_results.batting_average = sabr_calculations.calculate_batting_average(
             fielder_results['at_bat__sum'],
             fielder_results['hit__sum']
         )
-        team_obp = f.on_base_percentage(
+        team_obp = sabr_calculations.calculate_on_base_percentage(
             fielder_results['at_bat__sum'],
             fielder_results['bb_hbp__sum'],
             fielder_results['hit__sum']
         )
-        team_tb = f.total_bases(
+        team_tb = sabr_calculations.calculate_total_bases(
             fielder_results['hit__sum'],
             fielder_results['two_base__sum'],
             fielder_results['three_base__sum'],
             fielder_results['home_run__sum'],
         )
-        team_slg = f.slugging_percentage(
+        team_slg = sabr_calculations.calculate_slugging_percentage(
             fielder_results['at_bat__sum'], 
             team_tb
         )
-        team_total_results.ops = f.on_base_plus_slugging(
+        team_total_results.ops = sabr_calculations.calculate_on_base_plus_slugging(
             team_obp, 
             team_slg
         )
-        team_total_results.br = f.batting_runs(
+        team_total_results.br = sabr_calculations.calculate_batting_runs(
             fielder_results['hit__sum'],
             fielder_results['two_base__sum'],
             fielder_results['three_base__sum'],
@@ -79,10 +77,10 @@ class TeamSabrFormatter:
 
         total_sum_pi = (pitcher_results['innings_pitched__sum'] + (
             pitcher_results['innings_pitched_fraction__sum'] / 3)) * 3
-        team_total_results.era = p.earned_runs_average(
+        team_total_results.era = sabr_calculations.calculate_earned_runs_average(
             total_sum_pi,
             pitcher_results['earned_run__sum'])
-        team_total_results.der = t.team_der(
+        team_total_results.der = sabr_calculations.calculate_team_der(
             pitcher_results['total_batters_faced__sum'],
             pitcher_results['hit__sum'],
             pitcher_results['home_run__sum'],

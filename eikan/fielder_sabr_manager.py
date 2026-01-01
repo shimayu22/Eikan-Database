@@ -2,7 +2,7 @@
 
 from django.db import models
 from eikan.models import FielderResults, FielderTotalResults, Teams, Players
-from eikan.calculate_sabr import CalculateFielderSabr as f
+from eikan import sabr_calculations
 
 class FielderSabrFormatter:
     """主にFielderResults,FielderTotalResultsを操作する"""
@@ -37,22 +37,22 @@ class FielderSabrFormatter:
         fielder_total_results.grounded_into_double_play = fielder_results[
             'grounded_into_double_play__sum']
         fielder_total_results.error = fielder_results['error__sum']
-        fielder_total_results.total_bases = f.total_bases(
+        fielder_total_results.total_bases = sabr_calculations.calculate_total_bases(
             fielder_results['hit__sum'],
             fielder_results['two_base__sum'],
             fielder_results['three_base__sum'],
             fielder_results['home_run__sum'])
-        fielder_total_results.slg = f.slugging_percentage(
+        fielder_total_results.slg = sabr_calculations.calculate_slugging_percentage(
             fielder_results['at_bat__sum'],
             fielder_total_results.total_bases)
-        fielder_total_results.obp = f.on_base_percentage(
+        fielder_total_results.obp = sabr_calculations.calculate_on_base_percentage(
             fielder_results['at_bat__sum'],
             fielder_results['bb_hbp__sum'],
             fielder_results['hit__sum'])
-        fielder_total_results.ops = f.on_base_plus_slugging(
+        fielder_total_results.ops = sabr_calculations.calculate_on_base_plus_slugging(
             fielder_total_results.obp,
             fielder_total_results.slg)
-        fielder_total_results.br = f.batting_runs(
+        fielder_total_results.br = sabr_calculations.calculate_batting_runs(
             fielder_results['hit__sum'],
             fielder_results['two_base__sum'],
             fielder_results['three_base__sum'],
@@ -60,7 +60,7 @@ class FielderSabrFormatter:
             fielder_results['bb_hbp__sum'],
             fielder_results['at_bat__sum']
         )
-        fielder_total_results.woba = f.weighted_on_base_average(
+        fielder_total_results.woba = sabr_calculations.calculate_weighted_on_base_average(
             fielder_results['hit__sum'],
             fielder_results['two_base__sum'],
             fielder_results['three_base__sum'],
@@ -68,26 +68,26 @@ class FielderSabrFormatter:
             fielder_results['bb_hbp__sum'],
             fielder_results['at_bat__sum']
         )
-        fielder_total_results.gpa = f.gross_production_average(
+        fielder_total_results.gpa = sabr_calculations.calculate_gross_production_average(
             fielder_total_results.obp,
             fielder_total_results.slg)
-        fielder_total_results.batting_average = f.batting_average(
+        fielder_total_results.batting_average = sabr_calculations.calculate_batting_average(
             fielder_results['at_bat__sum'],
             fielder_results['hit__sum'])
-        fielder_total_results.bbhp_percent = f.bb_hp_percentage(
+        fielder_total_results.bbhp_percent = sabr_calculations.calculate_bb_hp_percentage(
             fielder_results['at_bat__sum'],
             fielder_results['bb_hbp__sum'],
             fielder_results['sacrifice_bunt__sum'])
-        fielder_total_results.isod = f.isolated_discipline(
+        fielder_total_results.isod = sabr_calculations.calculate_isolated_discipline(
             fielder_total_results.obp,
             fielder_total_results.batting_average)
-        fielder_total_results.isop = f.isolated_power(
+        fielder_total_results.isop = sabr_calculations.calculate_isolated_power(
             fielder_total_results.slg,
             fielder_total_results.batting_average)
-        fielder_total_results.bbhp_k = f.bb_hbp_per_so(
+        fielder_total_results.bbhp_k = sabr_calculations.calculate_bb_hbp_per_so(
             fielder_results['strike_out__sum'],
             fielder_results['bb_hbp__sum'])
-        fielder_total_results.p_s = f.power_speed_number(
+        fielder_total_results.p_s = sabr_calculations.calculate_power_speed_number(
             fielder_results['home_run__sum'],
             fielder_results['stolen_base__sum'])
 

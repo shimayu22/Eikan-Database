@@ -16,6 +16,29 @@ from .models import Teams, Players, Games, \
 admin.site.site_header = '栄冠ナインデータベース 管理画面'
 
 
+# ============================================================================
+# ヘルパー関数
+# ============================================================================
+
+def is_auto_update_disabled() -> bool:
+    """自動更新が無効かどうかをチェックする
+    
+    Returns:
+        bool: 自動更新が無効な場合True、それ以外はFalse
+    
+    Notes:
+        ModelSettingsが存在しない場合は自動更新を有効として扱う（False）
+    """
+    if not ModelSettings.objects.exists():
+        return False
+    
+    return ModelSettings.objects.latest('pk').is_disable_auto_update
+
+
+# ============================================================================
+# Admin クラス
+# ============================================================================
+
 class ModelSettingsAdmin(admin.ModelAdmin):
     list_display = (
         'pk',
@@ -193,58 +216,53 @@ admin.site.register(ModelSettings, ModelSettingsAdmin)
 @receiver(post_save, sender=Teams)
 def new_team_total_results(sender, instance, created, **kwargs):
     """チームを登録したら対応するTeamTotalResultsレコードを登録する"""
-    if ModelSettings.objects.exists() and ModelSettings.objects.latest(
-            'pk').is_disable_auto_update:
-        pass
-    else:
-        if created:
-            TeamTotalResults.objects.create(team=instance,)
+    if is_auto_update_disabled():
+        return
+    
+    if created:
+        TeamTotalResults.objects.create(team=instance)
 
 
 @receiver(post_save, sender=Players)
 def new_player_results(sender, instance, created, **kwargs):
-    """ 選手を登録したらFielderTotalResults,PitcherTotalResultsも対応するレコードを登録する"""
-    if ModelSettings.objects.exists() and ModelSettings.objects.latest(
-            'pk').is_disable_auto_update:
-        pass
-    else:
-        if created:
-            FielderTotalResults.objects.create(player=instance)
-        if instance.is_pitcher:
-            PitcherTotalResults.objects.get_or_create(player=instance)
+    """選手を登録したらFielderTotalResults,PitcherTotalResultsも対応するレコードを登録する"""
+    if is_auto_update_disabled():
+        return
+    
+    if created:
+        FielderTotalResults.objects.create(player=instance)
+    if instance.is_pitcher:
+        PitcherTotalResults.objects.get_or_create(player=instance)
 
 
 @receiver(post_save, sender=Games)
 @receiver(post_delete, sender=Games)
 def update_teams_total_results_updated_at(sender, instance, **kwargs):
-    """ Games登録、削除時に1試合前に投げたイニングを再計算する """
-    if ModelSettings.objects.exists() and ModelSettings.objects.latest(
-            'pk').is_disable_auto_update:
-        pass
-    else:
-        p.PitcherSabrFormatter().update_previous_game_pitched()
+    """Games登録、削除時に1試合前に投げたイニングを再計算する"""
+    if is_auto_update_disabled():
+        return
+    
+    p.PitcherSabrFormatter().update_previous_game_pitched()
 
 
 @receiver(post_save, sender=FielderResults)
 @receiver(post_delete, sender=FielderResults)
 def update_cal_fielder_results(sender, instance, **kwargs):
-    """ FielderResults の更新(追加、変更、削除）時にFielderTotalResultsを更新する"""
-    if ModelSettings.objects.exists() and ModelSettings.objects.latest(
-            'pk').is_disable_auto_update:
-        pass
-    else:
-        f.FielderSabrFormatter().update_total_results(instance.player_id)
+    """FielderResults の更新(追加、変更、削除）時にFielderTotalResultsを更新する"""
+    if is_auto_update_disabled():
+        return
+    
+    f.FielderSabrFormatter().update_total_results(instance.player_id)
 
 
 @receiver(post_save, sender=PitcherResults)
 def update_cal_pitcher_results(sender, instance, **kwargs):
-    """ PitcherResultsの更新(追加、変更）時にPitcherTotalResultsを更新する
+    """PitcherResultsの更新(追加、変更）時にPitcherTotalResultsを更新する
 
     Notes:
         1試合前の投球回数の関係で、削除時は更新しない
     """
-    if ModelSettings.objects.exists() and ModelSettings.objects.latest(
-            'pk').is_disable_auto_update:
-        pass
-    else:
-        p.PitcherSabrFormatter().update_total_results(instance.player_id)
+    if is_auto_update_disabled():
+        return
+    
+    p.PitcherSabrFormatter().update_total_results(instance.player_id)

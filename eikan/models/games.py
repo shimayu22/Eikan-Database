@@ -1,6 +1,6 @@
 from django.db import models
 from eikan.models import Teams
-from eikan.model_manager import DefaultValueExtractor as d
+from eikan import defaults
 from eikan.model_manager import SavedValueExtractor as s
 
 
@@ -46,20 +46,20 @@ class Games(models.Model):
     team_id = models.ForeignKey(
         Teams,
         on_delete=models.CASCADE,
-        default=d.create_default_team_id,
+        default=defaults.create_default_team_id,
         verbose_name="チーム",
     )
 
     competition_type = models.PositiveSmallIntegerField(
         verbose_name="大会",
         choices=COMPETITION_CHOICES,
-        default=d.create_default_competition_type,
+        default=defaults.create_default_competition_type,
     )
 
     competition_round = models.PositiveSmallIntegerField(
         verbose_name="回戦",
         choices=ROUND_CHOICES,
-        default=d.create_default_competition_round,
+        default=defaults.create_default_competition_round,
     )
 
     result = models.PositiveSmallIntegerField(
@@ -97,7 +97,7 @@ class Games(models.Model):
     rank = models.PositiveSmallIntegerField(
         verbose_name="ランク",
         choices=RANK_CHOICES,
-        default=d.create_default_team_rank,
+        default=defaults.create_default_team_rank,
     )
 
     created_at = models.DateTimeField(

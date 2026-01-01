@@ -3,7 +3,7 @@
 import django.core.validators
 from django.db import migrations, models
 import django.db.models.deletion
-import eikan.model_manager
+import eikan.defaults
 
 
 class Migration(migrations.Migration):
@@ -81,14 +81,14 @@ class Migration(migrations.Migration):
             name='Games',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('competition_type', models.PositiveSmallIntegerField(choices=[('', '選択'), (1, '練習試合'), (2, '県大会'), (3, '地区大会'), (4, '甲子園'), (5, 'センバツ')], default=eikan.model_manager.DefaultValueExtractor.create_default_competition_type, verbose_name='大会')),
-                ('competition_round', models.PositiveSmallIntegerField(choices=[('', '選択'), (1, '練習試合'), (2, '1回戦'), (3, '2回戦'), (4, '3回戦'), (5, '準々決勝'), (6, '準決勝'), (7, '決勝')], default=eikan.model_manager.DefaultValueExtractor.create_default_competition_round, verbose_name='回戦')),
+                ('competition_type', models.PositiveSmallIntegerField(choices=[('', '選択'), (1, '練習試合'), (2, '県大会'), (3, '地区大会'), (4, '甲子園'), (5, 'センバツ')], default=eikan.defaults.create_default_competition_type, verbose_name='大会')),
+                ('competition_round', models.PositiveSmallIntegerField(choices=[('', '選択'), (1, '練習試合'), (2, '1回戦'), (3, '2回戦'), (4, '3回戦'), (5, '準々決勝'), (6, '準決勝'), (7, '決勝')], default=eikan.defaults.create_default_competition_round, verbose_name='回戦')),
                 ('result', models.PositiveSmallIntegerField(choices=[('', '選択'), (1, '勝'), (2, '負'), (3, '分')], default=0, editable=False, verbose_name='勝敗')),
                 ('score', models.PositiveSmallIntegerField(default=0, verbose_name='得点')),
                 ('run', models.PositiveSmallIntegerField(default=0, verbose_name='失点')),
                 ('is_cold_game', models.BooleanField(default=False, verbose_name='コールド')),
                 ('mamono_count', models.PositiveSmallIntegerField(default=0, verbose_name='魔物使用回数')),
-                ('rank', models.PositiveSmallIntegerField(choices=[('', '選択'), (1, '弱小'), (2, 'そこそこ'), (3, '中堅'), (4, '強豪'), (5, '名門')], default=eikan.model_manager.DefaultValueExtractor.create_default_team_rank, verbose_name='ランク')),
+                ('rank', models.PositiveSmallIntegerField(choices=[('', '選択'), (1, '弱小'), (2, 'そこそこ'), (3, '中堅'), (4, '強豪'), (5, '名門')], default=eikan.defaults.create_default_team_rank, verbose_name='ランク')),
                 ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='登録日')),
                 ('updated_at', models.DateTimeField(auto_now=True, verbose_name='更新日')),
             ],
@@ -177,7 +177,7 @@ class Migration(migrations.Migration):
             name='Players',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('admission_year', models.PositiveSmallIntegerField(default=eikan.model_manager.DefaultValueExtractor.create_default_year_for_players, validators=[django.core.validators.MinValueValidator(1939)], verbose_name='入学年度')),
+                ('admission_year', models.PositiveSmallIntegerField(default=eikan.defaults.create_default_year_for_players, validators=[django.core.validators.MinValueValidator(1939)], verbose_name='入学年度')),
                 ('name', models.CharField(max_length=6, verbose_name='名前')),
                 ('position', models.PositiveSmallIntegerField(choices=[('', '選択'), (1, '投'), (2, '捕'), (3, '一'), (4, '二'), (5, '三'), (6, '遊'), (7, '外')], default=0, verbose_name='メインポジション')),
                 ('is_pitched', models.BooleanField(default=False, verbose_name='野手登板')),
@@ -199,9 +199,9 @@ class Migration(migrations.Migration):
             name='Teams',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('year', models.PositiveSmallIntegerField(default=eikan.model_manager.DefaultValueExtractor.create_default_year_for_teams, validators=[django.core.validators.MinValueValidator(1941)], verbose_name='年度')),
-                ('period', models.PositiveSmallIntegerField(choices=[('', '選択'), (1, '夏'), (2, '秋')], default=eikan.model_manager.DefaultValueExtractor.create_default_period, verbose_name='期間')),
-                ('prefecture', models.PositiveSmallIntegerField(choices=[('', '選択'), (1, '北北海道'), (2, '南北海道'), (3, '青森'), (4, '岩手'), (5, '宮城'), (6, '秋田'), (7, '山形'), (8, '福島'), (9, '茨城'), (10, '栃木'), (11, '群馬'), (12, '埼玉'), (13, '千葉'), (14, '神奈川'), (15, '山梨'), (16, '東東京'), (17, '西東京'), (18, '新潟'), (19, '富山'), (20, '石川'), (21, '福井'), (22, '長野'), (23, '岐阜'), (24, '静岡'), (25, '愛知'), (26, '三重'), (27, '滋賀'), (28, '京都'), (29, '大阪'), (30, '兵庫'), (31, '奈良'), (32, '和歌山'), (33, '鳥取'), (34, '島根'), (35, '岡山'), (36, '広島'), (37, '山口'), (38, '徳島'), (39, '香川'), (40, '愛媛'), (41, '高知'), (42, '福岡'), (43, '佐賀'), (44, '長崎'), (45, '熊本'), (46, '大分'), (47, '宮崎'), (48, '鹿児島'), (49, '沖縄')], default=eikan.model_manager.DefaultValueExtractor.create_default_prefecture, verbose_name='都道府県')),
+                ('year', models.PositiveSmallIntegerField(default=eikan.defaults.create_default_year_for_teams, validators=[django.core.validators.MinValueValidator(1941)], verbose_name='年度')),
+                ('period', models.PositiveSmallIntegerField(choices=[('', '選択'), (1, '夏'), (2, '秋')], default=eikan.defaults.create_default_period, verbose_name='期間')),
+                ('prefecture', models.PositiveSmallIntegerField(choices=[('', '選択'), (1, '北北海道'), (2, '南北海道'), (3, '青森'), (4, '岩手'), (5, '宮城'), (6, '秋田'), (7, '山形'), (8, '福島'), (9, '茨城'), (10, '栃木'), (11, '群馬'), (12, '埼玉'), (13, '千葉'), (14, '神奈川'), (15, '山梨'), (16, '東東京'), (17, '西東京'), (18, '新潟'), (19, '富山'), (20, '石川'), (21, '福井'), (22, '長野'), (23, '岐阜'), (24, '静岡'), (25, '愛知'), (26, '三重'), (27, '滋賀'), (28, '京都'), (29, '大阪'), (30, '兵庫'), (31, '奈良'), (32, '和歌山'), (33, '鳥取'), (34, '島根'), (35, '岡山'), (36, '広島'), (37, '山口'), (38, '徳島'), (39, '香川'), (40, '愛媛'), (41, '高知'), (42, '福岡'), (43, '佐賀'), (44, '長崎'), (45, '熊本'), (46, '大分'), (47, '宮崎'), (48, '鹿児島'), (49, '沖縄')], default=eikan.defaults.create_default_prefecture, verbose_name='都道府県')),
                 ('training_policy', models.PositiveSmallIntegerField(choices=[('', '選択'), (1, 'バランス'), (2, '打撃力'), (3, '機動力'), (4, '守備・投手')], default=0, verbose_name='育成方針')),
                 ('draft_nomination', models.PositiveSmallIntegerField(default=0, validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(5)], verbose_name='指名人数')),
                 ('remark', models.CharField(blank=True, max_length=100, null=True, verbose_name='備考')),
@@ -263,12 +263,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='pitcherresults',
             name='player_id',
-            field=models.ForeignKey(limit_choices_to=eikan.model_manager.DefaultValueExtractor.select_display_pitchers, on_delete=django.db.models.deletion.CASCADE, to='eikan.Players', verbose_name='選手'),
+            field=models.ForeignKey(limit_choices_to=eikan.defaults.select_display_pitchers, on_delete=django.db.models.deletion.CASCADE, to='eikan.Players', verbose_name='選手'),
         ),
         migrations.AddField(
             model_name='games',
             name='team_id',
-            field=models.ForeignKey(default=eikan.model_manager.DefaultValueExtractor.create_default_team_id, on_delete=django.db.models.deletion.CASCADE, to='eikan.Teams', verbose_name='チーム'),
+            field=models.ForeignKey(default=eikan.defaults.create_default_team_id, on_delete=django.db.models.deletion.CASCADE, to='eikan.Teams', verbose_name='チーム'),
         ),
         migrations.AddField(
             model_name='fieldertotalresults',
@@ -283,7 +283,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='fielderresults',
             name='player_id',
-            field=models.ForeignKey(limit_choices_to=eikan.model_manager.DefaultValueExtractor.select_display_players, on_delete=django.db.models.deletion.CASCADE, to='eikan.Players', verbose_name='選手'),
+            field=models.ForeignKey(limit_choices_to=eikan.defaults.select_display_players, on_delete=django.db.models.deletion.CASCADE, to='eikan.Players', verbose_name='選手'),
         ),
         migrations.AddConstraint(
             model_name='pitcherresults',

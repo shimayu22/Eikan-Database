@@ -1,6 +1,7 @@
 from django.test import TestCase
 from eikan.models import Teams, Games, ModelSettings
-from eikan.model_manager import DefaultValueExtractor, SavedValueExtractor, ChoicesFormatter
+from eikan import defaults
+from eikan.model_manager import SavedValueExtractor, ChoicesFormatter
 
 
 class DefaultValueExtractorTests(TestCase):
@@ -12,13 +13,13 @@ class DefaultValueExtractorTests(TestCase):
             period == 2(秋) -> 次のyearを返す
         """
         self.assertEqual(
-            DefaultValueExtractor.create_default_year_for_teams(), 1941)
+            defaults.create_default_year_for_teams(), 1941)
         Teams(year=1985, period=1).save()
         self.assertEqual(
-            DefaultValueExtractor.create_default_year_for_teams(), 1985)
+            defaults.create_default_year_for_teams(), 1985)
         Teams(year=1985, period=2).save()
         self.assertEqual(
-            DefaultValueExtractor.create_default_year_for_teams(), 1986)
+            defaults.create_default_year_for_teams(), 1986)
 
     def test_create_default_period(self):
         """
@@ -27,22 +28,22 @@ class DefaultValueExtractorTests(TestCase):
             period == 1(夏) -> 2(秋)を返す
             period == 2(秋) -> 1(夏)を返す
         """
-        self.assertEqual(DefaultValueExtractor.create_default_period(), 1)
+        self.assertEqual(defaults.create_default_period(), 1)
         Teams(year=1985, period=1).save()
-        self.assertEqual(DefaultValueExtractor.create_default_period(), 2)
+        self.assertEqual(defaults.create_default_period(), 2)
         Teams(year=1985, period=2).save()
-        self.assertEqual(DefaultValueExtractor.create_default_period(), 1)
+        self.assertEqual(defaults.create_default_period(), 1)
 
     def test_create_default_prefecture(self):
         """
         Teamsにレコードが存在しない場合   -> 0(初期値)
         Teamsにレコードが存在している場合 -> 最新レコードのprefectureと同じ値を返す
         """
-        self.assertEqual(DefaultValueExtractor.create_default_prefecture(), 0)
+        self.assertEqual(defaults.create_default_prefecture(), 0)
         Teams(prefecture=17).save()
-        self.assertEqual(DefaultValueExtractor.create_default_prefecture(), 17)
+        self.assertEqual(defaults.create_default_prefecture(), 17)
         Teams(prefecture=1).save()
-        self.assertEqual(DefaultValueExtractor.create_default_prefecture(), 1)
+        self.assertEqual(defaults.create_default_prefecture(), 1)
 
     def test_create_default_year_for_players(self):
         """
@@ -50,24 +51,24 @@ class DefaultValueExtractorTests(TestCase):
         Teamsにレコードが存在している場合 -> 最新レコードのyearと同じ値を返す
         """
         self.assertEqual(
-            DefaultValueExtractor.create_default_year_for_players(), 1939)
+            defaults.create_default_year_for_players(), 1939)
         Teams(year=1985).save()
         self.assertEqual(
-            DefaultValueExtractor.create_default_year_for_players(), 1985)
+            defaults.create_default_year_for_players(), 1985)
         Teams(year=2040).save()
         self.assertEqual(
-            DefaultValueExtractor.create_default_year_for_players(), 2040)
+            defaults.create_default_year_for_players(), 2040)
 
     def test_create_default_team_id(self):
         """
         Teamsにレコードが存在しない場合   -> 1939(初期値)
         Teamsにレコードが存在している場合 -> 最新レコードのidと同じ値を返す
         """
-        self.assertEqual(DefaultValueExtractor.create_default_team_id(), '')
+        self.assertEqual(defaults.create_default_team_id(), '')
         Teams(year=1985, period=1).save()
-        self.assertEqual(DefaultValueExtractor.create_default_team_id(), 1)
+        self.assertEqual(defaults.create_default_team_id(), 1)
         Teams(year=1985, period=2).save()
-        self.assertEqual(DefaultValueExtractor.create_default_team_id(), 2)
+        self.assertEqual(defaults.create_default_team_id(), 2)
 
     def test_create_default_competition_type(self):
         """
@@ -87,13 +88,13 @@ class DefaultValueExtractorTests(TestCase):
         round_choices = ChoicesFormatter.round_choices_to_dict()
 
         self.assertEqual(
-            DefaultValueExtractor.create_default_competition_type(),
+            defaults.create_default_competition_type(),
             competition_choices['県大会'])
         # 夏のチーム
         Teams(year=1985, period=period['夏']).save()
 
         self.assertEqual(
-            DefaultValueExtractor.create_default_competition_type(),
+            defaults.create_default_competition_type(),
             competition_choices['県大会'])
 
         t1 = Teams.objects.latest('pk')
@@ -103,7 +104,7 @@ class DefaultValueExtractorTests(TestCase):
             competition_round=round_choices['練習試合']
         ).save()
         self.assertEqual(
-            DefaultValueExtractor.create_default_competition_type(),
+            defaults.create_default_competition_type(),
             competition_choices['県大会'])
 
         Games(
@@ -114,7 +115,7 @@ class DefaultValueExtractorTests(TestCase):
             run=0
         ).save()
         self.assertEqual(
-            DefaultValueExtractor.create_default_competition_type(),
+            defaults.create_default_competition_type(),
             competition_choices['県大会'])
 
         Games(
@@ -125,7 +126,7 @@ class DefaultValueExtractorTests(TestCase):
             run=1
         ).save()
         self.assertEqual(
-            DefaultValueExtractor.create_default_competition_type(),
+            defaults.create_default_competition_type(),
             competition_choices['県大会'])
 
         Games(
@@ -136,7 +137,7 @@ class DefaultValueExtractorTests(TestCase):
             run=0
         ).save()
         self.assertEqual(
-            DefaultValueExtractor.create_default_competition_type(),
+            defaults.create_default_competition_type(),
             competition_choices['甲子園'])
 
         Games(
@@ -147,14 +148,14 @@ class DefaultValueExtractorTests(TestCase):
             run=1
         ).save()
         self.assertEqual(
-            DefaultValueExtractor.create_default_competition_type(),
+            defaults.create_default_competition_type(),
             competition_choices['県大会'])
 
         # 秋のチーム
         Teams(year=1985, period=period['秋']).save()
         t2 = Teams.objects.latest('pk')
         self.assertEqual(
-            DefaultValueExtractor.create_default_competition_type(),
+            defaults.create_default_competition_type(),
             competition_choices['県大会'])
 
         Games(
@@ -165,7 +166,7 @@ class DefaultValueExtractorTests(TestCase):
             run=1
         ).save()
         self.assertEqual(
-            DefaultValueExtractor.create_default_competition_type(),
+            defaults.create_default_competition_type(),
             competition_choices['県大会'])
 
         Games(
@@ -176,7 +177,7 @@ class DefaultValueExtractorTests(TestCase):
             run=0
         ).save()
         self.assertEqual(
-            DefaultValueExtractor.create_default_competition_type(),
+            defaults.create_default_competition_type(),
             competition_choices['地区大会'])
 
         Games(
@@ -187,7 +188,7 @@ class DefaultValueExtractorTests(TestCase):
             run=1
         ).save()
         self.assertEqual(
-            DefaultValueExtractor.create_default_competition_type(),
+            defaults.create_default_competition_type(),
             competition_choices['県大会'])
 
         Games(
@@ -198,7 +199,7 @@ class DefaultValueExtractorTests(TestCase):
             run=0
         ).save()
         self.assertEqual(
-            DefaultValueExtractor.create_default_competition_type(),
+            defaults.create_default_competition_type(),
             competition_choices['全国大会'])
 
         Games(
@@ -209,7 +210,7 @@ class DefaultValueExtractorTests(TestCase):
             run=0
         ).save()
         self.assertEqual(
-            DefaultValueExtractor.create_default_competition_type(),
+            defaults.create_default_competition_type(),
             competition_choices['センバツ'])
 
     def test_create_default_competition_round(self):
@@ -231,13 +232,13 @@ class DefaultValueExtractorTests(TestCase):
         round_choices = ChoicesFormatter.round_choices_to_dict()
 
         self.assertEqual(
-            DefaultValueExtractor.create_default_competition_round(),
+            defaults.create_default_competition_round(),
             round_choices['1回戦'])
         # 夏のチーム
         Teams(year=1985, period=period['夏']).save()
 
         self.assertEqual(
-            DefaultValueExtractor.create_default_competition_round(),
+            defaults.create_default_competition_round(),
             round_choices['1回戦'])
 
         t1 = Teams.objects.latest('pk')
@@ -247,7 +248,7 @@ class DefaultValueExtractorTests(TestCase):
             competition_round=round_choices['練習試合']
         ).save()
         self.assertEqual(
-            DefaultValueExtractor.create_default_competition_round(),
+            defaults.create_default_competition_round(),
             round_choices['1回戦'])
 
         Games(
@@ -258,7 +259,7 @@ class DefaultValueExtractorTests(TestCase):
             run=0
         ).save()
         self.assertEqual(
-            DefaultValueExtractor.create_default_competition_round(),
+            defaults.create_default_competition_round(),
             round_choices['3回戦'])
 
         Games(
@@ -269,7 +270,7 @@ class DefaultValueExtractorTests(TestCase):
             run=1
         ).save()
         self.assertEqual(
-            DefaultValueExtractor.create_default_competition_round(),
+            defaults.create_default_competition_round(),
             round_choices['1回戦'])
 
         Games(
@@ -280,7 +281,7 @@ class DefaultValueExtractorTests(TestCase):
             run=0
         ).save()
         self.assertEqual(
-            DefaultValueExtractor.create_default_competition_round(),
+            defaults.create_default_competition_round(),
             round_choices['1回戦'])
 
         Games(
@@ -291,14 +292,14 @@ class DefaultValueExtractorTests(TestCase):
             run=1
         ).save()
         self.assertEqual(
-            DefaultValueExtractor.create_default_competition_round(),
+            defaults.create_default_competition_round(),
             round_choices['1回戦'])
 
         # 秋のチーム
         Teams(year=1985, period=period['秋']).save()
         t2 = Teams.objects.latest('pk')
         self.assertEqual(
-            DefaultValueExtractor.create_default_competition_round(),
+            defaults.create_default_competition_round(),
             competition_choices['県大会'])
 
         Games(
@@ -309,7 +310,7 @@ class DefaultValueExtractorTests(TestCase):
             run=1
         ).save()
         self.assertEqual(
-            DefaultValueExtractor.create_default_competition_round(),
+            defaults.create_default_competition_round(),
             round_choices['1回戦'])
 
         Games(
@@ -320,7 +321,7 @@ class DefaultValueExtractorTests(TestCase):
             run=0
         ).save()
         self.assertEqual(
-            DefaultValueExtractor.create_default_competition_round(),
+            defaults.create_default_competition_round(),
             round_choices['1回戦'])
 
         Games(
@@ -331,7 +332,7 @@ class DefaultValueExtractorTests(TestCase):
             run=1
         ).save()
         self.assertEqual(
-            DefaultValueExtractor.create_default_competition_round(),
+            defaults.create_default_competition_round(),
             round_choices['1回戦'])
 
         Games(
@@ -342,7 +343,7 @@ class DefaultValueExtractorTests(TestCase):
             run=0
         ).save()
         self.assertEqual(
-            DefaultValueExtractor.create_default_competition_round(),
+            defaults.create_default_competition_round(),
             round_choices['2回戦'])
 
         Games(
@@ -353,7 +354,7 @@ class DefaultValueExtractorTests(TestCase):
             run=0
         ).save()
         self.assertEqual(
-            DefaultValueExtractor.create_default_competition_round(),
+            defaults.create_default_competition_round(),
             round_choices['準決勝'])
 
     def test_create_default_team_rank(self):
@@ -361,15 +362,15 @@ class DefaultValueExtractorTests(TestCase):
         Gamesにレコードが存在しない場合   -> 0(初期値)
         Gamesにレコードが存在している場合 -> 最新レコードのrankと同じ値を返す
         """
-        self.assertEqual(DefaultValueExtractor.create_default_team_rank(), 0)
+        self.assertEqual(defaults.create_default_team_rank(), 0)
         Teams(year=1985, period=1).save()
         t1 = Teams.objects.latest('pk')
         Games(team_id=t1, rank=1).save()
-        self.assertEqual(DefaultValueExtractor.create_default_team_rank(), 1)
+        self.assertEqual(defaults.create_default_team_rank(), 1)
         Teams(year=1985, period=2).save()
         t2 = Teams.objects.latest('pk')
         Games(team_id=t2, rank=5).save()
-        self.assertEqual(DefaultValueExtractor.create_default_team_rank(), 5)
+        self.assertEqual(defaults.create_default_team_rank(), 5)
 
     def test_select_display_players(self):
         """
@@ -387,17 +388,17 @@ class DefaultValueExtractorTests(TestCase):
                     "admission_year__lte": teams.year}
                     -> 2学年分表示させる
         """
-        self.assertEqual(DefaultValueExtractor.select_display_players(), {})
+        self.assertEqual(defaults.select_display_players(), {})
         Teams(year=1985, period=1).save()
-        self.assertEqual(DefaultValueExtractor.select_display_players(), {
+        self.assertEqual(defaults.select_display_players(), {
                          "admission_year__gte": 1983, "admission_year__lte": 1985})
         Teams(year=1985, period=2).save()
-        self.assertEqual(DefaultValueExtractor.select_display_players(), {
+        self.assertEqual(defaults.select_display_players(), {
                          "admission_year__gte": 1984, "admission_year__lte": 1985})
         ModelSettings(is_used_limit_choices_to=True).save()
-        self.assertEqual(DefaultValueExtractor.select_display_players(), {})
+        self.assertEqual(defaults.select_display_players(), {})
         ModelSettings(is_used_limit_choices_to=False).save()
-        self.assertEqual(DefaultValueExtractor.select_display_players(), {
+        self.assertEqual(defaults.select_display_players(), {
                          "admission_year__gte": 1984, "admission_year__lte": 1985})
 
     def test_select_display_pitchers(self):
@@ -419,20 +420,20 @@ class DefaultValueExtractorTests(TestCase):
                     -> 2学年分表示させる
         """
         self.assertEqual(
-            DefaultValueExtractor.select_display_pitchers(), {
+            defaults.select_display_pitchers(), {
                 "is_pitcher": True})
         Teams(year=1998, period=1).save()
-        self.assertEqual(DefaultValueExtractor.select_display_pitchers(), {
+        self.assertEqual(defaults.select_display_pitchers(), {
                          "is_pitcher": True, "admission_year__gte": 1996, "admission_year__lte": 1998})
         Teams(year=1998, period=2).save()
-        self.assertEqual(DefaultValueExtractor.select_display_pitchers(), {
+        self.assertEqual(defaults.select_display_pitchers(), {
                          "is_pitcher": True, "admission_year__gte": 1997, "admission_year__lte": 1998})
         ModelSettings(is_used_limit_choices_to=True).save()
         self.assertEqual(
-            DefaultValueExtractor.select_display_pitchers(), {
+            defaults.select_display_pitchers(), {
                 "is_pitcher": True})
         ModelSettings(is_used_limit_choices_to=False).save()
-        self.assertEqual(DefaultValueExtractor.select_display_pitchers(), {
+        self.assertEqual(defaults.select_display_pitchers(), {
                          "is_pitcher": True, "admission_year__gte": 1997, "admission_year__lte": 1998})
 
 

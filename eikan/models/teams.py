@@ -1,6 +1,6 @@
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from eikan.model_manager import DefaultValueExtractor as d
+from eikan import defaults
 
 
 class Teams(models.Model):
@@ -75,19 +75,19 @@ class Teams(models.Model):
     year = models.PositiveSmallIntegerField(
         verbose_name="年度",
         validators=[MinValueValidator(1941)],
-        default=d.create_default_year_for_teams,
+        default=defaults.create_default_year_for_teams,
     )
 
     period = models.PositiveSmallIntegerField(
         verbose_name="期間",
         choices=PERIOD_CHOICES,
-        default=d.create_default_period,
+        default=defaults.create_default_period,
     )
 
     prefecture = models.PositiveSmallIntegerField(
         verbose_name="都道府県",
         choices=PREFECTURE_CHOICES,
-        default=d.create_default_prefecture,
+        default=defaults.create_default_prefecture,
     )
 
     training_policy = models.PositiveSmallIntegerField(

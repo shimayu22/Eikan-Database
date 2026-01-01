@@ -1,7 +1,7 @@
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from eikan.models import Games, Players
-from eikan.model_manager import DefaultValueExtractor as d
+from eikan import defaults
 
 
 class PitcherResults(models.Model):
@@ -15,7 +15,7 @@ class PitcherResults(models.Model):
         Players,
         on_delete=models.CASCADE,
         verbose_name="選手",
-        limit_choices_to=d.select_display_pitchers,
+        limit_choices_to=defaults.select_display_pitchers,
     )
 
     games_started = models.BooleanField(

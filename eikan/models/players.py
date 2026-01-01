@@ -1,6 +1,6 @@
 from django.core.validators import MinValueValidator
 from django.db import models
-from eikan.model_manager import DefaultValueExtractor as d
+from eikan import defaults
 from eikan.model_manager import SavedValueExtractor as s
 
 
@@ -20,7 +20,7 @@ class Players(models.Model):
     admission_year = models.PositiveSmallIntegerField(
         verbose_name="入学年度",
         validators=[MinValueValidator(1939)],
-        default=d.create_default_year_for_players,
+        default=defaults.create_default_year_for_players,
     )
 
     name = models.CharField(

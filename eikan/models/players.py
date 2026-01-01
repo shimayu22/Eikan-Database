@@ -1,5 +1,6 @@
 from django.core.validators import MinValueValidator
 from django.db import models
+
 from eikan import defaults
 from eikan.constants import DEFAULT_START_YEAR_PLAYERS
 from eikan.model_manager import SavedValueExtractor as s

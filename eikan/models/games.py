@@ -1,7 +1,8 @@
 from django.db import models
-from eikan.models import Teams
+
 from eikan import defaults
 from eikan.model_manager import SavedValueExtractor as s
+from eikan.models import Teams
 
 
 class Games(models.Model):

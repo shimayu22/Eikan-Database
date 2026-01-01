@@ -2,11 +2,16 @@
 
 from django.db import models
 from django.db.models import Max
-from eikan.models import Games, Teams, \
-    FielderResults, PitcherResults, \
-    TeamTotalResults
+
 from eikan import sabr_calculations
 from eikan.model_manager import ChoicesFormatter as c
+from eikan.models import (
+    FielderResults,
+    Games,
+    PitcherResults,
+    TeamTotalResults,
+    Teams,
+)
 
 class TeamSabrFormatter:
     """チーム成績の集計、指標計算を行う"""

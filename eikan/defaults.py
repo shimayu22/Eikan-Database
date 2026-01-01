@@ -4,11 +4,12 @@ Notes:
     循環importを回避するため、django.apps.apps.get_model()を使用してモデルを取得している
 """
 from django.apps import apps
+
 from eikan.constants import (
-    DEFAULT_START_YEAR_TEAMS,
     DEFAULT_START_YEAR_PLAYERS,
-    YEARS_BACK_FOR_SUMMER,
+    DEFAULT_START_YEAR_TEAMS,
     YEARS_BACK_FOR_AUTUMN,
+    YEARS_BACK_FOR_SUMMER,
 )
 
 

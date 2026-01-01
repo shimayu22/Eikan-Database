@@ -1,7 +1,8 @@
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from eikan.models import Games, Players
+
 from eikan import defaults
+from eikan.models import Games, Players
 
 
 class PitcherResults(models.Model):

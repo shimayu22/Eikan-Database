@@ -1,6 +1,7 @@
 from django.db import models
-from eikan.models import Games, Players
+
 from eikan import defaults
+from eikan.models import Games, Players
 
 
 class FielderResults(models.Model):

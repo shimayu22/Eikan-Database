@@ -1,8 +1,9 @@
 """打者成績に関する処理"""
 
 from django.db import models
-from eikan.models import FielderResults, FielderTotalResults, Teams, Players
+
 from eikan import sabr_calculations
+from eikan.models import FielderResults, FielderTotalResults, Players, Teams
 
 class FielderSabrFormatter:
     """主にFielderResults,FielderTotalResultsを操作する"""

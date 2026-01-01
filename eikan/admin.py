@@ -1,17 +1,24 @@
-from django.dispatch import receiver
-from django.db.models.signals import post_save, post_delete
 from django.contrib import admin
 from django.db import models
+from django.db.models.signals import post_delete, post_save
+from django.dispatch import receiver
 from django.forms import NumberInput
+
 from eikan import fielder_sabr_manager as f
 from eikan import pitcher_sabr_manager as p
 
-
 # Register your models here.
-from .models import Teams, Players, Games, \
-    FielderResults, PitcherResults, \
-    FielderTotalResults, PitcherTotalResults, \
-    TeamTotalResults, ModelSettings
+from .models import (
+    FielderResults,
+    FielderTotalResults,
+    Games,
+    ModelSettings,
+    PitcherResults,
+    PitcherTotalResults,
+    Players,
+    TeamTotalResults,
+    Teams,
+)
 
 admin.site.site_header = '栄冠ナインデータベース 管理画面'
 

@@ -151,6 +151,41 @@ class DefaultValueExtractorTests(TestCase):
             defaults.create_default_competition_type(),
             competition_choices['県大会'])
 
+        # 甲子園進出後のテスト（夏のチーム）- t2のテストの前に移動
+        Games(
+            team_id=t1,
+            competition_type=competition_choices['甲子園'],
+            competition_round=round_choices['1回戦'],
+            score=1,
+            run=0
+        ).save()
+        self.assertEqual(
+            defaults.create_default_competition_type(),
+            competition_choices['甲子園'])
+
+        Games(
+            team_id=t1,
+            competition_type=competition_choices['甲子園'],
+            competition_round=round_choices['2回戦'],
+            score=1,
+            run=0
+        ).save()
+        self.assertEqual(
+            defaults.create_default_competition_type(),
+            competition_choices['甲子園'])
+
+        # 甲子園で敗戦 → 県大会（リセット）
+        Games(
+            team_id=t1,
+            competition_type=competition_choices['甲子園'],
+            competition_round=round_choices['2回戦'],
+            score=0,
+            run=1
+        ).save()
+        self.assertEqual(
+            defaults.create_default_competition_type(),
+            competition_choices['県大会'])
+
         # 秋のチーム
         Teams(year=1985, period=period['秋']).save()
         t2 = Teams.objects.latest('pk')
@@ -206,6 +241,30 @@ class DefaultValueExtractorTests(TestCase):
             team_id=t2,
             competition_type=competition_choices['センバツ'],
             competition_round=round_choices['2回戦'],
+            score=1,
+            run=0
+        ).save()
+        self.assertEqual(
+            defaults.create_default_competition_type(),
+            competition_choices['センバツ'])
+
+        # 全国大会で敗戦 → センバツ（確定）
+        Games(
+            team_id=t2,
+            competition_type=competition_choices['全国大会'],
+            competition_round=round_choices['2回戦'],
+            score=0,
+            run=1
+        ).save()
+        self.assertEqual(
+            defaults.create_default_competition_type(),
+            competition_choices['センバツ'])
+
+        # 全国大会決勝で勝利 → センバツ（確定）
+        Games(
+            team_id=t2,
+            competition_type=competition_choices['全国大会'],
+            competition_round=round_choices['決勝'],
             score=1,
             run=0
         ).save()
@@ -295,12 +354,47 @@ class DefaultValueExtractorTests(TestCase):
             defaults.create_default_competition_round(),
             round_choices['1回戦'])
 
+        # 甲子園進出後の回戦テスト（夏のチーム）- t2のテストの前に移動
+        Games(
+            team_id=t1,
+            competition_type=competition_choices['甲子園'],
+            competition_round=round_choices['1回戦'],
+            score=1,
+            run=0
+        ).save()
+        self.assertEqual(
+            defaults.create_default_competition_round(),
+            round_choices['2回戦'])
+
+        Games(
+            team_id=t1,
+            competition_type=competition_choices['甲子園'],
+            competition_round=round_choices['2回戦'],
+            score=1,
+            run=0
+        ).save()
+        self.assertEqual(
+            defaults.create_default_competition_round(),
+            round_choices['3回戦'])
+
+        # 甲子園決勝で勝利 → 1回戦（リセット、次の大会はない）
+        Games(
+            team_id=t1,
+            competition_type=competition_choices['甲子園'],
+            competition_round=round_choices['決勝'],
+            score=1,
+            run=0
+        ).save()
+        self.assertEqual(
+            defaults.create_default_competition_round(),
+            round_choices['1回戦'])
+
         # 秋のチーム
         Teams(year=1985, period=period['秋']).save()
         t2 = Teams.objects.latest('pk')
         self.assertEqual(
             defaults.create_default_competition_round(),
-            competition_choices['県大会'])
+            round_choices['1回戦'])
 
         Games(
             team_id=t2,
@@ -356,6 +450,65 @@ class DefaultValueExtractorTests(TestCase):
         self.assertEqual(
             defaults.create_default_competition_round(),
             round_choices['準決勝'])
+
+        # 全国大会2回戦で敗戦 → センバツ1回戦
+        Games(
+            team_id=t2,
+            competition_type=competition_choices['全国大会'],
+            competition_round=round_choices['2回戦'],
+            score=0,
+            run=1
+        ).save()
+        self.assertEqual(
+            defaults.create_default_competition_round(),
+            round_choices['1回戦'])
+
+        # 全国大会決勝で勝利 → センバツ1回戦
+        Games(
+            team_id=t2,
+            competition_type=competition_choices['全国大会'],
+            competition_round=round_choices['決勝'],
+            score=1,
+            run=0
+        ).save()
+        self.assertEqual(
+            defaults.create_default_competition_round(),
+            round_choices['1回戦'])
+
+        # センバツ進出後の回戦テスト
+        Games(
+            team_id=t2,
+            competition_type=competition_choices['センバツ'],
+            competition_round=round_choices['1回戦'],
+            score=1,
+            run=0
+        ).save()
+        self.assertEqual(
+            defaults.create_default_competition_round(),
+            round_choices['2回戦'])
+
+        Games(
+            team_id=t2,
+            competition_type=competition_choices['センバツ'],
+            competition_round=round_choices['2回戦'],
+            score=1,
+            run=0
+        ).save()
+        self.assertEqual(
+            defaults.create_default_competition_round(),
+            round_choices['3回戦'])
+
+        # センバツ決勝で勝利 → 1回戦（リセット、次の大会はない）
+        Games(
+            team_id=t2,
+            competition_type=competition_choices['センバツ'],
+            competition_round=round_choices['決勝'],
+            score=1,
+            run=0
+        ).save()
+        self.assertEqual(
+            defaults.create_default_competition_round(),
+            round_choices['1回戦'])
 
     def test_create_default_team_rank(self):
         """

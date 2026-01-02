@@ -18,7 +18,9 @@
                 <td>{{ ftr.obp|floatformat:"3"|default:"0.000" }}</td>
                 <td>{{ ftr.br|floatformat:"1"|default:"0.0" }}</td>
                 <td>{{ ftr.woba|floatformat:"3"|default:"0.000" }}</td>
+                {% if not hide_gpa_ps %}
                 <td>{{ ftr.gpa|floatformat:"3"|default:"0.000" }}</td>
+                {% endif %}
                 <td>{{ ftr.batting_average|floatformat:"3"|default:"0.000" }}</td>
                 <td>{{ ftr.at_bat|default:"0" }}</td>
                 <td>{{ ftr.run|default:"0" }}</td>
@@ -38,7 +40,9 @@
                 <td>{{ ftr.bbhp_percent|floatformat:"3"|default:"0.000" }}</td>
                 <td>{{ ftr.isod|floatformat:"3"|default:"0.000" }}</td>
                 <td>{{ ftr.isop|floatformat:"3"|default:"0.000" }}</td>
+                {% if not hide_gpa_ps %}
                 <td>{{ ftr.p_s|floatformat:"3"|default:"0.000" }}</td>
+                {% endif %}
             </tr>
         {% endfor %}
     </tbody>

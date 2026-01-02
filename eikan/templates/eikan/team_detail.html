@@ -13,7 +13,7 @@
 <hr class="mt-5 mb-5">
 {% if fielder_total_results %}
     {# 打者成績(fielder_total_results) #}
-    {% include "./_batter_record.html" %}
+    {% include "./_batter_record.html" with hide_gpa_ps=True %}
 <hr>
     {# 投手成績(pitcher_total_results pg="team") #}
     {% include "./_pitcher_record.html" with pg="team" %}
